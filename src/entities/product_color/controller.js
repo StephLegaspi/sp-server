@@ -46,3 +46,18 @@ exports.remove = ( id ) => {
       });
     });
 };
+
+exports.edit = ( id, product_color, product_id ) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "UPDATE product_color SET product_color = '"+product_color+"', product_id = '"+product_id+"' WHERE id = '"+id+"';";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
+      });
+    });
+};

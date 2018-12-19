@@ -50,6 +50,24 @@ router.delete('/products/:id/color', async (req, res) => {
   }
 });
 
+router.put('/products/:id/color', async (req, res) => {
+  const id = req.params.id;
+  const product_color = req.body.product_color;
+  const product_id = req.body.product_id;
+    
+    try {
+      const product = await controller.edit(id, product_color, product_id);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited product color',
+        data: product
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 
 
 module.exports = router;
