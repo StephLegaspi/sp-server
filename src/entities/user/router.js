@@ -6,6 +6,21 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+
+router.get('/users', async (req, res) => {
+  try {
+    const users = await controller.getAll();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched users',
+      data: users
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.post('/users', async (req, res) => {
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;

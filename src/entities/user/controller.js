@@ -1,6 +1,22 @@
 const db = require('../../database');
 
 
+exports.getAll = () =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "SELECT * FROM user;"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
 exports.create = ( first_name, middle_name, last_name, email_address, password, contact_number ) => {
 	return new Promise((resolve, reject) => {
 
