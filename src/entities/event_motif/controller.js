@@ -46,3 +46,22 @@ exports.getOne = (id) =>{
     });
   });
 };
+
+exports.remove = (id) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "DELETE FROM event_motif WHERE id = '" + id +"';";
+
+      	db.query(queryString, (err, results) => {
+	      if (err) {
+	        console.log(err);
+	        return reject(500);
+	      }
+
+	      if (!results.affectedRows) {
+	        return reject(404);
+	      }
+	      return resolve(id);
+	    });
+    });
+};

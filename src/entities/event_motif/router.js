@@ -50,4 +50,17 @@ router.get('/event_motifs/:id', async (req, res) => {
   }
 });
 
+router.delete('/event_motifs/:id', async (req, res) => {
+  try {
+    const event_motif = await controller.remove(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully deleted event motif',
+      data: event_motif
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 module.exports = router;

@@ -53,14 +53,16 @@ exports.remove = (id) => {
 
       const queryString = "DELETE FROM administrator WHERE id = '" + id +"';";
 
-      db.query(queryString, (err, rows) =>{
-        if (err){
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
           return reject(500);
         }
-        if (!rows.length){
+
+        if (!results.affectedRows) {
           return reject(404);
         }
-        return resolve(rows);
+        return resolve(id);
       });
     });
 };
