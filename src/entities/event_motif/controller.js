@@ -65,3 +65,18 @@ exports.remove = (id) => {
 	    });
     });
 };
+
+exports.edit = (id, description) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "UPDATE event_motif SET description = '"+description+"' WHERE id = '"+id+"';";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
+      });
+    });
+};

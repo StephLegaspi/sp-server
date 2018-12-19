@@ -63,4 +63,21 @@ router.delete('/event_motifs/:id', async (req, res) => {
   }
 });
 
+router.put('/event_motifs/:id', async (req, res) => {
+  const id = req.params.id;
+  const description = req.body.description;
+
+    try {
+      const event_motif = await controller.edit( id, description );
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited event motif',
+        data: event_motif
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 module.exports = router;
