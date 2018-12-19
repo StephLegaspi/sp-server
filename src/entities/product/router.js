@@ -63,7 +63,7 @@ router.put('/products/:id', async (req, res) => {
       const product = await controller.edit(id, name, description, price);
       res.status(200).json({
         status: 200,
-        message: 'Successfully created product',
+        message: 'Successfully edited product',
         data: product
       });
     } catch (status) {
