@@ -37,6 +37,19 @@ router.get('/products/:id/color', async (req, res) => {
   }
 });
 
+router.delete('/products/:id/color', async (req, res) => {
+  try {
+    const product = await controller.remove(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully deleted product color',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 
 
 module.exports = router;
