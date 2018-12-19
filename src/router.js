@@ -6,11 +6,13 @@ const userRouter = require('./entities/user/router');
 const customerRouter = require('./entities/customer/router');
 const product_colorRouter = require('./entities/product_color/router');
 const administratorRouter = require('./entities/administrator/router');
+const event_motifRouter = require('./entities/event_motif/router');
 
 router.use(productRouter);
 router.use(userRouter);
 router.use(customerRouter);
 router.use(product_colorRouter);
 router.use(administratorRouter);
+router.use(event_motifRouter);
 
 module.exports = router;
