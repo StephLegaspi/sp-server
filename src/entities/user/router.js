@@ -21,6 +21,19 @@ router.get('/users', async (req, res) => {
   }
 });
 
+router.get('/users/:id', async (req, res) => {
+  try {
+    const user = await controller.getOne(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched user',
+      data: user
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.post('/users', async (req, res) => {
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
