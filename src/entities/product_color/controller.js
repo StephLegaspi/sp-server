@@ -31,3 +31,4 @@ exports.getAll = (id) =>{
 		});
 	});
 };
+

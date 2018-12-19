@@ -77,6 +77,7 @@ CREATE TABLE product (
 );
 
 CREATE TABLE product_color (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	product_color VARCHAR(64) NOT NULL,
 	product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id)
