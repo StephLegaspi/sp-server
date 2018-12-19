@@ -50,4 +50,17 @@ router.get('/administrators/:id', async (req, res) => {
   }
 });
 
+router.delete('/administrators/:id', async (req, res) => {
+  try {
+    const administrator = await controller.remove(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully deleted administrator',
+      data: administrator
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 module.exports = router;

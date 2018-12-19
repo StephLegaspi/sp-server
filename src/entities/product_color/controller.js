@@ -37,12 +37,14 @@ exports.remove = ( id ) => {
 
       const queryString = "DELETE FROM product_color WHERE id = '" + id +"';";
 
-      db.query(queryString, (err, results) => {
-        if (err) {
-          console.log(err);
+      db.query(queryString, (err, rows) =>{
+        if (err){
           return reject(500);
         }
-        return resolve(results);
+        if (!rows.length){
+          return reject(404);
+        }
+        return resolve(rows);
       });
     });
 };
