@@ -167,7 +167,7 @@ BEGIN
     INSERT INTO shopping_cart_products(product_quantity, product_total_price, product_color, shopping_cart_id, product_id)
         values (product_quantity, product_total_price, product_color, shopping_cart_id, product_id);
 
-    UPDATE shopping_cart set total_items = total_items+product_quantity, total_bill = total_bill+product_total_price;
+    UPDATE shopping_cart set total_items = total_items+product_quantity, total_bill = total_bill+product_total_price WHERE id = shopping_cart_id;
 END;
 GO
 
