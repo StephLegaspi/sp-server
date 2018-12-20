@@ -44,6 +44,7 @@ exports.getOne = (id) =>{
       }
       return resolve(rows);
     });
+
   });
 };
 

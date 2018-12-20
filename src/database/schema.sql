@@ -142,6 +142,7 @@ CREATE TABLE inventory (
 DROP PROCEDURE IF EXISTS insert_product;
 DELIMITER GO
 
+/*INSERT PRODUCT*/
 CREATE PROCEDURE insertProduct(name varchar(64),
                                 description varchar(128),
                                 price INT)
@@ -150,10 +151,23 @@ BEGIN
         values (name, description, price);
 END;
 GO
-
+/*GET ALL PRODUCTS*/
 CREATE PROCEDURE getAllProducts()
 BEGIN
     SELECT * FROM product;
+END;
+GO
+/*INSERT CART PRODUCT*/
+CREATE PROCEDURE insertCartProduct(product_quantity INT,
+                                product_total_price FLOAT,
+                                product_color varchar(64),
+                                shopping_cart_id INT,
+                                product_id INT)
+BEGIN
+    INSERT INTO shopping_cart_products(product_quantity, product_total_price, product_color, shopping_cart_id, product_id)
+        values (product_quantity, product_total_price, product_color, shopping_cart_id, product_id);
+
+    UPDATE shopping_cart set total_items = total_items+product_quantity, total_bill = total_bill+product_total_price;
 END;
 GO
 
