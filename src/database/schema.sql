@@ -94,7 +94,8 @@ CREATE TABLE shopping_cart (
 CREATE TABLE shopping_cart_products (
     product_quantity INT NOT NULL DEFAULT 1,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
-    product_color VARCHAR(64) NOT NULL,
+    product_color_id INT NOT NULL,
+    FOREIGN KEY(product_color_id) REFERENCES product_color(id),
 	shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     product_id INT NOT NULL,
@@ -159,15 +160,16 @@ END;
 GO
 /*INSERT CART PRODUCT*/
 CREATE PROCEDURE insertCartProduct(product_quantity INT,
-                                product_total_price FLOAT,
-                                product_color varchar(64),
+                                product_color_id INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
-    INSERT INTO shopping_cart_products(product_quantity, product_total_price, product_color, shopping_cart_id, product_id)
-        values (product_quantity, product_total_price, product_color, shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, product_color_id, shopping_cart_id, product_id)
+        values (product_quantity, product_color_id, shopping_cart_id, product_id);
 
-    UPDATE shopping_cart set total_items = total_items+product_quantity, total_bill = total_bill+product_total_price WHERE id = shopping_cart_id;
+    UPDATE shopping_cart_products SET product_total_price = product_quantity * (SELECT price FROM product WHERE id = product_id);
+
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+product_total_price WHERE id = shopping_cart_id;
 END;
 GO
 
