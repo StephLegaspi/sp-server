@@ -47,22 +47,24 @@ exports.getOne = (id) =>{
   });
 };
 
-/*exports.remove = ( id ) => {
+exports.remove = ( id ) => {
   return new Promise((resolve, reject) => {
 
       const queryString = "CALL deleteCartProduct('" + id +"');";
 
-      db.query(queryString, (err, rows) =>{
-        if (err){
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
           return reject(500);
         }
-        if (!rows.length){
+
+        if (!results.affectedRows) {
           return reject(404);
         }
-        return resolve(rows);
+        return resolve(id);
       });
     });
-};*/
+};
 
 exports.edit = (id, product_quantity, product_color_id) => {
   return new Promise((resolve, reject) => {

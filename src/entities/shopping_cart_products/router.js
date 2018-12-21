@@ -53,7 +53,7 @@ router.get('/shopping_cart_products/:id', async (req, res) => {
   }
 });
 
-/*router.delete('/shopping_cart_products/:id', async (req, res) => {
+router.delete('/shopping_cart_products/:id', async (req, res) => {
   try {
     const shopping_cart_product = await controller.remove(req.params.id);
     res.status(200).json({
@@ -64,7 +64,7 @@ router.get('/shopping_cart_products/:id', async (req, res) => {
   } catch (status) {
     res.status(status).json({ status });
   }
-});*/
+});
 
 router.put('/shopping_cart_products/:id', async (req, res) => {
   const id = req.params.id;
