@@ -10,6 +10,7 @@ const event_motifRouter = require('./entities/event_motif/router');
 const packageRouter = require('./entities/package/router');
 const food_menuRouter = require('./entities/food_menu/router');
 const request_infoRouter = require('./entities/request_information/router');
+const shopping_cartRouter = require('./entities/shopping_cart/router');
 
 router.use(productRouter);
 router.use(userRouter);
@@ -20,5 +21,6 @@ router.use(event_motifRouter);
 router.use(packageRouter);
 router.use(food_menuRouter);
 router.use(request_infoRouter);
+router.use(shopping_cartRouter);
 
 module.exports = router;
