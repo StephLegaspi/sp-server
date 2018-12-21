@@ -24,9 +24,23 @@ router.post('/products/color', async (req, res) => {
  
 });
 
+router.get('/product_colors', async (req, res) => {
+  try {
+    const products = await controller.getAll();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product colors',
+      data: products
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/products/:id/color', async (req, res) => {
   try {
-    const products = await controller.getAll(req.params.id);
+    const products = await controller.getOne(req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched product colors',
