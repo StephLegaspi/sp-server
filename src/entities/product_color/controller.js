@@ -53,7 +53,7 @@ exports.remove = ( id ) => {
 
       const queryString = "DELETE FROM product_color WHERE id = '" + id +"';";
 
-      db.query(queryString, (err, rows) =>{
+      db.query(queryString, (err, results) =>{
         if (err) {
           console.log(err);
           return reject(500);
