@@ -53,7 +53,7 @@ router.get('/shopping_cart_products/:id', async (req, res) => {
   }
 });
 
-router.delete('/shopping_cart_products/:id', async (req, res) => {
+/*router.delete('/shopping_cart_products/:id', async (req, res) => {
   try {
     const shopping_cart_product = await controller.remove(req.params.id);
     res.status(200).json({
@@ -64,6 +64,24 @@ router.delete('/shopping_cart_products/:id', async (req, res) => {
   } catch (status) {
     res.status(status).json({ status });
   }
+});*/
+
+router.put('/shopping_cart_products/:id', async (req, res) => {
+  const id = req.params.id;
+  const product_quantity = req.body.product_quantity;
+  const product_color_id = req.body.product_color_id;
+    
+    try {
+      const shopping_cart_product = await controller.edit(id, product_quantity, product_color_id);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited shopping_cart_product',
+        data: shopping_cart_product
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
 });
 
 module.exports = router;

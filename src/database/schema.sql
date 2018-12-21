@@ -93,7 +93,7 @@ CREATE TABLE shopping_cart (
 
 CREATE TABLE shopping_cart_products (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    product_quantity INT NOT NULL DEFAULT 1,
+    product_quantity INT NOT NULL DEFAULT 0,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
     product_color_id INT NOT NULL,
     FOREIGN KEY(product_color_id) REFERENCES product_color(id),
@@ -185,20 +185,32 @@ BEGIN
 
 END;
 GO
+/*GET PRODUCT PRICE*/
+CREATE PROCEDURE getProductPrice(shopping_cart_products_id INT)
+BEGIN
+    
+    SET @prod_id = (SELECT product_id FROM shopping_cart_products WHERE id = shopping_cart_products_id);
+    SET @price_prod = (SELECT price FROM product WHERE id = (SELECT @prod_id));
+
+END;
+GO
 /*EDIT CART PRODUCT*/
 CREATE PROCEDURE editCartProduct(id INT,
-                                product_quantity INT,
+                                product_quant INT,
                                 product_color_id INT)
 BEGIN
+    
     SET @old_quantity = (SELECT product_quantity FROM shopping_cart_products WHERE id = id);
 
     SET @old_total_price = (SELECT product_total_price FROM shopping_cart_products WHERE id = id);
 
-    SET @new_price_total = product_quantity * (SELECT price FROM product WHERE id = (SELECT product_id FROM shopping_cart_products WHERE id = id));
+    CALL getProductPrice(id);
 
-    UPDATE shopping_cart_products SET product_quantity = product_quantity, product_color = product_color;
+    SET @new_price_total = product_quant * (SELECT @price_prod);
 
-    UPDATE shopping_cart SET total_items = (total_items - (SELECT @old_quantity)) + product_quantity, total_bill = (total_bill - (SELECT @old_total_price)) + (SELECT @new_price_total) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = id);
+    UPDATE shopping_cart_products SET product_quantity = product_quant, product_total_price =  (SELECT @new_price_total), product_color_id = product_color_id;
+
+    UPDATE shopping_cart SET total_items = (total_items - (SELECT @old_quantity)) + product_quant, total_bill = (total_bill - (SELECT @old_total_price)) + (SELECT @new_price_total) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = id);
 
 END;
 GO

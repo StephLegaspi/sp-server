@@ -47,7 +47,7 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = ( id ) => {
+/*exports.remove = ( id ) => {
   return new Promise((resolve, reject) => {
 
       const queryString = "CALL deleteCartProduct('" + id +"');";
@@ -60,6 +60,21 @@ exports.remove = ( id ) => {
           return reject(404);
         }
         return resolve(rows);
+      });
+    });
+};*/
+
+exports.edit = (id, product_quantity, product_color_id) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "CALL editCartProduct('" + id +"', '" + product_quantity +"', '" + product_color_id +"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
       });
     });
 };
