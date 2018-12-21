@@ -30,3 +30,19 @@ exports.getAll = () =>{
     });
   });
 };
+
+exports.getOne = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM shopping_cart_products WHERE shopping_cart_id = '" + id +"';"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+  });
+};

@@ -92,6 +92,7 @@ CREATE TABLE shopping_cart (
 );
 
 CREATE TABLE shopping_cart_products (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     product_quantity INT NOT NULL DEFAULT 1,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
     product_color_id INT NOT NULL,
