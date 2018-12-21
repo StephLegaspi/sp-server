@@ -46,3 +46,20 @@ exports.getOne = (id) =>{
     });
   });
 };
+
+exports.remove = ( id ) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "CALL deleteCartProduct('" + id +"');";
+
+      db.query(queryString, (err, rows) =>{
+        if (err){
+          return reject(500);
+        }
+        if (!rows.length){
+          return reject(404);
+        }
+        return resolve(rows);
+      });
+    });
+};
