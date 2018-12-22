@@ -148,10 +148,11 @@ DELIMITER GO
 /*INSERT PRODUCT*/
 CREATE PROCEDURE insertProduct(name varchar(64),
                                 description varchar(128),
-                                price INT)
+                                price INT,
+                                for_purchase BOOLEAN)
 BEGIN
-    INSERT INTO product(name, description, price)
-        values (name, description, price);
+    INSERT INTO product(name, description, price, for_purchase)
+        values (name, description, price, for_purchase);
 END;
 GO
 /*GET ALL PRODUCTS*/
@@ -218,6 +219,7 @@ GO
 
 DELIMITER ;
 
-call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6);
-call insertProduct("Heart-shaped Balloon", "Balloons perfect for any type of event.", 10);
-call insertProduct("Party Hat", "Party hats for kiddie party.", 15);
+call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6, true);
+call insertProduct("Heart-shaped Balloon", "Balloons perfect for any type of event.", 10, true);
+call insertProduct("Party Hat", "Party hats for kiddie party.", 15, true);
+call insertProduct("Table", "Table bla bla.", 200, false);
