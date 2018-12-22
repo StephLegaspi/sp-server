@@ -45,10 +45,10 @@ exports.create = (name, description, price, for_purchase) => {
     });
 };
 
-exports.edit = ( id, name, description, price ) => {
+exports.edit = ( id, name, description, price, for_purchase ) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE product SET name = '"+name+"', description = '"+description+"', price = '"+price+"' WHERE id = '"+id+"';";
+      const queryString = "UPDATE product SET name = '"+name+"', description = '"+description+"', price = '"+price+"', for_purchase = '"+for_purchase+"' WHERE id = '"+id+"';";
 
       db.query(queryString, (err, results) => {
         if (err) {
