@@ -97,6 +97,7 @@ CREATE TABLE shopping_cart_products (
     product_quantity INT NOT NULL DEFAULT 0,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
     product_color_id INT NOT NULL,
+    rental_duration INT,
     FOREIGN KEY(product_color_id) REFERENCES product_color(id),
 	shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
