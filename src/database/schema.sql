@@ -96,7 +96,6 @@ CREATE TABLE shopping_cart_products (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     product_quantity INT NOT NULL DEFAULT 0,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
-    rental_duration INT,
     product_color_id INT NOT NULL,
     FOREIGN KEY(product_color_id) REFERENCES product_color(id),
 	shopping_cart_id INT NOT NULL,
@@ -182,32 +181,74 @@ BEGIN
 END;
 GO
 /*GET PRODUCT PRICE*/
-CREATE PROCEDURE getProductPrice(shopping_cart_products_id INT)
+CREATE FUNCTION getProductPrice(shopping_cart_products_id INT) RETURNS FLOAT
 BEGIN
     
-    SET @prod_id = (SELECT product_id FROM shopping_cart_products WHERE id = shopping_cart_products_id);
-    SET @price_prod = (SELECT price FROM product WHERE id = (SELECT @prod_id));
+    DECLARE prod_id INT;
+    DECLARE price_prod FLOAT;
+
+    SET prod_id = (SELECT product_id FROM shopping_cart_products WHERE id = shopping_cart_products_id);
+    SET price_prod = (SELECT price FROM product WHERE id = prod_id);
+
+    RETURN price_prod;
+
+END;
+GO
+/*GET OLD QUANTITY*/
+CREATE FUNCTION getOldQuantity(shopping_cart_products_id INT) RETURNS INT
+BEGIN
+    
+    DECLARE old_quant INT;
+
+    SET old_quant = (SELECT product_quantity FROM shopping_cart_products WHERE id = shopping_cart_products_id);
+
+    RETURN old_quant;
+
+END;
+GO
+/*GET OLD TOTAL PRICE*/
+CREATE FUNCTION getOldTotalPrice(shopping_cart_products_id INT) RETURNS FLOAT
+BEGIN
+    
+    DECLARE old_total INT;
+
+    SET old_total = (SELECT product_total_price FROM shopping_cart_products WHERE id = shopping_cart_products_id);
+
+    RETURN old_total;
+
+END;
+GO
+/*GET NEW TOTAL PRICE*/
+CREATE FUNCTION getNewTotalPrice(prod_quant INT, id INT) RETURNS FLOAT
+BEGIN
+    
+    DECLARE new_price_total FLOAT;
+
+    SET new_price_total = prod_quant * (SELECT getProductPrice(id));
+
+    RETURN new_price_total;
 
 END;
 GO
 /*EDIT CART PRODUCT*/
-CREATE PROCEDURE editCartProduct(id INT,
+CREATE PROCEDURE editCartProduct(ID_s INT,
                                 product_quant INT,
                                 product_color_id INT)
 BEGIN
     
-    SET @old_quantity = (SELECT product_quantity FROM shopping_cart_products WHERE id = id);
+    /*SET @old_quantity = (SELECT product_quantity FROM shopping_cart_products WHERE id = id);
 
-    SET @old_total_price = (SELECT product_total_price FROM shopping_cart_products WHERE id = id);
+    SET @old_total_price = (SELECT product_total_price FROM shopping_cart_products WHERE id = id);*/
 
-    CALL getProductPrice(id);
+    
 
-    SET @new_price_total = product_quant * (SELECT @price_prod);
+    /*SET @new_price_total = product_quant * (SELECT getProductPrice(id));*/
+    UPDATE shopping_cart SET total_items = (total_items - (SELECT getOldQuantity(ID_s)))+product_quant, total_bill = (total_bill - (SELECT getOldTotalPrice(ID_s))) + (SELECT getNewTotalPrice(product_quant, ID_s)) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID_s);
 
-    UPDATE shopping_cart_products SET product_quantity = product_quant, product_total_price =  (SELECT @new_price_total), product_color_id = product_color_id;
+    UPDATE shopping_cart_products SET product_quantity = product_quant, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s)), product_color_id = product_color_id WHERE id = ID_s;
 
-    UPDATE shopping_cart SET total_items = (total_items - (SELECT @old_quantity)) + product_quant, total_bill = (total_bill - (SELECT @old_total_price)) + (SELECT @new_price_total) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = id);
 
+    
 END;
 GO
 
