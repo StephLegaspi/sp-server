@@ -171,12 +171,12 @@ BEGIN
 END;
 GO
 /*DELETE CART PRODUCT*/
-CREATE PROCEDURE deleteCartProduct(id INT)
+CREATE PROCEDURE deleteCartProduct(ID2 INT)
 BEGIN
     
-    UPDATE shopping_cart SET total_items = total_items - (SELECT product_quantity FROM shopping_cart_products WHERE id = id), total_bill = total_bill - (SELECT product_total_price FROM shopping_cart_products WHERE id = id) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = id);
+    UPDATE shopping_cart SET total_items = total_items - (SELECT product_quantity FROM shopping_cart_products WHERE id = ID2), total_bill = total_bill - (SELECT product_total_price FROM shopping_cart_products WHERE id = ID2) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID2);
 
-    DELETE FROM shopping_cart_products WHERE id = id;
+    DELETE FROM shopping_cart_products WHERE id = ID2;
 
 END;
 GO
