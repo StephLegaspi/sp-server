@@ -114,19 +114,12 @@ CREATE TABLE order_information (
     delivery_address VARCHAR(128),
     zip_code VARCHAR(16),
     status VARCHAR(16),
+    for_purchase BOOLEAN,
     order_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
-);
-
-CREATE TABLE order_information_rent (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    event_date DATE NOT NULL,
-    rental_duration INT,
-    order_id INT,
-    FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
 
 CREATE TABLE inventory (
