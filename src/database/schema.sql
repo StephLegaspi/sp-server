@@ -73,7 +73,8 @@ CREATE TABLE product (
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(64) NOT NULL,
 	description VARCHAR(128) NOT NULL,
-	price FLOAT NOT NULL
+	price FLOAT NOT NULL,
+    for_purchase BOOLEAN
 );
 
 CREATE TABLE product_color (
@@ -120,19 +121,19 @@ CREATE TABLE order_information (
     FOREIGN KEY(customer_id) REFERENCES customer(id)
 );
 
+CREATE TABLE order_information_rent (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    event_date DATE NOT NULL,
+    rental_duration INT,
+    order_id INT,
+    FOREIGN KEY(order_id) REFERENCES order_information(id)
+);
+
 CREATE TABLE inventory (
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	total_quantity INT NOT NULL,
 	remaining INT NOT NULL,
-	is_rented BOOLEAN,
-	is_purchased BOOLEAN,
-	date_purchased DATE,
-	date_rented DATE,
-	rental_address VARCHAR(128),
-    outofstock_date TIMESTAMP NULL,
-    renewal_date TIMESTAMP NULL,
-    added TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+	for_purchase BOOLEAN,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
