@@ -75,5 +75,37 @@ router.put('/products/:id', async (req, res) => {
  
 });
 
+router.put('/products/disable/:id', async (req, res) => {
+  const id = req.params.id;
+    
+    try {
+      const product = await controller.disable(id, 0);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully disabled product',
+        data: product
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.put('/products/enable/:id', async (req, res) => {
+  const id = req.params.id;
+    
+    try {
+      const product = await controller.enable(id, 1);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully enabled product',
+        data: product
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 
 module.exports = router;

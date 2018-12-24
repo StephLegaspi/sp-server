@@ -59,3 +59,33 @@ exports.edit = ( id, name, description, price, for_purchase ) => {
       });
     });
 };
+
+exports.disable = (id, display_product) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "UPDATE product SET display_product = '"+display_product+"' WHERE id = '"+id+"';";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
+      });
+    });
+};
+
+exports.enable = (id, display_product) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "UPDATE product SET display_product = '"+display_product+"' WHERE id = '"+id+"';";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
+      });
+    });
+};
