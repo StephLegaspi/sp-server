@@ -30,10 +30,10 @@ exports.getOne = (id) =>{
 	});
 };
 
-exports.create = (name, description, price, for_purchase, display_product) => {
+exports.create = (name, description, price, for_purchase, display_product, total_quantity,admin_id) => {
 	return new Promise((resolve, reject) => {
 
-      	const queryString = "INSERT INTO product(name, description, price, for_purchase, display_product) VALUES ('" + name+"', '" +description+"', '" +price+"', '" +for_purchase+"', '" +display_product+"');";
+      	const queryString = "CALL insertProduct('" + name +"', '" + description +"', '" + price+"', '" + for_purchase +"', '" + display_product+"', '" + total_quantity +"', '" + admin_id+"');";
 
 	    db.query(queryString, (err, results) => {
 	        if (err) {

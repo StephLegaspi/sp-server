@@ -41,9 +41,11 @@ router.post('/products', async (req, res) => {
   const price = req.body.price;
   const for_purchase = req.body.for_purchase;
   const display_product = req.body.display_product;
+  const total_quantity = req.body.total_quantity;
+  const admin_id = req.body.admin_id;
     
     try {
-      const product = await controller.create(name, description, price, for_purchase, display_product);
+      const product = await controller.create(name, description, price, for_purchase, display_product, total_quantity, admin_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product',
@@ -87,8 +89,7 @@ router.put('/products/disable/:id', async (req, res) => {
       });
     } catch (status) {
       res.status(status).json({ status });
-    }
- 
+    } 
 });
 
 router.put('/products/enable/:id', async (req, res) => {

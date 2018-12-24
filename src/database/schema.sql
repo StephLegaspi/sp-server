@@ -140,17 +140,6 @@ CREATE TABLE order_information (
 DROP PROCEDURE IF EXISTS insert_product;
 DELIMITER GO
 
-/*INSERT PRODUCT*/
-CREATE PROCEDURE insertProduct(name varchar(64),
-                                description varchar(128),
-                                price INT,
-                                for_purchase BOOLEAN,
-                                display_product BOOLEAN)
-BEGIN
-    INSERT INTO product(name, description, price, for_purchase, display_product)
-        values (name, description, price, for_purchase, display_product);
-END;
-GO
 /*GET ALL PRODUCTS*/
 CREATE PROCEDURE getAllProducts()
 BEGIN
@@ -265,9 +254,25 @@ BEGIN
 END;
 GO
 
+/*INSERT PRODUCT*/
+CREATE PROCEDURE insertProduct(name1 varchar(64),
+                                description1 varchar(128),
+                                price1 INT,
+                                for_purchase1 BOOLEAN,
+                                display_product1 BOOLEAN,
+                                total_quantity1 INT,
+                                admin_id1 INT)
+BEGIN
+    INSERT INTO product(name, description, price, for_purchase, display_product)
+        values (name1, description1, price1, for_purchase1, display_product1);
+
+    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, (SELECT id FROM product WHERE name=name1 AND description=description1 AND price=price1 AND for_purchase=for_purchase1 AND display_product=display_product1), admin_id1);
+END;
+GO
+
 DELIMITER ;
 
-call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6, true, true);
-call insertProduct("Heart-shaped Balloon", "Balloons perfect for any type of event.", 10, true, true);
-call insertProduct("Party Hat", "Party hats for kiddie party.", 15, true, false);
-call insertProduct("Table", "Table bla bla.", 200, false, false);
+/*call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6, true, true, 10, 1);
+call insertProduct("Heart-shaped Balloon", "Balloons perfect for any type of event.", 10, true, true, 20, 1);
+call insertProduct("Party Hat", "Party hats for kiddie party.", 15, true, false, 30, 1);
+call insertProduct("Table", "Table bla bla.", 200, false, false, 40, 1);*/
