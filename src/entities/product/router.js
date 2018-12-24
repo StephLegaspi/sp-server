@@ -40,9 +40,10 @@ router.post('/products', async (req, res) => {
   const description = req.body.description;
   const price = req.body.price;
   const for_purchase = req.body.for_purchase;
+  const display_product = req.body.display_product;
     
     try {
-      const product = await controller.create(name, description, price, for_purchase);
+      const product = await controller.create(name, description, price, for_purchase, display_product);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product',

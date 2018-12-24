@@ -8,7 +8,7 @@ GRANT ALL PRIVILEGES ON transactionserver.* TO 'transactionserver'@'localhost';
 GRANT EXECUTE ON transactionserver.* TO 'transactionserver'@'localhost';
 
 USE transactionserver;
-SET GLOBAL sql_mode = '';
+/*SET GLOBAL sql_mode = '';*/
 
 CREATE TABLE user (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -75,7 +75,18 @@ CREATE TABLE product (
 	name VARCHAR(64) NOT NULL,
 	description VARCHAR(128) NOT NULL,
 	price FLOAT NOT NULL,
-    for_purchase BOOLEAN
+    for_purchase BOOLEAN,
+    display_product BOOLEAN
+);
+
+CREATE TABLE inventory (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    total_quantity INT NOT NULL,
+    remaining INT NOT NULL,
+    product_id INT NOT NULL,
+    FOREIGN KEY(product_id) REFERENCES product(id),
+    admin_id INT,
+    FOREIGN KEY(admin_id) REFERENCES administrator(id)
 );
 
 CREATE TABLE product_color (
@@ -124,17 +135,6 @@ CREATE TABLE order_information (
     FOREIGN KEY(customer_id) REFERENCES customer(id)
 );
 
-CREATE TABLE inventory (
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	total_quantity INT NOT NULL,
-	remaining INT NOT NULL,
-	for_purchase BOOLEAN,
-    product_id INT NOT NULL,
-    FOREIGN KEY(product_id) REFERENCES product(id),
-    admin_id INT,
-    FOREIGN KEY(admin_id) REFERENCES administrator(id)
-);
-
 
 /*   PROCEDURES   */
 DROP PROCEDURE IF EXISTS insert_product;
@@ -144,10 +144,11 @@ DELIMITER GO
 CREATE PROCEDURE insertProduct(name varchar(64),
                                 description varchar(128),
                                 price INT,
-                                for_purchase BOOLEAN)
+                                for_purchase BOOLEAN,
+                                display_product BOOLEAN)
 BEGIN
-    INSERT INTO product(name, description, price, for_purchase)
-        values (name, description, price, for_purchase);
+    INSERT INTO product(name, description, price, for_purchase, display_product)
+        values (name, description, price, for_purchase, display_product);
 END;
 GO
 /*GET ALL PRODUCTS*/
@@ -266,7 +267,7 @@ GO
 
 DELIMITER ;
 
-call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6, true);
-call insertProduct("Heart-shaped Balloon", "Balloons perfect for any type of event.", 10, true);
-call insertProduct("Party Hat", "Party hats for kiddie party.", 15, true);
-call insertProduct("Table", "Table bla bla.", 200, false);
+call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6, true, true);
+call insertProduct("Heart-shaped Balloon", "Balloons perfect for any type of event.", 10, true, true);
+call insertProduct("Party Hat", "Party hats for kiddie party.", 15, true, false);
+call insertProduct("Table", "Table bla bla.", 200, false, false);

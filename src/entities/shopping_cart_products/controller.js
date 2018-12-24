@@ -2,6 +2,9 @@ const db = require('../../database');
 
 exports.create = (product_quantity, rental_duration, product_color_id, shopping_cart_id, product_id) => {
 	return new Promise((resolve, reject) => {
+      if (rental_duration == '') {
+        rental_duration = 0;
+      }
 
       const queryString = "CALL insertCartProduct('" +product_quantity+"', '" +rental_duration+"', '" +product_color_id+"', '"+shopping_cart_id+"', '" +product_id+"');";
 
