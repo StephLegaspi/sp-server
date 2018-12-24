@@ -83,6 +83,7 @@ CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
+    renewal_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -266,10 +267,10 @@ BEGIN
     INSERT INTO product(name, description, price, for_purchase, display_product)
         values (name1, description1, price1, for_purchase1, display_product1);
 
-    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, (SELECT id FROM product WHERE name=name1 AND description=description1 AND price=price1 AND for_purchase=for_purchase1 AND display_product=display_product1), admin_id1);
+    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, LAST_INSERT_ID(), admin_id1);
 END;
 GO
-
+/*(SELECT id FROM product WHERE name=name1 AND description=description1 AND price=price1 AND for_purchase=for_purchase1 AND display_product=display_product1)*/
 DELIMITER ;
 
 /*call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6, true, true, 10, 1);
