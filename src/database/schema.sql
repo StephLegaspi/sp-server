@@ -254,8 +254,7 @@ BEGIN
     
 END;
 GO
-
-/*INSERT PRODUCT*/
+/*INSERT PRODUCT AND INVENTORY*/
 CREATE PROCEDURE insertProduct(name1 varchar(64),
                                 description1 varchar(128),
                                 price1 INT,
@@ -271,9 +270,15 @@ BEGIN
 END;
 GO
 /*(SELECT id FROM product WHERE name=name1 AND description=description1 AND price=price1 AND for_purchase=for_purchase1 AND display_product=display_product1)*/
+
+/*DELETE PRODUCT AND INVENTORY*/
+CREATE PROCEDURE deleteProduct(id_2 INT)
+BEGIN
+
+    DELETE FROM inventory WHERE product_id = id_2;
+    DELETE FROM product WHERE id = id_2;
+END;
+GO
 DELIMITER ;
 
-/*call insertProduct("Circle-shaped Balloon", "Balloons perfect for any type of event.", 6, true, true, 10, 1);
-call insertProduct("Heart-shaped Balloon", "Balloons perfect for any type of event.", 10, true, true, 20, 1);
-call insertProduct("Party Hat", "Party hats for kiddie party.", 15, true, false, 30, 1);
-call insertProduct("Table", "Table bla bla.", 200, false, false, 40, 1);*/
+

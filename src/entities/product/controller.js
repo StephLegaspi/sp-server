@@ -2,7 +2,7 @@ const db = require('../../database');
 
 exports.getAll = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = ` call getAllProducts(); `;
+	    const queryString = "SELECT * FROM product;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -87,5 +87,24 @@ exports.enable = (id, display_product) => {
         }
         return resolve(results);
       });
+    });
+};
+
+exports.remove = (id) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "CALL deleteProduct('" + id +"');";
+
+      	db.query(queryString, (err, results) => {
+	      if (err) {
+	        console.log(err);
+	        return reject(500);
+	      }
+
+	      if (!results.affectedRows) {
+	        return reject(404);
+	      }
+	      return resolve(id);
+	    });
     });
 };

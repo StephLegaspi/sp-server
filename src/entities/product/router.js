@@ -108,5 +108,18 @@ router.put('/products/enable/:id', async (req, res) => {
  
 });
 
+router.delete('/products/:id', async (req, res) => {
+  try {
+    const product = await controller.remove(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully deleted product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 
 module.exports = router;
