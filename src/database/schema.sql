@@ -138,13 +138,14 @@ CREATE TABLE order_information (
 
 CREATE TABLE order_rental (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    product_id INT NOT NULL,
-    FOREIGN KEY(product_id) REFERENCES product(id),
-    product_quantity INT,
+    product_name VARCHAR(64) NOT NULL,
+    product_quantity INT NOT NULL,
     order_timestamp TIMESTAMP,
     rental_duration INT,
-    delivery_address VARCHAR(128),
-    order_id INT,
+    delivery_address VARCHAR(128) NOT NULL,
+    product_id INT NOT NULL,
+    FOREIGN KEY(product_id) REFERENCES product(id),
+    order_id INT NOT NULL,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
 
@@ -297,38 +298,14 @@ CREATE PROCEDURE insertOrder(consignee_first_name VARCHAR(64),
                             consignee_last_name VARCHAR(64), 
                             consignee_email VARCHAR(64), 
                             consignee_contact_number VARCHAR(11), 
-                            delivery_address2 VARCHAR(128), 
+                            delivery_address VARCHAR(128), 
                             zip_code VARCHAR(16), 
                             status VARCHAR(16), 
                             for_purchase BOOLEAN, 
-                            shopping_cart_id2 INT, 
+                            shopping_cart_id INT, 
                             customer_id INT)
 BEGIN
-
-    DECLARE cart_prod_count INT DEFAULT 0;
-    DECLARE ctr INT DEFAULT 0;
-    DECLARE id_order INT;
-
-    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status,for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, status, for_purchase, shopping_cart_id2, customer_id);
-
-    SET id_order = LAST_INSERT_ID();
-    SET cart_prod_count = (SELECT count(*) FROM shopping_cart_products);
-    SET ctr = 0;
-
-    /*SELECT product_id AS PROD_ID FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2;*/
-    IF for_purchase = 0 THEN
-        WHILE ctr < cart_prod_count DO
-            /*SET id_prod = SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2;*/
-
-            INSERT INTO order_rental(product_id, product_quantity, rental_duration) SELECT product_id, product_quantity, rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
-
-            UPDATE order_rental SET delivery_address=delivery_address2, order_id= id_order WHERE id = LAST_INSERT_ID();
-
-            SET ctr = ctr + 1;
-        END WHILE;
-    END IF;
-   
-
+    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status,for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status, for_purchase, shopping_cart_id, customer_id);
 END;
 GO
 
