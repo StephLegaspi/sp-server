@@ -120,12 +120,12 @@ CREATE TABLE shopping_cart_products (
 
 CREATE TABLE order_information (
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	consignee_first_name VARCHAR(64),
+	consignee_first_name VARCHAR(64) NOT NULL,
     consignee_middle_name VARCHAR(64),
-    consignee_last_name VARCHAR(64),
-    consignee_email VARCHAR(64),
-    consignee_contact_number VARCHAR(11),
-    delivery_address VARCHAR(128),
+    consignee_last_name VARCHAR(64) NOT NULL,
+    consignee_email VARCHAR(64) NOT NULL,
+    consignee_contact_number VARCHAR(11) NOT NULL,
+    delivery_address VARCHAR(128) NOT NULL,
     zip_code VARCHAR(16),
     status VARCHAR(16),
     for_purchase BOOLEAN,
@@ -134,6 +134,19 @@ CREATE TABLE order_information (
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
+);
+
+CREATE TABLE order_rental (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    product_name VARCHAR(64) NOT NULL,
+    product_quantity INT NOT NULL,
+    order_timestamp TIMESTAMP,
+    rental_duration INT,
+    delivery_address VARCHAR(128) NOT NULL,
+    product_id INT NOT NULL,
+    FOREIGN KEY(product_id) REFERENCES product(id),
+    order_id INT NOT NULL,
+    FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
 
 
@@ -279,6 +292,21 @@ BEGIN
     DELETE FROM product WHERE id = id_2;
 END;
 GO
+/*INSERT ORDER INFO*/
+CREATE PROCEDURE insertOrder(consignee_first_name VARCHAR(64), 
+                            consignee_middle_name VARCHAR(64), 
+                            consignee_last_name VARCHAR(64), 
+                            consignee_email VARCHAR(64), 
+                            consignee_contact_number VARCHAR(11), 
+                            delivery_address VARCHAR(128), 
+                            zip_code VARCHAR(16), 
+                            status VARCHAR(16), 
+                            for_purchase BOOLEAN, 
+                            shopping_cart_id INT, 
+                            customer_id INT)
+BEGIN
+    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status,for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status, for_purchase, shopping_cart_id, customer_id);
+END;
+GO
+
 DELIMITER ;
-
-

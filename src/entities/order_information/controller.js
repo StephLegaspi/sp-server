@@ -3,7 +3,7 @@ const db = require('../../database');
 exports.create = (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status, for_purchase, shopping_cart_id, customer_id) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status,for_purchase, shopping_cart_id, customer_id) VALUES ('" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +status+"', '" +for_purchase+"', '" +shopping_cart_id+"', '" +customer_id+"');";
+      const queryString = "CALL insertOrder('" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +status+"', '" +for_purchase+"', '" +shopping_cart_id+"', '" +customer_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
