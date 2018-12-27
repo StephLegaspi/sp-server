@@ -127,7 +127,7 @@ CREATE TABLE order_information (
     consignee_contact_number VARCHAR(11) NOT NULL,
     delivery_address VARCHAR(128) NOT NULL,
     zip_code VARCHAR(16),
-    status VARCHAR(16),
+    status VARCHAR(16) DEFAULT "Pending",
     for_purchase BOOLEAN,
     order_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     shopping_cart_id INT NOT NULL,
@@ -144,7 +144,7 @@ CREATE TABLE order_rental (
     order_timestamp TIMESTAMP,
     rental_duration INT,
     delivery_address VARCHAR(128),
-    delivery_status VARCHAR(16),
+    delivery_status VARCHAR(16) DEFAULT "Pending",
     rental_status VARCHAR(16) DEFAULT "Pending",
     order_id INT,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
@@ -300,8 +300,7 @@ CREATE PROCEDURE insertOrder(consignee_first_name VARCHAR(64),
                             consignee_email VARCHAR(64), 
                             consignee_contact_number VARCHAR(11), 
                             delivery_address2 VARCHAR(128), 
-                            zip_code VARCHAR(16), 
-                            status VARCHAR(16), 
+                            zip_code VARCHAR(16),  
                             for_purchase BOOLEAN, 
                             shopping_cart_id2 INT, 
                             customer_id INT)
@@ -311,7 +310,7 @@ BEGIN
     DECLARE ctr INT DEFAULT 0;
     DECLARE id_order INT;
 
-    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status,for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, status, for_purchase, shopping_cart_id2, customer_id);
+    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, for_purchase, shopping_cart_id2, customer_id);
 
     SET id_order = LAST_INSERT_ID();
     SET cart_prod_count = (SELECT count(*) FROM shopping_cart_products);
@@ -322,7 +321,7 @@ BEGIN
 
             INSERT INTO order_rental(product_id, product_quantity, rental_duration) SELECT product_id, product_quantity, rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
 
-            UPDATE order_rental SET delivery_address=delivery_address2, delivery_status=status, order_id= id_order WHERE id = LAST_INSERT_ID();
+            UPDATE order_rental SET delivery_address=delivery_address2, order_id= id_order WHERE id = LAST_INSERT_ID();
 
             SET ctr = ctr + 1;
         END WHILE;
