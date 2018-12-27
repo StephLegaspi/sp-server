@@ -70,7 +70,7 @@ exports.remove = (id) => {
 exports.edit = (id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE order_information SET status = '"+status+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editOrder('"+id+"', '"+status+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

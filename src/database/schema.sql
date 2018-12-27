@@ -330,5 +330,14 @@ BEGIN
 
 END;
 GO
+/*EDIT ORDER_INFO*/
+CREATE PROCEDURE editOrder(id_ord INT,
+                        stat_ord VARCHAR(16))
+BEGIN
+
+    UPDATE order_information SET status=stat_ord WHERE id=id_ord;
+    UPDATE order_rental SET delivery_status=stat_ord WHERE order_id=id_ord;
+END;
+GO
 
 DELIMITER ;
