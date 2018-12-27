@@ -35,18 +35,18 @@ CREATE TABLE customer (
 );
 
 CREATE TABLE food_menu (
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	description VARCHAR(256)
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(256)
 );
 
 CREATE TABLE event_motif (
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	description VARCHAR(256)
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    description VARCHAR(256)
 );
 
 CREATE TABLE package (
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	inclusion VARCHAR(256)
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    inclusion VARCHAR(256)
 );
 
 CREATE TABLE request_information (
@@ -71,10 +71,10 @@ CREATE TABLE request_information (
 );
 
 CREATE TABLE product (
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	name VARCHAR(64) NOT NULL,
-	description VARCHAR(128) NOT NULL,
-	price FLOAT NOT NULL,
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(64) NOT NULL,
+    description VARCHAR(128) NOT NULL,
+    price FLOAT NOT NULL,
     for_purchase BOOLEAN,
     display_product BOOLEAN
 );
@@ -92,16 +92,16 @@ CREATE TABLE inventory (
 
 CREATE TABLE product_color (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	product_color VARCHAR(64) NOT NULL,
-	product_id INT NOT NULL,
+    product_color VARCHAR(64) NOT NULL,
+    product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id)
 );
 
 CREATE TABLE shopping_cart (
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	total_items INT NOT NULL DEFAULT 0,
-	total_bill FLOAT NOT NULL DEFAULT 0.0,
-	customer_id INT,
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    total_items INT NOT NULL DEFAULT 0,
+    total_bill FLOAT NOT NULL DEFAULT 0.0,
+    customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
 );
 
@@ -112,15 +112,15 @@ CREATE TABLE shopping_cart_products (
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
     product_color_id INT NOT NULL,
     FOREIGN KEY(product_color_id) REFERENCES product_color(id),
-	shopping_cart_id INT NOT NULL,
+    shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id)
 );
 
 CREATE TABLE order_information (
-	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	consignee_first_name VARCHAR(64) NOT NULL,
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    consignee_first_name VARCHAR(64) NOT NULL,
     consignee_middle_name VARCHAR(64),
     consignee_last_name VARCHAR(64) NOT NULL,
     consignee_email VARCHAR(64) NOT NULL,
@@ -138,14 +138,13 @@ CREATE TABLE order_information (
 
 CREATE TABLE order_rental (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    product_name VARCHAR(64) NOT NULL,
-    product_quantity INT NOT NULL,
-    order_timestamp TIMESTAMP,
-    rental_duration INT,
-    delivery_address VARCHAR(128) NOT NULL,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
-    order_id INT NOT NULL,
+    product_quantity INT,
+    order_timestamp TIMESTAMP,
+    rental_duration INT,
+    delivery_address VARCHAR(128),
+    order_id INT,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
 
@@ -298,14 +297,36 @@ CREATE PROCEDURE insertOrder(consignee_first_name VARCHAR(64),
                             consignee_last_name VARCHAR(64), 
                             consignee_email VARCHAR(64), 
                             consignee_contact_number VARCHAR(11), 
-                            delivery_address VARCHAR(128), 
+                            delivery_address2 VARCHAR(128), 
                             zip_code VARCHAR(16), 
                             status VARCHAR(16), 
                             for_purchase BOOLEAN, 
-                            shopping_cart_id INT, 
+                            shopping_cart_id2 INT, 
                             customer_id INT)
 BEGIN
-    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status,for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status, for_purchase, shopping_cart_id, customer_id);
+
+    DECLARE cart_prod_count INT DEFAULT 0;
+    DECLARE ctr INT DEFAULT 0;
+    DECLARE id_order INT;
+
+    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, status,for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, status, for_purchase, shopping_cart_id2, customer_id);
+
+    SET id_order = LAST_INSERT_ID();
+    SET cart_prod_count = (SELECT count(*) FROM shopping_cart_products);
+    SET ctr = 0;
+
+    IF for_purchase = 0 THEN
+        WHILE ctr < cart_prod_count DO
+
+            INSERT INTO order_rental(product_id, product_quantity, rental_duration) SELECT product_id, product_quantity, rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
+
+            UPDATE order_rental SET delivery_address=delivery_address2, order_id= id_order WHERE id = LAST_INSERT_ID();
+
+            SET ctr = ctr + 1;
+        END WHILE;
+    END IF;
+   
+
 END;
 GO
 
