@@ -144,6 +144,8 @@ CREATE TABLE order_rental (
     order_timestamp TIMESTAMP,
     rental_duration INT,
     delivery_address VARCHAR(128),
+    delivery_status VARCHAR(16),
+    rental_status VARCHAR(16) DEFAULT "Pending",
     order_id INT,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
@@ -320,7 +322,7 @@ BEGIN
 
             INSERT INTO order_rental(product_id, product_quantity, rental_duration) SELECT product_id, product_quantity, rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
 
-            UPDATE order_rental SET delivery_address=delivery_address2, order_id= id_order WHERE id = LAST_INSERT_ID();
+            UPDATE order_rental SET delivery_address=delivery_address2, delivery_status=status, order_id= id_order WHERE id = LAST_INSERT_ID();
 
             SET ctr = ctr + 1;
         END WHILE;
