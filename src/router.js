@@ -14,6 +14,7 @@ const shopping_cartRouter = require('./entities/shopping_cart/router');
 const cart_productsRouter = require('./entities/shopping_cart_products/router');
 const order_infoRouter = require('./entities/order_information/router');
 const inventoryRouter = require('./entities/inventory/router');
+const order_rentalRouter = require('./entities/order_rental/router');
 
 router.use(productRouter);
 router.use(userRouter);
@@ -28,5 +29,6 @@ router.use(shopping_cartRouter);
 router.use(cart_productsRouter);
 router.use(order_infoRouter);
 router.use(inventoryRouter);
+router.use(order_rentalRouter);
 
 module.exports = router;
