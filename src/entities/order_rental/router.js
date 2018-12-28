@@ -33,4 +33,21 @@ router.get('/order_rentals/:id', async (req, res) => {
   }
 });
 
+router.put('/order_rentals/:id', async (req, res) => {
+  const id = req.params.id;
+  const status = req.body.status;
+
+    try {
+      const order_rental = await controller.edit(id, status);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited order_rental',
+        data: order_rental
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 module.exports = router;

@@ -145,7 +145,8 @@ CREATE TABLE order_rental (
     rental_duration INT,
     delivery_address VARCHAR(128),
     delivery_status VARCHAR(16) DEFAULT "Pending",
-    rental_status VARCHAR(16) DEFAULT "Pending",
+    rental_status VARCHAR(16) DEFAULT "On-rent",
+    returned_timestamp DATE,
     order_id INT,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
