@@ -50,4 +50,17 @@ router.put('/order_rentals/:id', async (req, res) => {
  
 });
 
+router.delete('/order_rentals/:id', async (req, res) => {
+  try {
+    const order_rental = await controller.remove(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully deleted order_rental',
+      data: order_rental
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 module.exports = router;

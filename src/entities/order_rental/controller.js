@@ -47,3 +47,22 @@ exports.edit = (id, status) => {
       });
     });
 };
+
+exports.remove = (id) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "DELETE FROM order_rental WHERE id = '" + id +"';";
+
+        db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+        return resolve(id);
+      });
+    });
+};
