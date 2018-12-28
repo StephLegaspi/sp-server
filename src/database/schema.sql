@@ -291,7 +291,9 @@ CREATE PROCEDURE deleteProduct(id_2 INT)
 BEGIN
 
     DELETE FROM inventory WHERE product_id = id_2;
+    DELETE FROM product_color WHERE product_id = id_2;
     DELETE FROM product WHERE id = id_2;
+
 END;
 GO
 /*INSERT ORDER INFO*/
