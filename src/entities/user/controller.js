@@ -1,5 +1,8 @@
 const db = require('../../database');
 
+const bcrypt    = require('bcrypt');
+const salt = bcrypt.genSaltSync(10);
+
 
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
@@ -33,16 +36,17 @@ exports.getOne = (id) =>{
 
 exports.create = ( first_name, middle_name, last_name, email_address, password, contact_number ) => {
 	return new Promise((resolve, reject) => {
+		bcrypt.hash(password, salt, function(err, hash) {
+	    	const queryString = "INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number) VALUES ('" + first_name+"', '" +middle_name+"', '" +last_name+"', '" +email_address+"', '" +hash+"', '" +contact_number+"');";
 
-      const queryString = "INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number) VALUES ('" + first_name+"', '" +middle_name+"', '" +last_name+"', '" +email_address+"', '" +password+"', '" +contact_number+"');";
-
-      db.query(queryString, (err, results) => {
-        if (err) {
-          console.log(err);
-          return reject(500);
-        }
-        return resolve(results);
-      });
+	    	db.query(queryString, (err, results) => {
+		        if (err) {
+		          console.log(err);
+		          return reject(500);
+		        }
+		        return resolve(results);
+		    });
+		});
     });
 };
 
