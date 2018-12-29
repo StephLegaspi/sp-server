@@ -6,12 +6,12 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-//const passport          = require('passport');
-//require('../../passport');
+const passport          = require('passport');
+require('../../passport')(passport);
 
-//const requireAuth = passport.authenticate('jwt', {session: false});
+const requireAuth = passport.authenticate('jwt', {session: false});
 
-router.get('/users', async (req, res) => {
+router.get('/users', requireAuth, async (req, res) => {
     try {
       const users = await controller.getAll();
       res.status(200).json({

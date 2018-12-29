@@ -86,11 +86,12 @@ exports.login = ( email, password ) => {
         	return reject(401);
         } 
         
-        let user = rows[0];
+        let user = rows[0].id;
         /*jwt.sign({user}, 'secretkey', { expiresIn: '10000s' }, (err, token) => {
 		    return resolve("Bearer " + token);
 		});*/
-		const token = "Bearer " + jwt.sign({user}, 'secretkey', {'expiresIn': '10000s'});
+		//console.log(user);
+		const token = "Bearer " + jwt.sign({'user_id': user}, 'secretkey', {'expiresIn': '10000s'});
 		return resolve(token);
       });
     });
