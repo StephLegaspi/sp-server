@@ -6,19 +6,23 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+//const passport          = require('passport');
+//require('../../passport');
+
+//const requireAuth = passport.authenticate('jwt', {session: false});
 
 router.get('/users', async (req, res) => {
-  try {
-    const users = await controller.getAll();
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched users',
-      data: users
-    });
-  } catch (status) {
-    let message = '';
-    res.status(status).json({ status });
-  }
+    try {
+      const users = await controller.getAll();
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully fetched users',
+        data: users
+      });
+    } catch (status) {
+      let message = '';
+      res.status(status).json({ status });
+    }
 });
 
 router.get('/users/:id', async (req, res) => {
@@ -69,6 +73,23 @@ router.put('/users/:id', async (req, res) => {
       res.status(200).json({
         status: 200,
         message: 'Successfully edited user',
+        data: user
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.post('/login', async (req, res) => {
+  const email_address = req.body.email_address;
+  const password = req.body.password;
+    
+    try {
+      const user = await controller.login(email_address, password);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully logged in',
         data: user
       });
     } catch (status) {

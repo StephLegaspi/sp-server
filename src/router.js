@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
+//const passport          = require('passport');
+//require('./passport');
+
 const productRouter = require('./entities/product/router');
 const userRouter = require('./entities/user/router');
 const customerRouter = require('./entities/customer/router');
@@ -16,9 +19,11 @@ const order_infoRouter = require('./entities/order_information/router');
 const inventoryRouter = require('./entities/inventory/router');
 const order_rentalRouter = require('./entities/order_rental/router');
 
+//const authRouter = require('./entities/auth/router_auth');
+
 router.use(productRouter);
 router.use(userRouter);
-router.use(customerRouter);
+router.use( customerRouter);
 router.use(product_colorRouter);
 router.use(administratorRouter);
 router.use(event_motifRouter);
@@ -30,5 +35,7 @@ router.use(cart_productsRouter);
 router.use(order_infoRouter);
 router.use(inventoryRouter);
 router.use(order_rentalRouter);
+
+//router.use(authRouter);
 
 module.exports = router;

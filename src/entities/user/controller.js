@@ -2,7 +2,7 @@ const db = require('../../database');
 
 const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
-
+const jwt = require('jsonwebtoken');
 
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
@@ -64,4 +64,35 @@ exports.edit = ( id, first_name, middle_name, last_name, email_address, password
         return resolve(results);
       });
     });
+};
+
+exports.login = ( email, password ) => {
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * from user where email_address = '" + email+"'";
+    db.query(queryString, email, (err, rows) => {
+      if (err) {
+        console.log(err);
+        return reject(500);
+      }
+
+      if (!rows.length) {
+        return reject(404);
+      }
+
+      bcrypt.compare(password, rows[0].password, (error, isMatch) => {
+        if (error) return reject(500);
+        else if (!isMatch){
+        	console.log(rows[0].password);
+        	return reject(401);
+        } 
+        
+        let user = rows[0];
+        /*jwt.sign({user}, 'secretkey', { expiresIn: '10000s' }, (err, token) => {
+		    return resolve("Bearer " + token);
+		});*/
+		const token = "Bearer " + jwt.sign({user}, 'secretkey', {'expiresIn': '10000s'});
+		return resolve(token);
+      });
+    });
+  });
 };

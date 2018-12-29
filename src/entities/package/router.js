@@ -6,6 +6,10 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+//const passport          = require('passport');
+//require('../../passport')(passport);
+
+//const requireAuth = passport.authenticate('jwt', {session: false});
 
 router.post('/packages', async (req, res) => {
   const inclusion = req.body.inclusion;
