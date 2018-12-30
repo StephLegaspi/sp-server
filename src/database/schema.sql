@@ -285,29 +285,78 @@ BEGIN
 END;
 GO
 /*INSERT PRODUCT AND INVENTORY*/
-CREATE PROCEDURE insertProduct(name1 varchar(64),
+CREATE PROCEDURE insertProduct(user_id1 INT,
+                                name1 varchar(64),
                                 description1 varchar(128),
-                                price1 INT,
+                                price1 FLOAT,
                                 for_purchase1 BOOLEAN,
                                 display_product1 BOOLEAN,
                                 total_quantity1 INT,
                                 admin_id1 INT)
 BEGIN
+    DECLARE prod_ID1 INT;
+
     INSERT INTO product(name, description, price, for_purchase, display_product)
         values (name1, description1, price1, for_purchase1, display_product1);
 
-    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, LAST_INSERT_ID(), admin_id1);
+    SET prod_ID1 = LAST_INSERT_ID();
+    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, admin_id1);
+
+    CALL insertLog(concat('Added product: ', prod_ID1), user_id1);
 END;
 GO
-/*(SELECT id FROM product WHERE name=name1 AND description=description1 AND price=price1 AND for_purchase=for_purchase1 AND display_product=display_product1)*/
-
 /*DELETE PRODUCT AND INVENTORY*/
-CREATE PROCEDURE deleteProduct(id_2 INT)
+CREATE PROCEDURE deleteProduct(user_id2 INT, id_2 INT)
 BEGIN
 
     DELETE FROM inventory WHERE product_id = id_2;
     DELETE FROM product_color WHERE product_id = id_2;
     DELETE FROM product WHERE id = id_2;
+
+    CALL insertLog(concat('Deleted product: ', id_2), user_id2);
+
+END;
+GO
+/*UPDATE PRODUCT AND INVENTORY*/
+CREATE PROCEDURE updateProduct(user_id2 INT,
+                            id2 INT, 
+                            name2 VARCHAR(64), 
+                            description2 VARCHAR(128), 
+                            price2 FLOAT, 
+                            for_purchase2 BOOLEAN,
+                            display_product2 BOOLEAN,
+                            total_quantity2 INT)
+BEGIN
+
+    UPDATE product SET name = name2, description = description2, price = price2, for_purchase = for_purchase2, display_product = display_product2 WHERE id = id2;
+
+    UPDATE inventory SET total_quantity = total_quantity2, remaining = total_quantity2 WHERE product_id = id2;
+
+    CALL insertLog(concat('Edited product: ', id2), user_id2);
+
+END;
+GO
+/*DISABLE PRODUCT*/
+CREATE PROCEDURE disableProduct(user_id2 INT,
+                            id2 INT, 
+                            display_product2 BOOLEAN)
+BEGIN
+
+    UPDATE product SET display_product = display_product2 WHERE id = id2;
+
+    CALL insertLog(concat('Disabled product: ', id2), user_id2);
+
+END;
+GO
+/*ENABLE PRODUCT*/
+CREATE PROCEDURE enableProduct(user_id2 INT,
+                            id2 INT, 
+                            display_product2 BOOLEAN)
+BEGIN
+
+    UPDATE product SET display_product = display_product2 WHERE id = id2;
+
+    CALL insertLog(concat('Enabled product: ', id2), user_id2);
 
 END;
 GO
