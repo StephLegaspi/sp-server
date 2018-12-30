@@ -21,14 +21,14 @@ router.use(authenticationRouter);
 
 // Middleware for auth
 router.use((req, res, next) => {
-  //console.log(req.session.user);
+  //console.log(req.session.user.id);
   if (req.session.user) {
     return next();
   }
 
   res.status(401).json({
     status: 401,
-    message: 'Not logged in'
+    message: 'You are currently not logged in.'
   });
 });
 

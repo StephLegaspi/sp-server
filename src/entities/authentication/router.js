@@ -35,12 +35,6 @@ router.post('/auth/login', async (req, res) => {
     	const user = await controller.login(email_address, password);
 
    		req.session.user = user;
-	    if (req.session.user) {
-	        //var firstName = req.session.user.first_name.split(' ');
-	       req.session.user['first_name'] = req.session.user.first_name;
-	       //console.log(req.session.user['first_name']);
-		} 
-
     	res.status(200).json({
 	        status: 200,
 	        message: 'Successfully logged in',

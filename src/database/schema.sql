@@ -152,10 +152,24 @@ CREATE TABLE order_rental (
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
 
+CREATE TABLE log_record (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    log_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    action VARCHAR(256) NOT NULL,
+    user_id INT NOT NULL
+);
+
 
 /*   PROCEDURES   */
-DROP PROCEDURE IF EXISTS insert_product;
 DELIMITER GO
+
+/*INSERT LOG RECORD*/
+CREATE PROCEDURE insertLog(action VARCHAR(256),
+                        user_id INT)
+BEGIN
+    INSERT INTO log_record(action, user_id) VALUES(action, user_id);
+END;
+GO
 
 /*GET ALL PRODUCTS*/
 CREATE PROCEDURE getAllProducts()
