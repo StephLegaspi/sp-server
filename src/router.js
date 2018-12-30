@@ -47,6 +47,5 @@ router.use(cart_productsRouter);
 router.use(order_infoRouter);
 router.use(inventoryRouter);
 router.use(order_rentalRouter);
-router.use(order_rentalRouter);
 
 module.exports = router;

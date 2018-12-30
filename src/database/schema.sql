@@ -17,7 +17,8 @@ CREATE TABLE user (
     last_name VARCHAR(64),
     email_address VARCHAR(64),
     password VARCHAR(64),
-    contact_number VARCHAR(11)
+    contact_number VARCHAR(11),
+    user_type VARCHAR(11)
 );
 
 CREATE TABLE administrator (
@@ -344,3 +345,5 @@ END;
 GO
 
 DELIMITER ;
+
+/*INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number, user_type) VALUES("Ariel", "Asido", "Salvador", "asalvador@gmail.com", "ariel", "09098744225", "admin");*/
