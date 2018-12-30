@@ -13,9 +13,10 @@ router.post('/users', async (req, res) => {
   const email_address = req.body.email_address;
   const password = req.body.password;
   const contact_number = req.body.contact_number;
+  const user_type = req.body.user_type;
     
     try {
-      const user = await controller.create(first_name, middle_name, last_name, email_address, password, contact_number);
+      const user = await controller.create(first_name, middle_name, last_name, email_address, password, contact_number, user_type);
       res.status(200).json({
         status: 200,
         message: 'Successfully created user',
