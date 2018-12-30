@@ -1,10 +1,10 @@
 const db = require('../../database');
 
 
-exports.create = (user_id) => {
+exports.create = (session_id, user_id) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO administrator(user_id) VALUES ('" +user_id+"');";
+      const queryString = "CALL insertAdmin('" + session_id +"', '" + user_id +"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -46,10 +46,10 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = (id) => {
+exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM administrator WHERE id = '" + id +"';";
+      const queryString = "CALL deleteAdmin('" + session_id +"', '" + id +"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

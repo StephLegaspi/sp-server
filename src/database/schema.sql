@@ -406,6 +406,26 @@ BEGIN
     UPDATE order_rental SET delivery_status=stat_ord WHERE order_id=id_ord;
 END;
 GO
+/*INSERT ADMINISTRATOR*/
+CREATE PROCEDURE insertAdmin(session_id INT,
+                        user_id3 INT)
+BEGIN
+
+    INSERT INTO administrator(user_id) VALUES (user_id3);
+
+    CALL insertLog(concat('Added administrator: ', LAST_INSERT_ID()), session_id);
+END;
+GO
+/*DELETE ADMINISTRATOR*/
+CREATE PROCEDURE deleteAdmin(session_id INT,
+                        id3 INT)
+BEGIN
+
+    DELETE FROM administrator WHERE id = id3;
+
+    CALL insertLog(concat('Deleted administrator: ', id3), session_id);
+END;
+GO
 
 DELIMITER ;
 
