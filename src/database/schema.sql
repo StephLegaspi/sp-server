@@ -412,7 +412,6 @@ CREATE PROCEDURE insertAdmin(session_id INT,
 BEGIN
 
     INSERT INTO administrator(user_id) VALUES (user_id3);
-
     CALL insertLog(concat('Added administrator: ', LAST_INSERT_ID()), session_id);
 END;
 GO
@@ -422,10 +421,32 @@ CREATE PROCEDURE deleteAdmin(session_id INT,
 BEGIN
 
     DELETE FROM administrator WHERE id = id3;
-
     CALL insertLog(concat('Deleted administrator: ', id3), session_id);
 END;
 GO
+/*INSERT CUSTOMER*/
+CREATE PROCEDURE insertCustomer(session_id INT,
+                        address2 VARCHAR(128),
+                        zip_code2 VARCHAR(16),
+                        user_id2 INT)
+BEGIN
+
+    INSERT INTO customer(address, zip_code, user_id) VALUES (address2, zip_code2, user_id2);
+    CALL insertLog(concat('Added customer: ', LAST_INSERT_ID()), session_id);
+END;
+GO
+/*EDIT CUSTOMER*/
+CREATE PROCEDURE editCustomer(session_id INT,
+                        id3 INT,
+                        address3 VARCHAR(128),
+                        zip_code3 VARCHAR(16))
+BEGIN
+
+    UPDATE customer SET address=address3, zip_code=zip_code3 WHERE id=id3;
+    CALL insertLog(concat('Updated customer: ', id3), session_id);
+END;
+GO
+
 
 DELIMITER ;
 

@@ -1,10 +1,10 @@
 const db = require('../../database');
 
 
-exports.create = ( address, zip_code, user_id ) => {
+exports.create = (session_id, address, zip_code, user_id ) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO customer(address, zip_code, user_id ) VALUES ('" + address+"', '" +zip_code+"', '" +user_id+"');";
+      const queryString = "CALL insertCustomer('" + session_id+"', '" + address+"', '" +zip_code+"', '" +user_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -46,10 +46,10 @@ exports.getOne = (id) =>{
 	});
 };
 
-exports.edit = ( id, address, zip_code, user_id ) => {
+exports.edit = (session_id, id, address, zip_code) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE customer SET address = '"+address+"', zip_code = '"+zip_code+"', user_id = '"+user_id+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editCustomer('"+session_id+"', '"+id+"', '"+address+"', '"+zip_code+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
