@@ -446,6 +446,34 @@ BEGIN
     CALL insertLog(concat('Updated customer: ', id3), session_id);
 END;
 GO
+/*INSERT EVENT MOTIF*/
+CREATE PROCEDURE insertMotif(session_id INT,
+                        description3 VARCHAR(256))
+BEGIN
+
+    INSERT INTO event_motif(description) VALUES(description3);
+    CALL insertLog(concat('Added event motif: ', LAST_INSERT_ID()), session_id);
+END;
+GO
+/*EDIT EVENT MOTIF*/
+CREATE PROCEDURE editMotif(session_id INT,
+                        id3 INT,
+                        description3 VARCHAR(256))
+BEGIN
+
+    UPDATE event_motif SET description=description3 WHERE id=id3;
+    CALL insertLog(concat('Updated event motif: ', id3), session_id);
+END;
+GO
+/*DELETE EVENT MOTIF*/
+CREATE PROCEDURE deleteMotif(session_id INT,
+                        id3 INT)
+BEGIN
+
+    DELETE FROM event_motif WHERE id=id3;
+    CALL insertLog(concat('Deleted event motif: ', id3), session_id);
+END;
+GO
 
 
 DELIMITER ;
