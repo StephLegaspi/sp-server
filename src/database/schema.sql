@@ -361,6 +361,27 @@ BEGIN
 
 END;
 GO
+/*UPDATE REMAINING IN INVENTORY TABLE*/
+CREATE PROCEDURE updateRemaining(cart_prod_count INT)
+BEGIN
+
+    DECLARE iterator INT DEFAULT 0;
+    DECLARE id_prod INT;
+    DECLARE quantity_prod INT;
+
+    SET iterator = 0;
+
+    WHILE iterator < cart_prod_count DO
+
+        SET id_prod = (SELECT product_id FROM shopping_cart_products LIMIT iterator,1);
+        SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products LIMIT iterator,1);
+        UPDATE inventory SET remaining = remaining - quantity_prod WHERE product_id = id_prod;
+
+        SET iterator = iterator + 1;
+    END WHILE;
+
+END;
+GO
 /*INSERT ORDER INFO*/
 CREATE PROCEDURE insertOrder(session_id INT,
                             consignee_first_name VARCHAR(64), 
@@ -399,7 +420,7 @@ BEGIN
         END WHILE;
     END IF;
    
-
+    CALL updateRemaining(cart_prod_count);
 END;
 GO
 /*EDIT ORDER_INFO*/
