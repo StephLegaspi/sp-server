@@ -502,6 +502,16 @@ BEGIN
     CALL insertLog(concat('Deleted food menu: ', id3), session_id);
 END;
 GO
+/*EDIT INVENTORY*/
+CREATE PROCEDURE editInventory(session_id INT,
+                        id3 INT,
+                        total_quantity3 INT)
+BEGIN
+
+    UPDATE inventory SET total_quantity=total_quantity3 WHERE id=id3;
+    CALL insertLog(concat('Updated inventory: ', id3), session_id);
+END;
+GO
 
 
 DELIMITER ;
