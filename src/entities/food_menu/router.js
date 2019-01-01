@@ -9,9 +9,10 @@ const await = require('asyncawait/await');
 
 router.post('/food_menus', async (req, res) => {
   const description = req.body.description;
+  const session_id = req.session.user.id;
     
     try {
-      const food_menu = await controller.create(description);
+      const food_menu = await controller.create(session_id, description);
       res.status(200).json({
         status: 200,
         message: 'Successfully created food menu',
@@ -51,8 +52,10 @@ router.get('/food_menus/:id', async (req, res) => {
 });
 
 router.delete('/food_menus/:id', async (req, res) => {
+  const session_id = req.session.user.id;
+
   try {
-    const food_menu = await controller.remove(req.params.id);
+    const food_menu = await controller.remove(session_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted food_menu',
@@ -66,9 +69,10 @@ router.delete('/food_menus/:id', async (req, res) => {
 router.put('/food_menus/:id', async (req, res) => {
   const id = req.params.id;
   const description = req.body.description;
+  const session_id = req.session.user.id;
 
     try {
-      const food_menu = await controller.edit( id, description);
+      const food_menu = await controller.edit(session_id, id, description);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited food_menu',

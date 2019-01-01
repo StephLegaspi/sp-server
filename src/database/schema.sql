@@ -474,8 +474,34 @@ BEGIN
     CALL insertLog(concat('Deleted event motif: ', id3), session_id);
 END;
 GO
+/*INSERT FOOD MENU*/
+CREATE PROCEDURE insertMenu(session_id INT,
+                        description3 VARCHAR(256))
+BEGIN
+
+    INSERT INTO food_menu(description) VALUES(description3);
+    CALL insertLog(concat('Added food menu: ', LAST_INSERT_ID()), session_id);
+END;
+GO
+/*EDIT FOOD MENU*/
+CREATE PROCEDURE editMenu(session_id INT,
+                        id3 INT,
+                        description3 VARCHAR(256))
+BEGIN
+
+    UPDATE food_menu SET description=description3 WHERE id=id3;
+    CALL insertLog(concat('Updated food menu: ', id3), session_id);
+END;
+GO
+/*DELETE FOOD MENU*/
+CREATE PROCEDURE deleteMenu(session_id INT,
+                        id3 INT)
+BEGIN
+
+    DELETE FROM food_menu WHERE id=id3;
+    CALL insertLog(concat('Deleted food menu: ', id3), session_id);
+END;
+GO
 
 
 DELIMITER ;
-
-/*INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number, user_type) VALUES("Ariel", "Asido", "Salvador", "asalvador@gmail.com", "ariel", "09098744225", "admin");*/

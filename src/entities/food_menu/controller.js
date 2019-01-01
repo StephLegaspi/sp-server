@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (description) => {
+exports.create = (session_id, description) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO food_menu(description) VALUES ('" +description+"');";
+      const queryString = "CALL insertMenu('" +session_id+"', '" +description+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -45,10 +45,10 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = (id) => {
+exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM food_menu WHERE id = '" + id +"';";
+      const queryString = "CALL deleteMenu('" +session_id+"', '" +id+"');";
 
       	db.query(queryString, (err, results) => {
 	      if (err) {
@@ -64,10 +64,10 @@ exports.remove = (id) => {
     });
 };
 
-exports.edit = (id, description) => {
+exports.edit = (session_id, id, description) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE food_menu SET description = '"+description+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editMenu('" +session_id+"', '" +id+"', '" +description+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
