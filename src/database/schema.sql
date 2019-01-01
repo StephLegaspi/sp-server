@@ -381,9 +381,10 @@ BEGIN
 
     INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, for_purchase, shopping_cart_id2, customer_id);
 
-    CALL insertLog(concat('Added order: ', LAST_INSERT_ID()), session_id);
-    
     SET id_order = LAST_INSERT_ID();
+
+    CALL insertLog(concat('Added order: ', id_order), session_id);
+    
     SET cart_prod_count = (SELECT count(*) FROM shopping_cart_products);
     SET ctr = 0;
 
