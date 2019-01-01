@@ -34,10 +34,10 @@ exports.getOne = (id) =>{
 	});
 };
 
-exports.edit = ( id, first_name, middle_name, last_name, email_address, password, contact_number ) => {
+exports.edit = (session_id, id, first_name, middle_name, last_name, email_address, password, contact_number ) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE user SET first_name = '"+first_name+"', middle_name = '"+middle_name+"', last_name = '"+last_name+"', email_address = '"+email_address+"', password = '"+password+"', contact_number = '"+contact_number+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editUser('" + session_id+"', '" + id +"', '" + first_name +"', '" + middle_name +"', '" + last_name +"', '" + email_address +"', '" + password +"', '" + contact_number +"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

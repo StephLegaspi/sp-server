@@ -613,6 +613,21 @@ BEGIN
     CALL insertLog(concat('Deleted request: ', id3), session_id);
 END;
 GO
+/*EDIT USER*/
+CREATE PROCEDURE editUser(session_id INT,
+                        id2 INT,
+                        first_name2 VARCHAR(64),
+                        middle_name2 VARCHAR(64),
+                        last_name2 VARCHAR(64),
+                        email_address2 VARCHAR(64),
+                        password2 VARCHAR(64),
+                        contact_number2 VARCHAR(11))
+BEGIN
+
+    UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, password=password2, contact_number=contact_number2 WHERE id=id2;
+    CALL insertLog(concat('Updated user: ', id2), session_id);
+END;
+GO
 
 
 DELIMITER ;

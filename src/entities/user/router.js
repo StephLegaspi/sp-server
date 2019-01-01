@@ -42,9 +42,10 @@ router.put('/users/:id', async (req, res) => {
   const email_address = req.body.email_address;
   const password = req.body.password;
   const contact_number = req.body.contact_number;
+  const session_id = req.session.user.id;
     
     try {
-      const user = await controller.edit(id, first_name, middle_name, last_name, email_address, password, contact_number );
+      const user = await controller.edit(session_id, id, first_name, middle_name, last_name, email_address, password, contact_number );
       res.status(200).json({
         status: 200,
         message: 'Successfully edited user',
