@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) => {
+exports.create = (session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL insertOrder('" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +for_purchase+"', '" +shopping_cart_id+"', '" +customer_id+"');";
+      const queryString = "CALL insertOrder('" +session_id+"','" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +for_purchase+"', '" +shopping_cart_id+"', '" +customer_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -46,10 +46,10 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = (id) => {
+exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM order_information WHERE id = '" + id +"';";
+      const queryString = "CALL deleteOrder('"+session_id+"', '"+id+"');";
 
         db.query(queryString, (err, results) => {
         if (err) {
@@ -65,10 +65,10 @@ exports.remove = (id) => {
     });
 };
 
-exports.edit = (id, status) => {
+exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editOrder('"+id+"', '"+status+"');";
+      const queryString = "CALL editOrder('"+session_id+"', '"+id+"', '"+status+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

@@ -362,7 +362,8 @@ BEGIN
 END;
 GO
 /*INSERT ORDER INFO*/
-CREATE PROCEDURE insertOrder(consignee_first_name VARCHAR(64), 
+CREATE PROCEDURE insertOrder(session_id INT,
+                            consignee_first_name VARCHAR(64), 
                             consignee_middle_name VARCHAR(64), 
                             consignee_last_name VARCHAR(64), 
                             consignee_email VARCHAR(64), 
@@ -380,6 +381,8 @@ BEGIN
 
     INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, for_purchase, shopping_cart_id2, customer_id);
 
+    CALL insertLog(concat('Added order: ', LAST_INSERT_ID()), session_id);
+    
     SET id_order = LAST_INSERT_ID();
     SET cart_prod_count = (SELECT count(*) FROM shopping_cart_products);
     SET ctr = 0;
@@ -399,12 +402,24 @@ BEGIN
 END;
 GO
 /*EDIT ORDER_INFO*/
-CREATE PROCEDURE editOrder(id_ord INT,
+CREATE PROCEDURE editOrder(session_id INT,
+                        id_ord INT,
                         stat_ord VARCHAR(16))
 BEGIN
 
     UPDATE order_information SET status=stat_ord WHERE id=id_ord;
     UPDATE order_rental SET delivery_status=stat_ord WHERE order_id=id_ord;
+
+     CALL insertLog(concat('Updated order: ', id_ord), session_id);
+END;
+GO
+/*DELETE ORDER*/
+CREATE PROCEDURE deleteOrder(session_id INT,
+                            id3 INT)
+BEGIN
+
+    DELETE FROM order_information WHERE id=id3;
+    CALL insertLog(concat('Deleted order: ', id3), session_id);
 END;
 GO
 /*INSERT ADMINISTRATOR*/
