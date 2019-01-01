@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (inclusion) => {
+exports.create = (session_id, inclusion) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO package(inclusion) VALUES ('" +inclusion+"');";
+      const queryString = "CALL insertPackage('" +session_id+"', '" +inclusion+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -45,10 +45,10 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = (id) => {
+exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM package WHERE id = '" + id +"';";
+      const queryString = "CALL deletePackage('" +session_id+"', '" +id+"');";
 
       	db.query(queryString, (err, results) => {
 	      if (err) {
@@ -64,10 +64,10 @@ exports.remove = (id) => {
     });
 };
 
-exports.edit = (id, inclusion) => {
+exports.edit = (session_id, id, inclusion) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE package SET inclusion = '"+inclusion+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editPackage('" +session_id+"', '" +id+"', '" +inclusion+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

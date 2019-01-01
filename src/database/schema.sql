@@ -512,6 +512,34 @@ BEGIN
     CALL insertLog(concat('Updated inventory: ', id3), session_id);
 END;
 GO
+/*INSERT PACKAGE*/
+CREATE PROCEDURE insertPackage(session_id INT,
+                        inclusion3 VARCHAR(256))
+BEGIN
+
+    INSERT INTO package(inclusion) VALUES(inclusion3);
+    CALL insertLog(concat('Added package: ', LAST_INSERT_ID()), session_id);
+END;
+GO
+/*EDIT PACKAGE*/
+CREATE PROCEDURE editPackage(session_id INT,
+                        id3 INT,
+                        inclusion3 VARCHAR(256))
+BEGIN
+
+    UPDATE package SET inclusion=inclusion3 WHERE id=id3;
+    CALL insertLog(concat('Updated package: ', id3), session_id);
+END;
+GO
+/*DELETE PACKAGE*/
+CREATE PROCEDURE deletePackage(session_id INT,
+                        id3 INT)
+BEGIN
+
+    DELETE FROM package WHERE id=id3;
+    CALL insertLog(concat('Deleted package: ', id3), session_id);
+END;
+GO
 
 
 DELIMITER ;
