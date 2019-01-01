@@ -45,10 +45,10 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = (id) => {
+exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM shopping_cart WHERE id = '" + id +"';";
+      const queryString = "CALL deleteCart('" + session_id+"', '" + id +"')";
 
         db.query(queryString, (err, results) => {
         if (err) {

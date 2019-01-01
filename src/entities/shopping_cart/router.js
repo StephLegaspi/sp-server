@@ -52,8 +52,10 @@ router.get('/shopping_carts/:id', async (req, res) => {
 });
 
 router.delete('/shopping_carts/:id', async (req, res) => {
+  const session_id = req.session.user.id;
+
   try {
-    const shopping_cart = await controller.remove(req.params.id);
+    const shopping_cart = await controller.remove(session_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted shopping_cart',

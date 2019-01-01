@@ -540,6 +540,16 @@ BEGIN
     CALL insertLog(concat('Deleted package: ', id3), session_id);
 END;
 GO
+/*DELETE SHOPPING CART*/
+CREATE PROCEDURE deleteCart(session_id INT,
+                        id2 INT)
+BEGIN
+
+    DELETE FROM shopping_cart WHERE id=id2;
+    CALL insertLog(concat('Deleted shopping cart: ', id2), session_id);
+END;
+GO
+
 
 
 DELIMITER ;
