@@ -435,22 +435,26 @@ BEGIN
     DECLARE count_cart_prod INT;
     DECLARE id_prod INT;
     DECLARE quantity_prod INT;
+    DECLARE is_for_purchase BOOLEAN;
 
     SET counter = 0;
     SET count_cart_prod = (SELECT count(*) FROM shopping_cart_products);
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
+    SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
     UPDATE order_information SET status=stat_ord WHERE id=id_ord;
     UPDATE order_rental SET delivery_status=stat_ord WHERE order_id=id_ord;
 
-    WHILE counter < count_cart_prod DO
+    IF is_for_purchase = 0 THEN
+        WHILE counter < count_cart_prod DO
 
-        SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
-        SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
-        UPDATE inventory SET remaining = remaining + quantity_prod WHERE product_id = id_prod;
+            SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
+            SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
+            UPDATE inventory SET remaining = remaining + quantity_prod WHERE product_id = id_prod;
 
-        SET counter = counter + 1;
-    END WHILE;
+            SET counter = counter + 1;
+        END WHILE;
+    END IF;
 
     CALL insertLog(concat('Updated order: ', id_ord), session_id);
 END;
