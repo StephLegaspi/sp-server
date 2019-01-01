@@ -342,5 +342,5 @@ BEGIN
     UPDATE order_rental SET delivery_status=stat_ord WHERE order_id=id_ord;
 END;
 GO
-
+/*yo*/
 DELIMITER ;
