@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (description) => {
+exports.create = (session_id, description) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO event_motif(description) VALUES ('" +description+"');";
+      const queryString = "CALL insertMotif('" +session_id+"', '" +description+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -45,12 +45,12 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = (id) => {
+exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM event_motif WHERE id = '" + id +"';";
+      const queryString = "CALL deleteMotif('" + session_id +"', '" + id +"');";
 
-      	db.query(queryString, (err, results) => {
+      db.query(queryString, (err, results) => {
 	      if (err) {
 	        console.log(err);
 	        return reject(500);
@@ -64,10 +64,10 @@ exports.remove = (id) => {
     });
 };
 
-exports.edit = (id, description) => {
+exports.edit = (session_id, id, description) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE event_motif SET description = '"+description+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editMotif('"+session_id+"', '"+id+"', '"+description+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

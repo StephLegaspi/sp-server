@@ -1,10 +1,10 @@
 const db = require('../../database');
 
 
-exports.create = ( product_color, product_id ) => {
+exports.create = (session_id, product_color, product_id ) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO product_color(product_color, product_id) VALUES ('" + product_color+"', '" +product_id+"');";
+      const queryString = "CALL insertProductColor('" + session_id+"', '" + product_color+"', '" +product_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -46,10 +46,10 @@ exports.getOne = (id) =>{
 	});
 };
 
-exports.remove = ( id ) => {
+exports.remove = (session_id, id ) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM product_color WHERE id = '" + id +"';";
+      const queryString = "CALL deleteProductColor('" + session_id+"', '" +id+"');";
 
       db.query(queryString, (err, results) =>{
         if (err) {
@@ -65,10 +65,10 @@ exports.remove = ( id ) => {
     });
 };
 
-exports.edit = ( id, product_color, product_id ) => {
+exports.edit = (session_id, id, product_color) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE product_color SET product_color = '"+product_color+"', product_id = '"+product_id+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editProductColor('" + session_id+"', '" +id+"', '" +product_color+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

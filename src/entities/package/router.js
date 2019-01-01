@@ -9,9 +9,10 @@ const await = require('asyncawait/await');
 
 router.post('/packages', async (req, res) => {
   const inclusion = req.body.inclusion;
+  const session_id = req.session.user.id;
     
     try {
-      const catering_package = await controller.create(inclusion);
+      const catering_package = await controller.create(session_id, inclusion);
       res.status(200).json({
         status: 200,
         message: 'Successfully created package',
@@ -51,8 +52,10 @@ router.get('/packages/:id', async (req, res) => {
 });
 
 router.delete('/packages/:id', async (req, res) => {
+  const session_id = req.session.user.id;
+
   try {
-    const catering_package = await controller.remove(req.params.id);
+    const catering_package = await controller.remove(session_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted package',
@@ -66,9 +69,10 @@ router.delete('/packages/:id', async (req, res) => {
 router.put('/packages/:id', async (req, res) => {
   const id = req.params.id;
   const inclusion = req.body.inclusion;
+  const session_id = req.session.user.id;
 
     try {
-      const catering_package = await controller.edit( id, inclusion);
+      const catering_package = await controller.edit(session_id, id, inclusion);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited package',

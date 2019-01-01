@@ -11,9 +11,10 @@ router.post('/customers', async (req, res) => {
   const address = req.body.address;
   const zip_code = req.body.zip_code;
   const user_id = req.body.user_id;
+  const session_id = req.session.user.id;
     
     try {
-      const customer = await controller.create(address, zip_code, user_id );
+      const customer = await controller.create(session_id, address, zip_code, user_id );
       res.status(200).json({
         status: 200,
         message: 'Successfully created customer',
@@ -56,10 +57,10 @@ router.put('/customers/:id', async (req, res) => {
   const id = req.params.id;
   const address = req.body.address;
   const zip_code = req.body.zip_code;
-  const user_id = req.body.user_id;
+  const session_id = req.session.user.id;
 
     try {
-      const customer = await controller.edit( id, address, zip_code, user_id );
+      const customer = await controller.edit(session_id, id, address, zip_code);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited customer',

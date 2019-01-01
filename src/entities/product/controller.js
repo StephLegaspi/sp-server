@@ -30,10 +30,10 @@ exports.getOne = (id) =>{
 	});
 };
 
-exports.create = (name, description, price, for_purchase, display_product, total_quantity,admin_id) => {
+exports.create = (user_id, name, description, price, for_purchase, display_product, total_quantity,admin_id) => {
 	return new Promise((resolve, reject) => {
 
-      	const queryString = "CALL insertProduct('" + name +"', '" + description +"', '" + price+"', '" + for_purchase +"', '" + display_product+"', '" + total_quantity +"', '" + admin_id+"');";
+      	const queryString = "CALL insertProduct('" + user_id +"', '" + name +"', '" + description +"', '" + price+"', '" + for_purchase +"', '" + display_product+"', '" + total_quantity +"', '" + admin_id+"');";
 
 	    db.query(queryString, (err, results) => {
 	        if (err) {
@@ -45,10 +45,10 @@ exports.create = (name, description, price, for_purchase, display_product, total
     });
 };
 
-exports.edit = ( id, name, description, price, for_purchase ) => {
+exports.edit = (user_id, id, name, description, price, for_purchase, display_product, total_quantity ) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE product SET name = '"+name+"', description = '"+description+"', price = '"+price+"', for_purchase = '"+for_purchase+"' WHERE id = '"+id+"';";
+      const queryString = "CALL updateProduct('"+user_id+"', '"+id+"', '"+name+"', '"+description+"', '"+price+"', '"+for_purchase+"', '"+display_product+"', '"+total_quantity+"')";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -60,10 +60,10 @@ exports.edit = ( id, name, description, price, for_purchase ) => {
     });
 };
 
-exports.disable = (id, display_product) => {
+exports.disable = (user_id, id, display_product) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE product SET display_product = '"+display_product+"' WHERE id = '"+id+"';";
+      const queryString = "CALL disableProduct('"+user_id+"', '"+id+"', '"+display_product+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -75,10 +75,10 @@ exports.disable = (id, display_product) => {
     });
 };
 
-exports.enable = (id, display_product) => {
+exports.enable = (user_id, id, display_product) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE product SET display_product = '"+display_product+"' WHERE id = '"+id+"';";
+      const queryString = "CALL enableProduct('"+user_id+"', '"+id+"', '"+display_product+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -90,10 +90,10 @@ exports.enable = (id, display_product) => {
     });
 };
 
-exports.remove = (id) => {
+exports.remove = (user_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deleteProduct('" + id +"');";
+      const queryString = "CALL deleteProduct('" + user_id +"', '" + id +"');";
 
       	db.query(queryString, (err, results) => {
 	      if (err) {

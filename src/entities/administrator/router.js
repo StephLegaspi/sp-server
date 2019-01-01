@@ -9,9 +9,10 @@ const await = require('asyncawait/await');
 
 router.post('/administrators', async (req, res) => {
   const user_id = req.body.user_id;
+  const session_id = req.session.user.id;
     
     try {
-      const administrator = await controller.create(user_id);
+      const administrator = await controller.create(session_id, user_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully created administrator',
@@ -51,8 +52,10 @@ router.get('/administrators/:id', async (req, res) => {
 });
 
 router.delete('/administrators/:id', async (req, res) => {
+  const session_id = req.session.user.id;
+
   try {
-    const administrator = await controller.remove(req.params.id);
+    const administrator = await controller.remove(session_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted administrator',

@@ -15,6 +15,23 @@ const cart_productsRouter = require('./entities/shopping_cart_products/router');
 const order_infoRouter = require('./entities/order_information/router');
 const inventoryRouter = require('./entities/inventory/router');
 const order_rentalRouter = require('./entities/order_rental/router');
+const authenticationRouter = require('./entities/authentication/router');
+
+router.use(authenticationRouter);
+
+// Middleware for auth
+router.use((req, res, next) => {
+  //console.log(req.session.user);
+  if (req.session.user) {
+    return next();
+  }
+
+  res.status(401).json({
+    status: 401,
+    message: 'You are currently not logged in.'
+  });
+});
+
 
 router.use(productRouter);
 router.use(userRouter);

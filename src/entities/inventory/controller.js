@@ -30,10 +30,10 @@ exports.getOne = (id) =>{
 	});
 };
 
-exports.edit = ( id, total_quantity) => {
+exports.edit = (session_id, id, total_quantity) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE inventory SET total_quantity = '"+total_quantity+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editInventory('"+session_id+"', '"+id+"', '"+total_quantity+"')";
 
       db.query(queryString, (err, results) => {
         if (err) {

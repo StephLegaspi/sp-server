@@ -18,10 +18,10 @@ router.post('/orders', async (req, res) => {
   const for_purchase = req.body.for_purchase;
   const shopping_cart_id = req.body.shopping_cart_id;
   const customer_id = req.body.customer_id;
- 
+  const session_id = req.session.user.id;
     
     try {
-      const order_info = await controller.create(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id);
+      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully created order',
@@ -61,8 +61,10 @@ router.get('/orders/:id', async (req, res) => {
 });
 
 router.delete('/orders/:id', async (req, res) => {
+  const session_id = req.session.user.id;
+
   try {
-    const order_info = await controller.remove(req.params.id);
+    const order_info = await controller.remove(session_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted order',
@@ -76,9 +78,10 @@ router.delete('/orders/:id', async (req, res) => {
 router.put('/orders/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
+  const session_id = req.session.user.id;
 
     try {
-      const order_info = await controller.edit(id, status);
+      const order_info = await controller.edit(session_id, id, status);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited order',

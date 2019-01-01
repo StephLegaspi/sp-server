@@ -43,9 +43,10 @@ router.post('/products', async (req, res) => {
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
   const admin_id = req.body.admin_id;
+  const user_id = req.session.user.id;
     
     try {
-      const product = await controller.create(name, description, price, for_purchase, display_product, total_quantity, admin_id);
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, admin_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product',
@@ -63,9 +64,12 @@ router.put('/products/:id', async (req, res) => {
   const description = req.body.description;
   const price = req.body.price;
   const for_purchase = req.body.for_purchase;
-    
+  const display_product = req.body.display_product;
+  const total_quantity = req.body.total_quantity;
+  const user_id = req.session.user.id;
+
     try {
-      const product = await controller.edit(id, name, description, price, for_purchase);
+      const product = await controller.edit(user_id, id, name, description, price, for_purchase, display_product, total_quantity);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited product',
@@ -79,9 +83,10 @@ router.put('/products/:id', async (req, res) => {
 
 router.put('/products/disable/:id', async (req, res) => {
   const id = req.params.id;
-    
+  const user_id = req.session.user.id;
+
     try {
-      const product = await controller.disable(id, 0);
+      const product = await controller.disable(user_id, id, 0);
       res.status(200).json({
         status: 200,
         message: 'Successfully disabled product',
@@ -94,9 +99,10 @@ router.put('/products/disable/:id', async (req, res) => {
 
 router.put('/products/enable/:id', async (req, res) => {
   const id = req.params.id;
+  const user_id = req.session.user.id;
     
     try {
-      const product = await controller.enable(id, 1);
+      const product = await controller.enable(user_id, id, 1);
       res.status(200).json({
         status: 200,
         message: 'Successfully enabled product',
@@ -109,8 +115,10 @@ router.put('/products/enable/:id', async (req, res) => {
 });
 
 router.delete('/products/:id', async (req, res) => {
+  const user_id = req.session.user.id;
+
   try {
-    const product = await controller.remove(req.params.id);
+    const product = await controller.remove(user_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted product',
