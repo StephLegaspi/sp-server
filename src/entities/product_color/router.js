@@ -10,9 +10,10 @@ const await = require('asyncawait/await');
 router.post('/products/color', async (req, res) => {
   const product_color = req.body.product_color;
   const product_id = req.body.product_id;
+  const session_id = req.session.user.id;
     
     try {
-      const product = await controller.create(product_color, product_id);
+      const product = await controller.create(session_id, product_color, product_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully added product color',
@@ -52,8 +53,10 @@ router.get('/products/:id/color', async (req, res) => {
 });
 
 router.delete('/products/:id/color', async (req, res) => {
+  const session_id = req.session.user.id;
+
   try {
-    const product = await controller.remove(req.params.id);
+    const product = await controller.remove(session_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted product color',
@@ -67,10 +70,10 @@ router.delete('/products/:id/color', async (req, res) => {
 router.put('/products/:id/color', async (req, res) => {
   const id = req.params.id;
   const product_color = req.body.product_color;
-  const product_id = req.body.product_id;
-    
+  const session_id = req.session.user.id;
+
     try {
-      const product = await controller.edit(id, product_color, product_id);
+      const product = await controller.edit(session_id, id, product_color);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited product color',

@@ -549,7 +549,35 @@ BEGIN
     CALL insertLog(concat('Deleted shopping cart: ', id2), session_id);
 END;
 GO
+/*INSERT PRODUCT COLOR*/
+CREATE PROCEDURE insertProductColor(session_id INT,
+                        product_color2 VARCHAR(64),
+                        product_id2 INT)
+BEGIN
 
+    INSERT INTO product_color(product_color, product_id) VALUES(product_color2, product_id2);
+    CALL insertLog(concat('Added product color: ', LAST_INSERT_ID()), session_id);
+END;
+GO
+/*EDIT PRODUCT COLOR*/
+CREATE PROCEDURE editProductColor(session_id INT,
+                        id2 INT,
+                        product_color2 VARCHAR(64))
+BEGIN
+
+    UPDATE product_color SET product_color=product_color2 WHERE id=id2;
+    CALL insertLog(concat('Updated product color: ', id2), session_id);
+END;
+GO
+/*DELETE PRODUCT COLOR*/
+CREATE PROCEDURE deleteProductColor(session_id INT,
+                                id2 INT)
+BEGIN
+
+    DELETE FROM product_color WHERE id=id2;
+    CALL insertLog(concat('Deleted product color: ', id2), session_id);
+END;
+GO
 
 
 DELIMITER ;
