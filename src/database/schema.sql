@@ -60,6 +60,7 @@ CREATE TABLE request_information (
     event_date DATE NOT NULL,
     event_location VARCHAR(128),
     number_of_persons INT NOT NULL,
+    status VARCHAR(64) DEFAULT 'Pending',
     request_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     package_id INT NOT NULL,
     FOREIGN KEY(package_id) REFERENCES package(id),
@@ -576,6 +577,25 @@ BEGIN
 
     DELETE FROM product_color WHERE id=id2;
     CALL insertLog(concat('Deleted product color: ', id2), session_id);
+END;
+GO
+/*EDIT PACKAGE*/
+CREATE PROCEDURE editRequest(session_id INT,
+                        id3 INT,
+                        status3 VARCHAR(256))
+BEGIN
+
+    UPDATE request_information SET status=status3 WHERE id=id3;
+    CALL insertLog(concat('Updated request: ', id3), session_id);
+END;
+GO
+/*DELETE REQUEST*/
+CREATE PROCEDURE deleteRequest(session_id INT,
+                        id3 INT)
+BEGIN
+
+    DELETE FROM request_information WHERE id=id3;
+    CALL insertLog(concat('Deleted request: ', id3), session_id);
 END;
 GO
 

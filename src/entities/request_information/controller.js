@@ -1,18 +1,28 @@
 const db = require('../../database');
 
-exports.create = (customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) => {
+exports.create = (session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) => {
 	return new Promise((resolve, reject) => {
 
       const queryString = "INSERT INTO request_information(customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) VALUES ('" +customer_first_name+"', '" +customer_middle_name+"', '" +customer_last_name+"', '" +customer_email+"', '" +customer_contact_number+"', '" +event_date+"', '" +event_location+"', '" +number_of_persons+"', '" +package_id+"', '" +motif_id+"', '" +menu_id+"', '" +customer_id+"');";
+
+      const queryString2 = "CALL insertLog(concat('Added request: ', LAST_INSERT_ID()), '" +session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+        //return resolve(results);
+      });
+
+      db.query(queryString2, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
         return resolve(results);
       });
-    });
+  });
 };
 
 exports.getAll = () =>{
@@ -46,10 +56,10 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.remove = (id) => {
+exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "DELETE FROM request_information WHERE id = '" + id +"';";
+      const queryString = "CALL deleteRequest('" + session_id +"', '" + id +"');";
 
       	db.query(queryString, (err, results) => {
 	      if (err) {
@@ -65,10 +75,10 @@ exports.remove = (id) => {
     });
 };
 
-exports.edit = (id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) => {
+exports.edit = (session_id, id, status) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE request_information SET customer_first_name = '"+customer_first_name+"', customer_middle_name = '"+customer_middle_name+"', customer_last_name = '"+customer_last_name+"', customer_email = '"+customer_email+"', customer_contact_number = '"+customer_contact_number+"', event_date = '"+event_date+"', event_location = '"+event_location+"', number_of_persons = '"+number_of_persons+"', package_id = '"+package_id+"', motif_id = '"+motif_id+"', menu_id = '"+menu_id+"', customer_id = '"+customer_id+"' WHERE id = '"+id+"';";
+      const queryString = "CALL editRequest('" + session_id +"', '" + id +"', '" + status +"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
