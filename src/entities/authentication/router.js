@@ -16,6 +16,8 @@ router.post('/users', async (req, res) => {
   const user_type = req.body.user_type;
     
     try {
+      await controller.checkValidEmail(email_address);
+      await controller.checkEmailExists(email_address);
       const user = await controller.create(first_name, middle_name, last_name, email_address, password, contact_number, user_type);
       res.status(200).json({
         status: 200,
@@ -23,7 +25,20 @@ router.post('/users', async (req, res) => {
         data: user
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 400:
+          message = 'Invalid email address';
+          break;
+        case 406:
+          message = 'Email address already exists';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });

@@ -44,3 +44,32 @@ exports.create = ( first_name, middle_name, last_name, email_address, password, 
     });
   });
 };
+
+exports.checkValidEmail =  (email) =>  {
+  return new Promise((resolve, reject) => {
+    let re = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z]+(?:\.[a-zA-Z]+)*$/;
+    if(!re.test(email)){
+      return reject(400);
+    }else{
+      
+      return resolve();
+    } 
+  });
+};
+
+exports.checkEmailExists = (email) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM user WHERE email_address = '" +email+"';"
+
+    db.query(queryString, email, (err, res) => {
+      if (err) {
+        console.log(err.message);
+        return reject(500);
+      }
+
+      if (res.length) return reject(406);
+
+      return resolve();
+    });
+  });
+};
