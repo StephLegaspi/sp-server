@@ -16,6 +16,7 @@ router.post('/users', async (req, res) => {
   const user_type = req.body.user_type;
     
     try {
+      await controller.checkValidContact(contact_number);
       await controller.checkValidEmail(email_address);
       await controller.checkEmailExists(email_address);
       const user = await controller.create(first_name, middle_name, last_name, email_address, password, contact_number, user_type);
@@ -29,7 +30,7 @@ router.post('/users', async (req, res) => {
 
       switch (status) {
         case 400:
-          message = 'Invalid email address';
+          message = 'Invalid email address or contact number';
           break;
         case 406:
           message = 'Email address already exists';

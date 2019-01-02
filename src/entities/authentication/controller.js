@@ -57,6 +57,18 @@ exports.checkValidEmail =  (email) =>  {
   });
 };
 
+exports.checkValidContact =  (contact_number) =>  {
+  return new Promise((resolve, reject) => {
+    let re = /^09[0-9]{9}$/;
+    if(!re.test(contact_number)){
+      return reject(400);
+    }else{
+      
+      return resolve();
+    } 
+  });
+};
+
 exports.checkEmailExists = (email) =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM user WHERE email_address = '" +email+"';"
