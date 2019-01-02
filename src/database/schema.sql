@@ -16,7 +16,7 @@ CREATE TABLE user (
     middle_name VARCHAR(64),
     last_name VARCHAR(64),
     email_address VARCHAR(64),
-    password VARCHAR(64),
+    password VARCHAR(256),
     contact_number VARCHAR(11),
     user_type VARCHAR(11)
 );
@@ -361,6 +361,28 @@ BEGIN
 
 END;
 GO
+/*UPDATE REMAINING IN INVENTORY TABLE*/
+CREATE PROCEDURE updateRemaining(cart_prod_count INT,
+                                cart_id INT)
+BEGIN
+
+    DECLARE iterator INT DEFAULT 0;
+    DECLARE id_prod INT;
+    DECLARE quantity_prod INT;
+
+    SET iterator = 0;
+
+    WHILE iterator < cart_prod_count DO
+
+        SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator,1);
+        SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator,1);
+        UPDATE inventory SET remaining = remaining - quantity_prod WHERE product_id = id_prod;
+
+        SET iterator = iterator + 1;
+    END WHILE;
+
+END;
+GO
 /*INSERT ORDER INFO*/
 CREATE PROCEDURE insertOrder(session_id INT,
                             consignee_first_name VARCHAR(64), 
@@ -399,7 +421,7 @@ BEGIN
         END WHILE;
     END IF;
    
-
+    CALL updateRemaining(cart_prod_count, shopping_cart_id2);
 END;
 GO
 /*EDIT ORDER_INFO*/
@@ -407,11 +429,34 @@ CREATE PROCEDURE editOrder(session_id INT,
                         id_ord INT,
                         stat_ord VARCHAR(16))
 BEGIN
+    
+    DECLARE id_cart INT;
+    DECLARE counter INT;
+    DECLARE count_cart_prod INT;
+    DECLARE id_prod INT;
+    DECLARE quantity_prod INT;
+    DECLARE is_for_purchase BOOLEAN;
+
+    SET counter = 0;
+    SET count_cart_prod = (SELECT count(*) FROM shopping_cart_products);
+    SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
+    SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
     UPDATE order_information SET status=stat_ord WHERE id=id_ord;
     UPDATE order_rental SET delivery_status=stat_ord WHERE order_id=id_ord;
 
-     CALL insertLog(concat('Updated order: ', id_ord), session_id);
+    IF is_for_purchase = 0 THEN
+        WHILE counter < count_cart_prod DO
+
+            SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
+            SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
+            UPDATE inventory SET remaining = remaining + quantity_prod WHERE product_id = id_prod;
+
+            SET counter = counter + 1;
+        END WHILE;
+    END IF;
+
+    CALL insertLog(concat('Updated order: ', id_ord), session_id);
 END;
 GO
 /*DELETE ORDER*/
@@ -626,6 +671,16 @@ BEGIN
 
     UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=id2;
     CALL insertLog(concat('Updated user: ', id2), session_id);
+END;
+GO
+/*CHANGE USER PASSWORD*/
+CREATE PROCEDURE changePassword(session_id INT,
+                        id2 INT,
+                        new_password VARCHAR(256))
+BEGIN
+
+    UPDATE user SET password = new_password WHERE id=id2;
+    CALL insertLog(concat('Changed account password: ', id2), session_id);
 END;
 GO
 

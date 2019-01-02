@@ -48,3 +48,21 @@ exports.edit = (session_id, id, first_name, middle_name, last_name, email_addres
       });
     });
 };
+
+exports.editPassword = (session_id, id, new_password, confirm_password) => {
+  return new Promise((resolve, reject) => {
+  	if(new_password === confirm_password){
+	    bcrypt.hash(new_password, salt, function(err, hash) {
+	        const queryString = "CALL changePassword('" + session_id +"', '" + id +"', '" + hash +"');";
+
+	        db.query(queryString, (err, results) => {
+	            if (err) {
+	              console.log(err);
+	              return reject(500);
+	            }
+	            return resolve(results);
+	        });
+	    });
+	}else{ return reject(401); }
+  });
+};
