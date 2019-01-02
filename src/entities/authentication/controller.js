@@ -42,5 +42,5 @@ exports.create = ( first_name, middle_name, last_name, email_address, password, 
             return resolve(results);
         });
     });
-    });
+  });
 };

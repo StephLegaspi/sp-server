@@ -16,7 +16,7 @@ CREATE TABLE user (
     middle_name VARCHAR(64),
     last_name VARCHAR(64),
     email_address VARCHAR(64),
-    password VARCHAR(64),
+    password VARCHAR(256),
     contact_number VARCHAR(11),
     user_type VARCHAR(11)
 );
@@ -671,6 +671,16 @@ BEGIN
 
     UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=id2;
     CALL insertLog(concat('Updated user: ', id2), session_id);
+END;
+GO
+/*CHANGE USER PASSWORD*/
+CREATE PROCEDURE changePassword(session_id INT,
+                        id2 INT,
+                        new_password VARCHAR(256))
+BEGIN
+
+    UPDATE user SET password = new_password WHERE id=id2;
+    CALL insertLog(concat('Changed account password: ', id2), session_id);
 END;
 GO
 

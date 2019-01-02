@@ -56,4 +56,23 @@ router.put('/users/:id', async (req, res) => {
  
 });
 
+router.put('/users/change_password/:id', async (req, res) => {
+  const id = req.params.id;
+  const new_password = req.body.new_password;
+  const confirm_password = req.body.confirm_password;
+  const session_id = req.session.user.id;
+    
+    try {
+      const user = await controller.editPassword(session_id, id, new_password, confirm_password);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully changed user password',
+        data: user
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 module.exports = router;
