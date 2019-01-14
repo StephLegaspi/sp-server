@@ -140,9 +140,6 @@ CREATE TABLE order_information (
 
 CREATE TABLE order_rental (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    product_id INT NOT NULL,
-    FOREIGN KEY(product_id) REFERENCES product(id),
-    product_quantity INT,
     rental_duration INT,
     rental_status VARCHAR(16) DEFAULT "On-rent",
     returned_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
