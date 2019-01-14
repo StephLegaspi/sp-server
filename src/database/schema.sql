@@ -85,7 +85,7 @@ CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
-    renewal_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    renewal_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -143,12 +143,9 @@ CREATE TABLE order_rental (
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     product_quantity INT,
-    order_timestamp TIMESTAMP,
     rental_duration INT,
-    delivery_address VARCHAR(128),
-    delivery_status VARCHAR(16) DEFAULT "Pending",
     rental_status VARCHAR(16) DEFAULT "On-rent",
-    returned_timestamp DATE,
+    returned_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     order_id INT,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
