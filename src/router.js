@@ -18,6 +18,7 @@ const order_rentalRouter = require('./entities/order_rental/router');
 const authenticationRouter = require('./entities/authentication/router');
 
 router.use(authenticationRouter);
+router.use(administratorRouter);
 
 // Middleware for auth
 router.use((req, res, next) => {
@@ -37,7 +38,6 @@ router.use(productRouter);
 router.use(userRouter);
 router.use(customerRouter);
 router.use(product_colorRouter);
-router.use(administratorRouter);
 router.use(event_motifRouter);
 router.use(packageRouter);
 router.use(food_menuRouter);

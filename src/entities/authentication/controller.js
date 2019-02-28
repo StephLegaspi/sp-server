@@ -29,21 +29,6 @@ exports.login = ( email, password ) => {
   });
 };
 
-exports.create = ( first_name, middle_name, last_name, email_address, password, contact_number, user_type) => {
-  return new Promise((resolve, reject) => {
-    bcrypt.hash(password, salt, function(err, hash) {
-        const queryString = "INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number, user_type) VALUES ('" + first_name+"', '" +middle_name+"', '" +last_name+"', '" +email_address+"', '" +hash+"', '" +contact_number+"', '" +user_type+"');";
-
-        db.query(queryString, (err, results) => {
-            if (err) {
-              console.log(err);
-              return reject(500);
-            }
-            return resolve(results);
-        });
-    });
-  });
-};
 
 exports.checkValidEmail =  (email) =>  {
   return new Promise((resolve, reject) => {
