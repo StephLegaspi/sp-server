@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
-const userController = require('../authentication/controller');
+const authController = require('../authentication/controller');
 
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
@@ -19,9 +19,9 @@ router.post('/administrators', async (req, res) => {
   const user_type = req.body.user_type;
 
     try {
-      await userController.checkValidContact(contact_number);
-      await userController.checkValidEmail(email_address);
-      await userController.checkEmailExists(email_address);
+      await authController.checkValidContact(contact_number);
+      await authController.checkValidEmail(email_address);
+      await authController.checkEmailExists(email_address);
       const administrator = await controller.create(session_id, first_name, middle_name, last_name, email_address, password, contact_number, user_type);
       res.status(200).json({
         status: 200,

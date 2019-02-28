@@ -26,6 +26,25 @@ router.post('/auth/login/admin', async (req, res) => {
  
 });
 
+router.post('/auth/login/customer', async (req, res) => {
+  const email_address = req.body.email_address;
+  const password = req.body.password;
+ 
+    try {
+      const user = await controller.loginCustomer(email_address, password);
+
+      req.session.user = user;
+      res.status(200).json({
+          status: 200,
+          message: 'Successfully logged in',
+          data: user
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 router.post('/auth/logout', async (req, res) => {
   try {
     req.session.destroy();

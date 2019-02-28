@@ -514,12 +514,19 @@ END;
 GO
 /*INSERT CUSTOMER*/
 CREATE PROCEDURE insertCustomer(session_id INT,
-                        address2 VARCHAR(128),
-                        zip_code2 VARCHAR(16),
-                        user_id2 INT)
-BEGIN
+                            first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            password2 VARCHAR(256),
+                            contact_number2 VARCHAR(11),
+                            user_type2 VARCHAR(20),
 
-    INSERT INTO customer(address, zip_code, user_id) VALUES (address2, zip_code2, user_id2);
+                            address2 VARCHAR(128),
+                            zip_code2 VARCHAR(16))
+BEGIN
+    CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
+    INSERT INTO customer(address, zip_code, user_id) VALUES (address2, zip_code2, LAST_INSERT_ID());
     CALL insertLog(concat('Added customer: ', LAST_INSERT_ID()), session_id);
 END;
 GO
