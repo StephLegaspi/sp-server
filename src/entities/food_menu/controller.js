@@ -159,10 +159,10 @@ exports.remove = (session_id, id) => {
     });
 };
 
-exports.edit = (session_id, id, description) => {
+exports.edit = (session_id, name, main_course, appetizer, dessert, soup, beverage, others, id) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editMenu('" +session_id+"', '" +id+"', '" +description+"');";
+      const queryString = "CALL editMenu('" +session_id+"', '" +name+"', '" +main_course+"','" +appetizer+"', '" +dessert+"', '" +soup+"', '" +beverage+"', '" +others+"', '" +id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

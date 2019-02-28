@@ -153,11 +153,17 @@ router.delete('/food_menus/:id', async (req, res) => {
 
 router.put('/food_menus/:id', async (req, res) => {
   const id = req.params.id;
-  const description = req.body.description;
+  const name = req.body.name;
+  const main_course = req.body.main_course;
+  const appetizer = req.body.appetizer;
+  const dessert = req.body.dessert;
+  const soup = req.body.soup;
+  const beverage = req.body.beverage;
+  const others = req.body.others;
   const session_id = req.session.user.id;
 
     try {
-      const food_menu = await controller.edit(session_id, id, description);
+      const food_menu = await controller.edit(session_id, name, main_course, appetizer, dessert, soup, beverage, others, id);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited food_menu',

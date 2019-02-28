@@ -778,11 +778,31 @@ END;
 GO
 /*EDIT FOOD MENU*/
 CREATE PROCEDURE editMenu(session_id INT,
-                        id3 INT,
-                        description3 VARCHAR(256))
+                        name3 VARCHAR(64),
+                        main_course2 VARCHAR(256),
+                        appetizer2 VARCHAR(256),
+                        dessert2 VARCHAR(256),
+                        soup2 VARCHAR(256),
+                        beverage2 VARCHAR(256),
+                        others2 VARCHAR(256),
+                        id3 INT)
 BEGIN
 
-    UPDATE food_menu SET description=description3 WHERE id=id3;
+    UPDATE food_menu SET name=name3 WHERE id=id3;
+    CALL deleteMainCourse(id3);
+    CALL deleteAppetizer(id3);
+    CALL deleteDessert(id3);
+    CALL deleteSoup(id3);
+    CALL deleteBeverage(id3);
+    CALL deleteOthers(id3);
+
+    CALL insertMainCourse(id3, main_course2);
+    CALL insertAppetizer(id3, appetizer2);
+    CALL insertDessert(id3, dessert2);
+    CALL insertSoup(id3, soup2);
+    CALL insertBeverage(id3, beverage2);
+    CALL insertOthers(id3, others2);
+
     CALL insertLog(concat('Updated food menu: ', id3), 'Administrator', session_id);
 END;
 GO
@@ -793,6 +813,48 @@ BEGIN
 
     DELETE FROM food_menu WHERE id=id3;
     CALL insertLog(concat('Deleted food menu: ', id3), 'Administrator', session_id);
+END;
+GO
+/*DELETE MAIN COURSE*/
+CREATE PROCEDURE deleteMainCourse(id2 INT)
+BEGIN
+
+    DELETE FROM main_course WHERE menu_id=id2;
+END;
+GO
+/*DELETE APPETIZER*/
+CREATE PROCEDURE deleteAppetizer(id2 INT)
+BEGIN
+
+    DELETE FROM appetizer WHERE menu_id=id2;
+END;
+GO
+/*DELETE DESSERT*/
+CREATE PROCEDURE deleteDessert(id2 INT)
+BEGIN
+
+    DELETE FROM dessert WHERE menu_id=id2;
+END;
+GO
+/*DELETE SOUP*/
+CREATE PROCEDURE deleteSoup(id2 INT)
+BEGIN
+
+    DELETE FROM soup WHERE menu_id=id2;
+END;
+GO
+/*DELETE BEVERAGE*/
+CREATE PROCEDURE deleteBeverage(id2 INT)
+BEGIN
+
+    DELETE FROM beverage WHERE menu_id=id2;
+END;
+GO
+/*DELETE OTHERS*/
+CREATE PROCEDURE deleteOthers(id2 INT)
+BEGIN
+
+    DELETE FROM others WHERE menu_id=id2;
 END;
 GO
 /*EDIT INVENTORY*/
