@@ -18,7 +18,7 @@ CREATE TABLE user (
     email_address VARCHAR(64),
     password VARCHAR(256),
     contact_number VARCHAR(11),
-    user_type VARCHAR(11)
+    user_type VARCHAR(20)
 );
 
 CREATE TABLE administrator (
@@ -462,13 +462,45 @@ BEGIN
     CALL insertLog(concat('Deleted order: ', id3), session_id);
 END;
 GO
-/*INSERT ADMINISTRATOR*/
-CREATE PROCEDURE insertAdmin(session_id INT,
-                        user_id3 INT)
+/*INSERT USER*/
+CREATE PROCEDURE insertUser(first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            password2 VARCHAR(256),
+                            contact_number2 VARCHAR(11),
+                            user_type2 VARCHAR(20))
 BEGIN
 
-    INSERT INTO administrator(user_id) VALUES (user_id3);
+    INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number, user_type) VALUES (first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
+END;
+GO
+/*INSERT ADMINISTRATOR*/
+CREATE PROCEDURE insertAdmin(session_id INT,
+                            first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            password2 VARCHAR(256),
+                            contact_number2 VARCHAR(11),
+                            user_type2 VARCHAR(20))
+BEGIN
+    CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
+    INSERT INTO administrator(user_id) VALUES (LAST_INSERT_ID());
     CALL insertLog(concat('Added administrator: ', LAST_INSERT_ID()), session_id);
+END;
+GO
+/*INSERT ROOT ADMINISTRATOR*/
+CREATE PROCEDURE insertRootAdmin(first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            password2 VARCHAR(256),
+                            contact_number2 VARCHAR(11),
+                            user_type2 VARCHAR(20))
+BEGIN
+    CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
+    INSERT INTO administrator(user_id) VALUES (LAST_INSERT_ID());
 END;
 GO
 /*DELETE ADMINISTRATOR*/
@@ -680,3 +712,5 @@ GO
 
 
 DELIMITER ;
+
+CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator");
