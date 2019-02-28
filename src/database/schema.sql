@@ -23,6 +23,7 @@ CREATE TABLE user (
 
 CREATE TABLE administrator (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
