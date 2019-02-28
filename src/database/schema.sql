@@ -47,8 +47,14 @@ CREATE TABLE event_motif (
 );
 
 CREATE TABLE package (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+);
+
+CREATE TABLE package_inclusion (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    inclusion VARCHAR(256)
+    inclusion VARCHAR(256),
+    package_id INT,
+    FOREIGN KEY(package_id) REFERENCES package(id)
 );
 
 CREATE TABLE request_information (
@@ -155,6 +161,8 @@ CREATE TABLE log_record (
     user_type VARCHAR(20) NOT NULL,
     user_id INT NOT NULL
 );
+
+
 
 
 /*   PROCEDURES   */
@@ -617,9 +625,33 @@ GO
 CREATE PROCEDURE insertPackage(session_id INT,
                         inclusion3 VARCHAR(256))
 BEGIN
+    DECLARE pkg_id INT;
 
-    INSERT INTO package(inclusion) VALUES(inclusion3);
-    CALL insertLog(concat('Added package: ', LAST_INSERT_ID()), 'Administrator', session_id);
+    INSERT INTO package() VALUES();
+    SET pkg_id = LAST_INSERT_ID();
+    CALL insertPackageInclusion(pkg_id, inclusion3);
+    CALL insertLog(concat('Added package: ', pkg_id), 'Administrator', session_id);
+END;
+GO
+/*INSERT PACKAGE INCLUSION*/
+CREATE PROCEDURE insertPackageInclusion(package_id2 INT,
+                        inclusion_list VARCHAR(256))
+BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = inclusion_list;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO package_inclusion(inclusion, package_id) VALUES(TRIM(string), package_id2);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO package_inclusion(inclusion, package_id) VALUES(TRIM(listcopy), package_id2);
 END;
 GO
 /*EDIT PACKAGE*/
