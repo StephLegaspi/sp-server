@@ -811,6 +811,12 @@ CREATE PROCEDURE deleteMenu(session_id INT,
                         id3 INT)
 BEGIN
 
+    CALL deleteMainCourse(id3);
+    CALL deleteAppetizer(id3);
+    CALL deleteDessert(id3);
+    CALL deleteSoup(id3);
+    CALL deleteBeverage(id3);
+    CALL deleteOthers(id3);
     DELETE FROM food_menu WHERE id=id3;
     CALL insertLog(concat('Deleted food menu: ', id3), 'Administrator', session_id);
 END;
@@ -921,6 +927,7 @@ CREATE PROCEDURE deletePackage(session_id INT,
                         id3 INT)
 BEGIN
 
+    CALL deletePackageInclusion(id3);
     DELETE FROM package WHERE id=id3;
     CALL insertLog(concat('Deleted package: ', id3), 'Administrator', session_id);
 END;
