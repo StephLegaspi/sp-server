@@ -83,11 +83,13 @@ router.delete('/packages/:id', async (req, res) => {
 
 router.put('/packages/:id', async (req, res) => {
   const id = req.params.id;
+  const name = req.body.name;
   const inclusion = req.body.inclusion;
+  const price = req.body.price;
   const session_id = req.session.user.id;
 
     try {
-      const catering_package = await controller.edit(session_id, id, inclusion);
+      const catering_package = await controller.edit(session_id, name, inclusion, price, id);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited package',

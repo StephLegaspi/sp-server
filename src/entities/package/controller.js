@@ -80,10 +80,10 @@ exports.remove = (session_id, id) => {
     });
 };
 
-exports.edit = (session_id, id, inclusion) => {
+exports.edit = (session_id, name, inclusion, price, id) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editPackage('" +session_id+"', '" +id+"', '" +inclusion+"');";
+      const queryString = "CALL editPackage('" +session_id+"', '" +name+"', '" +inclusion+"', '" +price+"', '" +id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
