@@ -43,6 +43,85 @@ router.get('/food_menus', async (req, res) => {
   }
 });
 
+
+router.get('/food_menus/main_course/:id', async (req, res) => {
+  try {
+    const food_menu = await controller.getOneMainCourse(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched main_course',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/food_menus/appetizer/:id', async (req, res) => {
+  try {
+    const food_menu = await controller.getOneAppetizer(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched appetizer',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/food_menus/dessert/:id', async (req, res) => {
+  try {
+    const food_menu = await controller.getOneDessert(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched dessert',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/food_menus/soup/:id', async (req, res) => {
+  try {
+    const food_menu = await controller.getOneSoup(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched soup',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/food_menus/beverage/:id', async (req, res) => {
+  try {
+    const food_menu = await controller.getOneBeverage(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched beverage',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/food_menus/others/:id', async (req, res) => {
+  try {
+    const food_menu = await controller.getOneOthers(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched others',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/food_menus/:id', async (req, res) => {
   try {
     const food_menu = await controller.getOne(req.params.id);
