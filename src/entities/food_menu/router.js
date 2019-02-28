@@ -8,11 +8,16 @@ const await = require('asyncawait/await');
 
 
 router.post('/food_menus', async (req, res) => {
-  const description = req.body.description;
   const session_id = req.session.user.id;
+  const main_course = req.body.main_course;
+  const appetizer = req.body.appetizer;
+  const dessert = req.body.dessert;
+  const soup = req.body.soup;
+  const beverage = req.body.beverage;
+  const others = req.body.others;
     
     try {
-      const food_menu = await controller.create(session_id, description);
+      const food_menu = await controller.create(session_id, main_course, appetizer, dessert, soup, beverage, others);
       res.status(200).json({
         status: 200,
         message: 'Successfully created food menu',

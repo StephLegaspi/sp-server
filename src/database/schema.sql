@@ -37,8 +37,49 @@ CREATE TABLE customer (
 );
 
 CREATE TABLE food_menu (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+);
+
+CREATE TABLE main_course (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    description VARCHAR(256)
+    inclusion VARCHAR(64),
+    menu_id INT,
+    FOREIGN KEY(menu_id) REFERENCES food_menu(id)
+);
+
+CREATE TABLE appetizer (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    inclusion VARCHAR(64),
+    menu_id INT,
+    FOREIGN KEY(menu_id) REFERENCES food_menu(id)
+);
+
+CREATE TABLE dessert (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    inclusion VARCHAR(64),
+    menu_id INT,
+    FOREIGN KEY(menu_id) REFERENCES food_menu(id)
+);
+
+CREATE TABLE soup (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    inclusion VARCHAR(64),
+    menu_id INT,
+    FOREIGN KEY(menu_id) REFERENCES food_menu(id)
+);
+
+CREATE TABLE beverage (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    inclusion VARCHAR(64),
+    menu_id INT,
+    FOREIGN KEY(menu_id) REFERENCES food_menu(id)
+);
+
+CREATE TABLE others (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    inclusion VARCHAR(64),
+    menu_id INT,
+    FOREIGN KEY(menu_id) REFERENCES food_menu(id)
 );
 
 CREATE TABLE event_motif (
@@ -47,7 +88,8 @@ CREATE TABLE event_motif (
 );
 
 CREATE TABLE package (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    price FLOAT NOT NULL
 );
 
 CREATE TABLE package_inclusion (
@@ -585,11 +627,150 @@ END;
 GO
 /*INSERT FOOD MENU*/
 CREATE PROCEDURE insertMenu(session_id INT,
-                        description3 VARCHAR(256))
+                        main_course2 VARCHAR(256),
+                        appetizer2 VARCHAR(256),
+                        dessert2 VARCHAR(256),
+                        soup2 VARCHAR(256),
+                        beverage2 VARCHAR(256),
+                        others2 VARCHAR(256))
 BEGIN
+    DECLARE fm_id INT;
 
-    INSERT INTO food_menu(description) VALUES(description3);
-    CALL insertLog(concat('Added food menu: ', LAST_INSERT_ID()), 'Administrator', session_id);
+    INSERT INTO food_menu() VALUES();
+    SET fm_id = LAST_INSERT_ID();
+    CALL insertMainCourse(fm_id, main_course2);
+    CALL insertAppetizer(fm_id, appetizer2);
+    CALL insertDessert(fm_id, dessert2);
+    CALL insertSoup(fm_id, soup2);
+    CALL insertBeverage(fm_id, beverage2);
+    CALL insertOthers(fm_id, others2);
+    CALL insertLog(concat('Added food menu: ', fm_id), 'Administrator', session_id);
+END;
+GO
+/*INSERT MAIN COURSE*/
+CREATE PROCEDURE insertMainCourse(fm_id2 INT,
+                        inclusion_list2 VARCHAR(256))
+BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = inclusion_list2;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO main_course(inclusion, menu_id) VALUES(TRIM(string), fm_id2);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO main_course(inclusion, menu_id) VALUES(TRIM(listcopy), fm_id2);
+END;
+GO
+/*INSERT APPETIZER*/
+CREATE PROCEDURE insertAppetizer(fm_id3 INT,
+                        inclusion_list3 VARCHAR(256))
+BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = inclusion_list3;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO appetizer(inclusion, menu_id) VALUES(TRIM(string), fm_id3);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO appetizer(inclusion, menu_id) VALUES(TRIM(listcopy), fm_id3);
+END;
+GO
+/*INSERT DESSERT*/
+CREATE PROCEDURE insertDessert(fm_id4 INT,
+                        inclusion_list4 VARCHAR(256))
+BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = inclusion_list4;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO dessert(inclusion, menu_id) VALUES(TRIM(string), fm_id4);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO dessert(inclusion, menu_id) VALUES(TRIM(listcopy), fm_id4);
+END;
+GO
+/*INSERT SOUP*/
+CREATE PROCEDURE insertSoup(fm_id5 INT,
+                        inclusion_list5 VARCHAR(256))
+BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = inclusion_list5;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO soup(inclusion, menu_id) VALUES(TRIM(string), fm_id5);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO soup(inclusion, menu_id) VALUES(TRIM(listcopy), fm_id5);
+END;
+GO
+/*INSERT BEVERAGE*/
+CREATE PROCEDURE insertBeverage(fm_id6 INT,
+                        inclusion_list6 VARCHAR(256))
+BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = inclusion_list6;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO beverage(inclusion, menu_id) VALUES(TRIM(string), fm_id6);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO beverage(inclusion, menu_id) VALUES(TRIM(listcopy), fm_id6);
+END;
+GO
+/*INSERT OTHERS*/
+CREATE PROCEDURE insertOthers(fm_id7 INT,
+                        inclusion_list7 VARCHAR(256))
+BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = inclusion_list7;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO others(inclusion, menu_id) VALUES(TRIM(string), fm_id7);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO others(inclusion, menu_id) VALUES(TRIM(listcopy), fm_id7);
 END;
 GO
 /*EDIT FOOD MENU*/
@@ -623,11 +804,12 @@ END;
 GO
 /*INSERT PACKAGE*/
 CREATE PROCEDURE insertPackage(session_id INT,
-                        inclusion3 VARCHAR(256))
+                        inclusion3 VARCHAR(256),
+                        price2 FLOAT)
 BEGIN
     DECLARE pkg_id INT;
 
-    INSERT INTO package() VALUES();
+    INSERT INTO package(price) VALUES(price2);
     SET pkg_id = LAST_INSERT_ID();
     CALL insertPackageInclusion(pkg_id, inclusion3);
     CALL insertLog(concat('Added package: ', pkg_id), 'Administrator', session_id);
