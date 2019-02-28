@@ -85,6 +85,7 @@ CREATE TABLE others (
 
 CREATE TABLE event_motif (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(64),
     description VARCHAR(256)
 );
 
@@ -601,20 +602,22 @@ END;
 GO
 /*INSERT EVENT MOTIF*/
 CREATE PROCEDURE insertMotif(session_id INT,
+                        name3 VARCHAR(64),
                         description3 VARCHAR(256))
 BEGIN
 
-    INSERT INTO event_motif(description) VALUES(description3);
+    INSERT INTO event_motif(name, description) VALUES(name3, description3);
     CALL insertLog(concat('Added event motif: ', LAST_INSERT_ID()), 'Administrator', session_id);
 END;
 GO
 /*EDIT EVENT MOTIF*/
 CREATE PROCEDURE editMotif(session_id INT,
                         id3 INT,
+                        name3 VARCHAR(64),
                         description3 VARCHAR(256))
 BEGIN
 
-    UPDATE event_motif SET description=description3 WHERE id=id3;
+    UPDATE event_motif SET name=name3, description=description3 WHERE id=id3;
     CALL insertLog(concat('Updated event motif: ', id3), 'Administrator', session_id);
 END;
 GO

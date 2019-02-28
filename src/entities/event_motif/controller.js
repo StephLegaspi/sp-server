@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (session_id, description) => {
+exports.create = (session_id, name, description) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL insertMotif('" +session_id+"', '" +description+"');";
+      const queryString = "CALL insertMotif('" +session_id+"', '" +name+"', '" +description+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -64,10 +64,10 @@ exports.remove = (session_id, id) => {
     });
 };
 
-exports.edit = (session_id, id, description) => {
+exports.edit = (session_id, id, name, description) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editMotif('"+session_id+"', '"+id+"', '"+description+"');";
+      const queryString = "CALL editMotif('"+session_id+"', '"+id+"', '"+name+"', '"+description+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

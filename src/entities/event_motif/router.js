@@ -8,11 +8,12 @@ const await = require('asyncawait/await');
 
 
 router.post('/event_motifs', async (req, res) => {
+  const name = req.body.name;
   const description = req.body.description;
   const session_id = req.session.user.id;
     
     try {
-      const event_motif = await controller.create(session_id, description);
+      const event_motif = await controller.create(session_id, name, description);
       res.status(200).json({
         status: 200,
         message: 'Successfully created event motif',
@@ -67,11 +68,12 @@ router.delete('/event_motifs/:id', async (req, res) => {
 
 router.put('/event_motifs/:id', async (req, res) => {
   const id = req.params.id;
+  const name = req.body.name;
   const description = req.body.description;
   const session_id = req.session.user.id;
 
     try {
-      const event_motif = await controller.edit(session_id, id, description );
+      const event_motif = await controller.edit(session_id, id, name, description );
       res.status(200).json({
         status: 200,
         message: 'Successfully edited event motif',
