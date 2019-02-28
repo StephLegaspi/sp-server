@@ -45,6 +45,22 @@ exports.getOne = (id) =>{
   });
 };
 
+exports.getOneInclusion = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM package_inclusion WHERE package_id = '" + id +"';"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+  });
+};
+
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
