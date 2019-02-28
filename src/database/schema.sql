@@ -207,11 +207,29 @@ CREATE TABLE log_record (
     user_id INT NOT NULL
 );
 
-
+CREATE TABLE contact_details (
+    id INT NOT NULL PRIMARY KEY DEFAULT 1,
+    telephone_number VARCHAR(20) NOT NULL,
+    mobile_number VARCHAR(11) NOT NULL,
+    email_address VARCHAR(64) NOT NULL,
+    business_address VARCHAR(128) NOT NULL
+);
 
 
 /*   PROCEDURES   */
 DELIMITER GO
+
+/*EDIT CONTACT*/
+CREATE PROCEDURE editContact(session_id INT,
+                        telephone_number2 VARCHAR(20),
+                        mobile_number2 VARCHAR(11),
+                        email_address2 VARCHAR(64),
+                        business_address2 VARCHAR(128))
+BEGIN
+    UPDATE contact_details SET telephone_number=telephone_number2, mobile_number=mobile_number2, email_address=email_address2, business_address=business_address2 WHERE id=1;
+    CALL insertLog(concat('Updated contact details: ', 1), 'Administrator', session_id);
+END;
+GO
 
 /*INSERT LOG RECORD*/
 CREATE PROCEDURE insertLog(action2 VARCHAR(256),
@@ -1028,3 +1046,4 @@ GO
 DELIMITER ;
 
 CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator");
+INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
