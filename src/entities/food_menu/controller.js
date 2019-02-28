@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (session_id, main_course, appetizer, dessert, soup, beverage, others) => {
+exports.create = (session_id, name, main_course, appetizer, dessert, soup, beverage, others) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL insertMenu('" +session_id+"', '" +main_course+"', '" +appetizer+"', '" +dessert+"', '" +soup+"', '" +beverage+"', '" +others+"');";
+      const queryString = "CALL insertMenu('" +session_id+"', '" +name+"', '" +main_course+"', '" +appetizer+"', '" +dessert+"', '" +soup+"', '" +beverage+"', '" +others+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

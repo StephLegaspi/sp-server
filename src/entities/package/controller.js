@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (session_id, inclusion, price) => {
+exports.create = (session_id, name, inclusion, price) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL insertPackage('" +session_id+"', '" +inclusion+"', '" +price+"');";
+      const queryString = "CALL insertPackage('" +session_id+"', '" +name+"', '" +inclusion+"', '" +price+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

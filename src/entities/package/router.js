@@ -8,12 +8,13 @@ const await = require('asyncawait/await');
 
 
 router.post('/packages', async (req, res) => {
+  const name = req.body.name;
   const inclusion = req.body.inclusion;
   const price = req.body.price;
   const session_id = req.session.user.id;
     
     try {
-      const catering_package = await controller.create(session_id, inclusion, price);
+      const catering_package = await controller.create(session_id, name, inclusion, price);
       res.status(200).json({
         status: 200,
         message: 'Successfully created package',

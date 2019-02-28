@@ -37,7 +37,8 @@ CREATE TABLE customer (
 );
 
 CREATE TABLE food_menu (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(64)
 );
 
 CREATE TABLE main_course (
@@ -89,6 +90,7 @@ CREATE TABLE event_motif (
 
 CREATE TABLE package (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(64),
     price FLOAT NOT NULL
 );
 
@@ -627,6 +629,7 @@ END;
 GO
 /*INSERT FOOD MENU*/
 CREATE PROCEDURE insertMenu(session_id INT,
+                        name2 VARCHAR(64),
                         main_course2 VARCHAR(256),
                         appetizer2 VARCHAR(256),
                         dessert2 VARCHAR(256),
@@ -636,7 +639,7 @@ CREATE PROCEDURE insertMenu(session_id INT,
 BEGIN
     DECLARE fm_id INT;
 
-    INSERT INTO food_menu() VALUES();
+    INSERT INTO food_menu(name) VALUES(name2);
     SET fm_id = LAST_INSERT_ID();
     CALL insertMainCourse(fm_id, main_course2);
     CALL insertAppetizer(fm_id, appetizer2);
@@ -804,12 +807,13 @@ END;
 GO
 /*INSERT PACKAGE*/
 CREATE PROCEDURE insertPackage(session_id INT,
+                        name2 VARCHAR(64),
                         inclusion3 VARCHAR(256),
                         price2 FLOAT)
 BEGIN
     DECLARE pkg_id INT;
 
-    INSERT INTO package(price) VALUES(price2);
+    INSERT INTO package(name, price) VALUES(name2, price2);
     SET pkg_id = LAST_INSERT_ID();
     CALL insertPackageInclusion(pkg_id, inclusion3);
     CALL insertLog(concat('Added package: ', pkg_id), 'Administrator', session_id);

@@ -9,6 +9,7 @@ const await = require('asyncawait/await');
 
 router.post('/food_menus', async (req, res) => {
   const session_id = req.session.user.id;
+  const name = req.body.name;
   const main_course = req.body.main_course;
   const appetizer = req.body.appetizer;
   const dessert = req.body.dessert;
@@ -17,7 +18,7 @@ router.post('/food_menus', async (req, res) => {
   const others = req.body.others;
     
     try {
-      const food_menu = await controller.create(session_id, main_course, appetizer, dessert, soup, beverage, others);
+      const food_menu = await controller.create(session_id, name, main_course, appetizer, dessert, soup, beverage, others);
       res.status(200).json({
         status: 200,
         message: 'Successfully created food menu',
