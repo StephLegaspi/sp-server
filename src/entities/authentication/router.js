@@ -7,12 +7,12 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
 
-router.post('/auth/login', async (req, res) => {
+router.post('/auth/login/admin', async (req, res) => {
   const email_address = req.body.email_address;
   const password = req.body.password;
  
     try {
-    	const user = await controller.login(email_address, password);
+    	const user = await controller.loginAdmin(email_address, password);
 
    		req.session.user = user;
     	res.status(200).json({

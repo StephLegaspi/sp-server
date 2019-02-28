@@ -4,9 +4,11 @@ const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 
 
-exports.login = ( email, password ) => {
+exports.loginAdmin = ( email, password ) => {
+  const type = "Administrator";
+
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * from user where email_address = '" + email+"'";
+    const queryString = "SELECT * from user where email_address = '" + email+"' AND user_type = '" + type+"' ";
     db.query(queryString, email, (err, rows) => {
       if (err) {
         console.log(err);
