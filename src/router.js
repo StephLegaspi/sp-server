@@ -17,6 +17,7 @@ const inventoryRouter = require('./entities/inventory/router');
 const order_rentalRouter = require('./entities/order_rental/router');
 const authenticationRouter = require('./entities/authentication/router');
 const contactRouter = require('./entities/contact/router');
+const FAQsRouter = require('./entities/FAQs/router');
 
 router.use(authenticationRouter);
 router.use(administratorRouter);
@@ -35,6 +36,7 @@ router.use((req, res, next) => {
 });
 
 router.use(contactRouter);
+router.use(FAQsRouter);
 router.use(productRouter);
 router.use(userRouter);
 router.use(customerRouter);

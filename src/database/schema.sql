@@ -215,9 +215,47 @@ CREATE TABLE contact_details (
     business_address VARCHAR(128) NOT NULL
 );
 
+CREATE TABLE FAQs (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    question VARCHAR(256) NOT NULL,
+    answer VARCHAR(256) NOT NULL
+);
+
 
 /*   PROCEDURES   */
 DELIMITER GO
+
+/*INSERT FAQ*/
+CREATE PROCEDURE insertFAQ(session_id INT,
+                        question2 VARCHAR(256),
+                        answer2 VARCHAR(256))
+BEGIN
+
+    INSERT INTO FAQs(question, answer) VALUES(question2, answer2);
+    CALL insertLog(concat('Added Frequently Asked Question: ', LAST_INSERT_ID()), 'Administrator', session_id);
+END;
+GO
+
+/*EDIT FAQ*/
+CREATE PROCEDURE editFAQ(session_id INT,
+                        id2 INT,
+                        question2 VARCHAR(256),
+                        answer2 VARCHAR(256))
+BEGIN
+
+    
+    UPDATE FAQs SET question=question2, answer=answer2 WHERE id = id2;
+END;
+GO
+
+/*DELETE FAQ*/
+CREATE PROCEDURE deleteFAQ(session_id INT,
+                        id2 INT)
+BEGIN
+
+    DELETE FROM FAQs WHERE id=id2;
+END;
+GO
 
 /*EDIT CONTACT*/
 CREATE PROCEDURE editContact(session_id INT,
