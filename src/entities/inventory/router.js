@@ -37,10 +37,11 @@ router.get('/inventories/:id', async (req, res) => {
 router.put('/inventories/:id', async (req, res) => {
   const id = req.params.id;
   const total_quantity = req.body.total_quantity;
+  const remaining = req.body.remaining;
   const session_id = req.session.user.id;
 
     try {
-      const inventory = await controller.edit(session_id, id, total_quantity);
+      const inventory = await controller.edit(session_id, id, total_quantity, remaining);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited inventory',
