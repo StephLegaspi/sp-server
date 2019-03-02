@@ -36,9 +36,9 @@ router.post('/requests', async (req, res) => {
  
 });
 
-router.get('/requests', async (req, res) => {
+router.get('/requests/pending-count', async (req, res) => {
   try {
-    const request_info = await controller.getAll();
+    const request_info = await controller.getPendingCount();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched requests',
@@ -50,9 +50,9 @@ router.get('/requests', async (req, res) => {
   }
 });
 
-router.get('/requests/pending-count', async (req, res) => {
+router.get('/requests/inclusion/:id', async (req, res) => {
   try {
-    const request_info = await controller.getPendingCount();
+    const request_info = await controller.getInclusion(req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched requests',
@@ -76,6 +76,38 @@ router.get('/requests/:id', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
+
+router.get('/requests', async (req, res) => {
+  try {
+    const request_info = await controller.getAll();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched requests',
+      data: request_info
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+
+router.get('/requests/status/:status', async (req, res) => {
+  try {
+    const request_info = await controller.getByStatus(req.params.status);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched requests',
+      data: request_info
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+
 
 router.delete('/requests/:id', async (req, res) => {
   const session_id = req.session.user.id;

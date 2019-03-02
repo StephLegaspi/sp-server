@@ -5,7 +5,7 @@ exports.create = (session_id, customer_first_name, customer_middle_name, custome
 
       const queryString = "INSERT INTO request_information(customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) VALUES ('" +customer_first_name+"', '" +customer_middle_name+"', '" +customer_last_name+"', '" +customer_email+"', '" +customer_contact_number+"', '" +event_date+"', '" +event_location+"', '" +number_of_persons+"', '" +package_id+"', '" +motif_id+"', '" +menu_id+"', '" +customer_id+"');";
 
-      const queryString2 = "CALL insertLog(concat('Added request: ', LAST_INSERT_ID()), '" +session_id+"');";
+      const queryString2 = "CALL insertLog(concat('Added request: ', LAST_INSERT_ID()), 'Administrator', '" +session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -50,6 +50,38 @@ exports.getPendingCount = () =>{
         return resolve(rows);
         
       });
+  });
+};
+
+exports.getInclusion = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT event_motif.name AS 'Event Motif', food_menu.name AS 'Food Menu', package.name AS 'Package' FROM request_information, event_motif, food_menu, package WHERE request_information.package_id=package.id AND request_information.motif_id=event_motif.id AND request_information.menu_id=food_menu.id AND request_information.id = '"+id+"';"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
+
+exports.getByStatus = (status) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM request_information WHERE status = '" + status +"';"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+
   });
 };
 
