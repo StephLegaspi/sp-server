@@ -137,7 +137,7 @@ CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
-    renewal_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    renewal_timestamp TIMESTAMP,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -155,6 +155,7 @@ CREATE TABLE shopping_cart (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_items INT NOT NULL DEFAULT 0,
     total_bill FLOAT NOT NULL DEFAULT 0.0,
+    for_purchase BOOLEAN,
     customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
 );
@@ -181,8 +182,8 @@ CREATE TABLE order_information (
     consignee_contact_number VARCHAR(11) NOT NULL,
     delivery_address VARCHAR(128) NOT NULL,
     zip_code VARCHAR(16),
-    status VARCHAR(16) DEFAULT "Pending",
     for_purchase BOOLEAN,
+    status VARCHAR(16) DEFAULT "Pending",
     order_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
@@ -288,23 +289,34 @@ BEGIN
     SELECT * FROM product;
 END;
 GO
-/*INSERT CART PRODUCT*/
-CREATE PROCEDURE insertCartProduct(product_quantity INT,
+/*INSERT CART PRODUCT PURCHASE*/
+CREATE PROCEDURE insertCartProductPurchase(product_quantity INT,
                                 rental_duration INT,
                                 product_color_id INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
     
-    IF rental_duration > 0 THEN
-        SET @price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
-    ELSE
-         SET @price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
-    END IF;
+    SET @price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
         values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
 
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
+END;
+GO
+/*INSERT CART PRODUCT RENTAL*/
+CREATE PROCEDURE insertCartProductRental(product_quantity INT,
+                                rental_duration INT,
+                                product_color_id INT,
+                                shopping_cart_id INT,
+                                product_id INT)
+BEGIN
+    
+    SET @price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
+
+    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
+        values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
 
     UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
 END;
@@ -517,15 +529,15 @@ BEGIN
 
     CALL insertLog(concat('Added order: ', id_order), 'Customer', session_id);
     
-    SET cart_prod_count = (SELECT count(*) FROM shopping_cart_products);
+    SET cart_prod_count = (SELECT count(*) from shopping_cart_products);
     SET ctr = 0;
 
     IF for_purchase = 0 THEN
         WHILE ctr < cart_prod_count DO
 
-            INSERT INTO order_rental(product_id, product_quantity, rental_duration) SELECT product_id, product_quantity, rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
+            INSERT INTO order_rental(rental_duration) SELECT rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
 
-            UPDATE order_rental SET delivery_address=delivery_address2, order_id= id_order WHERE id = LAST_INSERT_ID();
+            UPDATE order_rental SET order_id= id_order WHERE id = LAST_INSERT_ID();
 
             SET ctr = ctr + 1;
         END WHILE;
@@ -534,6 +546,7 @@ BEGIN
     CALL updateRemaining(cart_prod_count, shopping_cart_id2);
 END;
 GO
+
 /*EDIT ORDER_INFO*/
 CREATE PROCEDURE editOrder(session_id INT,
                         id_ord INT,
@@ -553,9 +566,7 @@ BEGIN
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
     UPDATE order_information SET status=stat_ord WHERE id=id_ord;
-    UPDATE order_rental SET delivery_status=stat_ord WHERE order_id=id_ord;
 
-    IF is_for_purchase = 0 THEN
         WHILE counter < count_cart_prod DO
 
             SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
@@ -564,9 +575,9 @@ BEGIN
 
             SET counter = counter + 1;
         END WHILE;
-    END IF;
+ 
 
-    CALL insertLog(concat('Updated order: ', id_ord), 'Customer', session_id);
+    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
 /*DELETE ORDER*/
@@ -1086,3 +1097,16 @@ DELIMITER ;
 
 CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator");
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
+
+
+CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 20, 1);
+CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 50, 1);
+CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 40, 1);
+CALL insertProduct(1, "Table", "table", 200, 0, 1, 40, 1);
+
+CALL insertProductColor(1, "red", 1);
+CALL insertProductColor(1, "blue", 2);
+CALL insertProductColor(1, "white", 3);
+CALL insertProductColor(1, "green", 4);
+
+CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");

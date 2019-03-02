@@ -7,7 +7,7 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
 
-router.post('/orders', async (req, res) => {
+router.post('/orders/purchase', async (req, res) => {
   const consignee_first_name = req.body.consignee_first_name;
   const consignee_middle_name = req.body.consignee_middle_name;
   const consignee_last_name = req.body.consignee_last_name;
@@ -15,7 +15,7 @@ router.post('/orders', async (req, res) => {
   const consignee_contact_number = req.body.consignee_contact_number;
   const delivery_address = req.body.delivery_address;
   const zip_code = req.body.zip_code;
-  const for_purchase = req.body.for_purchase;
+  const for_purchase = 1;
   const shopping_cart_id = req.body.shopping_cart_id;
   const customer_id = req.body.customer_id;
   const session_id = req.session.user.id;
@@ -47,7 +47,22 @@ router.get('/orders', async (req, res) => {
   }
 });
 
-router.get('/orders/:id', async (req, res) => {
+router.get('/orders/purchase', async (req, res) => {
+  try {
+    const order_info = await controller.getAllPurchase();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched orders',
+      data: order_info
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+
+router.get('/orders/purchase/:id', async (req, res) => {
   try {
     const order_info = await controller.getOne(req.params.id);
     res.status(200).json({
@@ -60,7 +75,7 @@ router.get('/orders/:id', async (req, res) => {
   }
 });
 
-router.delete('/orders/:id', async (req, res) => {
+router.delete('/orders/purchase/:id', async (req, res) => {
   const session_id = req.session.user.id;
 
   try {
@@ -75,7 +90,7 @@ router.delete('/orders/:id', async (req, res) => {
   }
 });
 
-router.put('/orders/:id', async (req, res) => {
+router.put('/orders/purchase/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
   const session_id = req.session.user.id;

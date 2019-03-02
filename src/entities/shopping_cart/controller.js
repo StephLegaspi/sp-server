@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (customer_id) => {
+exports.create = (customer_id, for_purchase) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "INSERT INTO shopping_cart(customer_id) VALUES ('" +customer_id+"');";
+      const queryString = "INSERT INTO shopping_cart(customer_id, for_purchase) VALUES ('" +customer_id+"', '" +for_purchase+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

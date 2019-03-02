@@ -4,6 +4,7 @@ exports.create = (session_id, consignee_first_name, consignee_middle_name, consi
 	return new Promise((resolve, reject) => {
 
       const queryString = "CALL insertOrder('" +session_id+"','" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +for_purchase+"', '" +shopping_cart_id+"', '" +customer_id+"');";
+      console.log(session_id);
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -13,6 +14,20 @@ exports.create = (session_id, consignee_first_name, consignee_middle_name, consi
         return resolve(results);
       });
     });
+};
+
+exports.getAllPurchase = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM order_information WHERE for_purchase=1;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
 };
 
 exports.getAll = () =>{

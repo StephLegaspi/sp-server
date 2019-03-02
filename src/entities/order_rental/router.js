@@ -6,7 +6,33 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-router.get('/order_rentals', async (req, res) => {
+router.post('/orders/rental', async (req, res) => {
+  const consignee_first_name = req.body.consignee_first_name;
+  const consignee_middle_name = req.body.consignee_middle_name;
+  const consignee_last_name = req.body.consignee_last_name;
+  const consignee_email = req.body.consignee_email;
+  const consignee_contact_number = req.body.consignee_contact_number;
+  const delivery_address = req.body.delivery_address;
+  const zip_code = req.body.zip_code;
+  const for_purchase = 0;
+  const shopping_cart_id = req.body.shopping_cart_id;
+  const customer_id = req.body.customer_id;
+  const session_id = req.session.user.id;
+    
+    try {
+      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully created order',
+        data: order_info
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.get('/orders/rental', async (req, res) => {
   try {
     const order_rentals = await controller.getAll();
     res.status(200).json({
@@ -33,7 +59,7 @@ router.get('/order_rentals/:id', async (req, res) => {
   }
 });
 
-router.put('/order_rentals/:id', async (req, res) => {
+router.put('/orders/rental/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
 
@@ -50,7 +76,7 @@ router.put('/order_rentals/:id', async (req, res) => {
  
 });
 
-router.delete('/order_rentals/:id', async (req, res) => {
+router.delete('/orders/rental/:id', async (req, res) => {
   try {
     const order_rental = await controller.remove(req.params.id);
     res.status(200).json({

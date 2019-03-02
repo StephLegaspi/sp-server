@@ -7,11 +7,29 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
 
-router.post('/shopping_carts', async (req, res) => {
+router.post('/shopping_carts/purchase', async (req, res) => {
   const customer_id = req.body.customer_id;
+  const for_purchase = 1;
     
     try {
-      const shopping_cart = await controller.create(customer_id);
+      const shopping_cart = await controller.create(customer_id, for_purchase);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully created shopping_cart',
+        data: shopping_cart
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.post('/shopping_carts/rental', async (req, res) => {
+  const customer_id = req.body.customer_id;
+  const for_purchase = 0;
+    
+    try {
+      const shopping_cart = await controller.create(customer_id, for_purchase);
       res.status(200).json({
         status: 200,
         message: 'Successfully created shopping_cart',
