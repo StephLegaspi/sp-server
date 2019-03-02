@@ -18,7 +18,7 @@ exports.create = (session_id, consignee_first_name, consignee_middle_name, consi
 
 exports.getAllPurchase = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM order_information WHERE for_purchase=1;"
+    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -32,7 +32,7 @@ exports.getAllPurchase = () =>{
 
 exports.getAllRental = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM order_information WHERE for_purchase=0;"
+    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=0;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
