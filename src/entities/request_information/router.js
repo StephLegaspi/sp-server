@@ -50,6 +50,20 @@ router.get('/requests', async (req, res) => {
   }
 });
 
+router.get('/requests/pending-count', async (req, res) => {
+  try {
+    const request_info = await controller.getPendingCount();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched requests',
+      data: request_info
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/requests/:id', async (req, res) => {
   try {
     const request_info = await controller.getOne(req.params.id);

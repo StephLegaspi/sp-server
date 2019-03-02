@@ -32,6 +32,32 @@ router.get('/inventories/rental/out-of-stock', async (req, res) => {
   }
 });
 
+router.get('/inventories/purchase/out-of-stock-count', async (req, res) => {
+  try {
+    const inventory = await controller.getOutOfStockPurchaseCount();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/inventories/rental/out-of-stock-count', async (req, res) => {
+  try {
+    const inventory = await controller.getOutOfStockRentalCount();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/inventories/purchase', async (req, res) => {
   try {
     const inventories = await controller.getAllPurchase();

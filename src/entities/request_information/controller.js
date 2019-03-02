@@ -39,6 +39,20 @@ exports.getAll = () =>{
   });
 };
 
+exports.getPendingCount = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT count(*) FROM request_information WHERE status='Pending';"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM request_information WHERE id = '" + id +"';"

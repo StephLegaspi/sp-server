@@ -94,6 +94,38 @@ exports.getByProdNameRental = (name) =>{
 	});
 };
 
+exports.getOutOfStockPurchaseCount = () =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "select count(*) from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=1;"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
+exports.getOutOfStockRentalCount = () =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "select count(*) from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=0;"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
 exports.getOutOfStockPurchase = () =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "CALL getInventoryOutOfStockPurchase();"
@@ -112,7 +144,7 @@ exports.getOutOfStockPurchase = () =>{
 
 exports.getOutOfStockRental = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select * from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){

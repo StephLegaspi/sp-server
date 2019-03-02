@@ -1109,7 +1109,7 @@ GO
 CREATE PROCEDURE getInventoryOutOfStockPurchase()
 BEGIN
 
-    select * from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining=0;
+    select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining=0;
 END;
 GO
 
