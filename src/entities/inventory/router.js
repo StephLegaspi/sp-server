@@ -32,9 +32,23 @@ router.get('/inventories/rental/out-of-stock', async (req, res) => {
   }
 });
 
-router.get('/inventories', async (req, res) => {
+router.get('/inventories/purchase', async (req, res) => {
   try {
-    const inventories = await controller.getAll();
+    const inventories = await controller.getAllPurchase();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventories',
+      data: inventories
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/inventories/rental', async (req, res) => {
+  try {
+    const inventories = await controller.getAllRental();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched inventories',
@@ -59,9 +73,22 @@ router.get('/inventories/:id', async (req, res) => {
   }
 });
 
-router.get('/inventories/name/:name', async (req, res) => {
+router.get('/inventories/purchase/name/:name', async (req, res) => {
   try {
-    const inventory = await controller.getByProdName(req.params.name);
+    const inventory = await controller.getByProdNamePurchase(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/inventories/rental/name/:name', async (req, res) => {
+  try {
+    const inventory = await controller.getByProdNameRental(req.params.name);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched inventory',
@@ -76,10 +103,11 @@ router.put('/inventories/:id', async (req, res) => {
   const id = req.params.id;
   const total_quantity = req.body.total_quantity;
   const remaining = req.body.remaining;
+  const renewal_timestamp = req.body.renewal_timestamp;
   const session_id = req.session.user.id;
 
     try {
-      const inventory = await controller.edit(session_id, id, total_quantity, remaining);
+      const inventory = await controller.edit(session_id, id, total_quantity, remaining, renewal_timestamp);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited inventory',

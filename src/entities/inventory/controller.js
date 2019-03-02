@@ -14,6 +14,38 @@ exports.getAll = () => {
 	});
 };
 
+exports.getAllPurchase = () =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=1;"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
+exports.getAllRental = () =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=0;"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
 exports.getByID = (id) =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT * FROM inventory WHERE id = '" + id +"';"
@@ -30,9 +62,25 @@ exports.getByID = (id) =>{
 	});
 };
 
-exports.getByProdName = (name) =>{
+exports.getByProdNamePurchase = (name) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id=product.id AND LOWER(product.name) = LOWER('" + name +"');"
+		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id=product.id AND LOWER(product.name) = LOWER('" + name +"') AND product.for_purchase=1;"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
+exports.getByProdNameRental = (name) =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id=product.id AND LOWER(product.name) = LOWER('" + name +"') AND product.for_purchase=0;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -78,10 +126,10 @@ exports.getOutOfStockRental = (id) =>{
 	});
 };
 
-exports.edit = (session_id, id, total_quantity, remaining) => {
+exports.edit = (session_id, id, total_quantity, remaining, renewal_timestamp) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editInventory('"+session_id+"', '"+id+"', '"+total_quantity+"', '"+remaining+"')";
+      const queryString = "CALL editInventory('"+session_id+"', '"+id+"', '"+total_quantity+"', '"+remaining+"', '"+renewal_timestamp+"')";
 
       db.query(queryString, (err, results) => {
         if (err) {

@@ -137,7 +137,7 @@ CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
-    renewal_timestamp TIMESTAMP,
+    renewal_timestamp DATE NULL,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -195,7 +195,7 @@ CREATE TABLE order_rental (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     rental_duration INT,
     rental_status VARCHAR(16) DEFAULT "On-rent",
-    returned_timestamp TIMESTAMP,
+    returned_timestamp TIMESTAMP NULL,
     order_id INT,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
@@ -949,10 +949,11 @@ GO
 CREATE PROCEDURE editInventory(session_id INT,
                         id3 INT,
                         total_quantity3 INT,
-                        remaining3 INT)
+                        remaining3 INT,
+                        renewal_timestamp3 DATE)
 BEGIN
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=remaining3 WHERE id=id3;
+    UPDATE inventory SET total_quantity=total_quantity3, remaining=remaining3, renewal_timestamp=renewal_timestamp3 WHERE id=id3;
     CALL insertLog(concat('Updated inventory: ', id3),  'Administrator', session_id);
 END;
 GO
