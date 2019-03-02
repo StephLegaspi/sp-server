@@ -6,6 +6,31 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+router.get('/inventories/purchase/out-of-stock', async (req, res) => {
+  try {
+    const inventory = await controller.getOutOfStockPurchase();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/inventories/rental/out-of-stock', async (req, res) => {
+  try {
+    const inventory = await controller.getOutOfStockRental();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
 
 router.get('/inventories', async (req, res) => {
   try {
@@ -23,7 +48,20 @@ router.get('/inventories', async (req, res) => {
 
 router.get('/inventories/:id', async (req, res) => {
   try {
-    const inventory = await controller.getOne(req.params.id);
+    const inventory = await controller.getByID(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/inventories/name/:name', async (req, res) => {
+  try {
+    const inventory = await controller.getByProdName(req.params.name);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched inventory',

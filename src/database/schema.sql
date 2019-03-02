@@ -1104,6 +1104,14 @@ BEGIN
 END;
 GO
 
+/*GET INVENTORY OUT OF STOCK PURCHASE*/
+CREATE PROCEDURE getInventoryOutOfStockPurchase()
+BEGIN
+
+    select * from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining=0;
+END;
+GO
+
 
 DELIMITER ;
 
@@ -1111,10 +1119,10 @@ CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$1
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
 
 
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 20, 1);
-CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 50, 1);
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 40, 1);
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 40, 1);
+CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0, 1);
+CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, 1);
+CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0, 1);
+CALL insertProduct(1, "Table", "table", 200, 0, 1, 0, 1);
 
 CALL insertProductColor(1, "red", 1);
 CALL insertProductColor(1, "blue", 2);
