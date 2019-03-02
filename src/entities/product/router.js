@@ -6,19 +6,6 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-router.get('/products/:id', async (req, res) => {
-  try {
-    const product = await controller.getOne(req.params.id);
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched product',
-      data: product
-    });
-  } catch (status) {
-    res.status(status).json({ status });
-  }
-});
-
 router.get('/products', async (req, res) => {
   try {
     const products = await controller.getAll();
@@ -29,6 +16,33 @@ router.get('/products', async (req, res) => {
     });
   } catch (status) {
     let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products/modal/:id', async (req, res) => {
+  try {
+    const products = await controller.getOneModal(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched products',
+      data: products
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products/:id', async (req, res) => {
+  try {
+    const product = await controller.getOne(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
     res.status(status).json({ status });
   }
 });
