@@ -30,20 +30,6 @@ exports.getAllPurchase = () =>{
   });
 };
 
-exports.getAllRental = () =>{
-  return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM order_information WHERE for_purchase=0;"
-
-      db.query(queryString, (err, rows) => {
-        if (err) {
-          return reject(500);
-        }
-        return resolve(rows);
-        
-      });
-  });
-};
-
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM order_information;"
@@ -58,9 +44,26 @@ exports.getAll = () =>{
   });
 };
 
-exports.getOne = (id) =>{
+exports.getByStatPurchase = (delivery_status) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM order_information WHERE id = '" + id +"';"
+    const queryString = "SELECT * FROM order_information WHERE delivery_status = '" + delivery_status +"' AND for_purchase=1;"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+
+  });
+};
+
+exports.getByStatRental = (delivery_status, rental_status) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM order_information WHERE delivery_status = '" + delivery_status +"' AND rental_status = '" + delivery_status +"' AND  for_purchase=0;"
 
     db.query(queryString, (err, rows) =>{
       if (err){

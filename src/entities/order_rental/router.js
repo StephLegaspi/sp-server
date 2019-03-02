@@ -32,7 +32,7 @@ router.post('/orders/rental', async (req, res) => {
  
 });
 
-router.get('/orders/rental', async (req, res) => {
+router.get('/order_rentals', async (req, res) => {
   try {
     const order_rentals = await controller.getAll();
     res.status(200).json({
@@ -77,7 +77,7 @@ router.put('/orders/rental/:id', async (req, res) => {
  
 });
 
-router.delete('/orders/rental/:id', async (req, res) => {
+router.delete('/order_rentals/:id', async (req, res) => {
   try {
     const order_rental = await controller.remove(req.params.id);
     res.status(200).json({

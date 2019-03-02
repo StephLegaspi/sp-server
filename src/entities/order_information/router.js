@@ -76,9 +76,9 @@ router.get('/orders/rental', async (req, res) => {
 });
 
 
-router.get('/orders/purchase/:id', async (req, res) => {
+router.get('/orders/purchase/:delivery_status', async (req, res) => {
   try {
-    const order_info = await controller.getOne(req.params.id);
+    const order_info = await controller.getByStatPurchase(req.params.delivery_status);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched order',
@@ -88,6 +88,7 @@ router.get('/orders/purchase/:id', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
 
 router.delete('/orders/purchase/:id', async (req, res) => {
   const session_id = req.session.user.id;
