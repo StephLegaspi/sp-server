@@ -72,6 +72,20 @@ exports.getAllPendingRental = () =>{
   });
 };
 
+exports.getCustomerInfo = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT customer_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number FROM order_information WHERE id= '" + id +"';";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM order_information;"
