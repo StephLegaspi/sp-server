@@ -51,6 +51,22 @@ exports.getOne = (id) =>{
 	});
 };
 
+exports.getOneModal = (id) =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "SELECT customer.id, user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number FROM customer, user WHERE customer.id = '" + id +"' AND customer.user_id=user.id;"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
 exports.edit = (session_id, id, address, zip_code) => {
 	return new Promise((resolve, reject) => {
 

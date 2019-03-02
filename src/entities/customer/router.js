@@ -63,6 +63,19 @@ router.get('/customers', async (req, res) => {
   }
 });
 
+router.get('/customers/modal/:id', async (req, res) => {
+  try {
+    const customer = await controller.getOneModal(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched customer',
+      data: customer
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/customers/:id', async (req, res) => {
   try {
     const customer = await controller.getOne(req.params.id);
