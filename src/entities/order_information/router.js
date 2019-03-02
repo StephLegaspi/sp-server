@@ -75,6 +75,34 @@ router.get('/orders/rental', async (req, res) => {
   }
 });
 
+router.get('/orders/purchase/pending-count', async (req, res) => {
+  try {
+    const order_info = await controller.getAllPendingPurchase();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched orders',
+      data: order_info
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/orders/rental/pending-count', async (req, res) => {
+  try {
+    const order_info = await controller.getAllPendingRental();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched orders',
+      data: order_info
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 
 router.get('/orders/purchase/:delivery_status', async (req, res) => {
   try {

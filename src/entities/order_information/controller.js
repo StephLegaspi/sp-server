@@ -30,6 +30,48 @@ exports.getAllPurchase = () =>{
   });
 };
 
+exports.getAllRental = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM order_information WHERE for_purchase=0;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
+exports.getAllPendingPurchase = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT count(*) FROM order_information WHERE status='Pending' AND for_purchase=1;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
+exports.getAllPendingRental = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT count(*) FROM order_information WHERE status='Pending' AND for_purchase=0;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM order_information;"
