@@ -60,11 +60,12 @@ router.get('/order_rentals/:id', async (req, res) => {
 });
 
 router.put('/orders/rental/:id', async (req, res) => {
+  const session_id = req.session.user.id;
   const id = req.params.id;
-  const status = req.body.status;
+  const rental_status = req.body.rental_status;
 
     try {
-      const order_rental = await controller.edit(id, status);
+      const order_rental = await controller.edit(session_id, id, rental_status);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited order_rental',

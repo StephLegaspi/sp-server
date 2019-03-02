@@ -48,10 +48,10 @@ exports.getOne = (id) =>{
   });
 };
 
-exports.edit = (id, status) => {
+exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "UPDATE order_rental SET rental_status = '"+status+"', returned_timestamp = CURDATE()  WHERE id = '"+id+"';";
+      const queryString = "CALL returnOrder('"+session_id+"', '"+id+"', '"+status+"');";;
 
       db.query(queryString, (err, results) => {
         if (err) {

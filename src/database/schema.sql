@@ -195,7 +195,7 @@ CREATE TABLE order_rental (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     rental_duration INT,
     rental_status VARCHAR(16) DEFAULT "On-rent",
-    returned_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    returned_timestamp TIMESTAMP,
     order_id INT,
     FOREIGN KEY(order_id) REFERENCES order_information(id)
 );
@@ -552,6 +552,17 @@ CREATE PROCEDURE editOrder(session_id INT,
                         id_ord INT,
                         stat_ord VARCHAR(16))
 BEGIN
+
+    UPDATE order_information SET status=stat_ord WHERE id=id_ord;
+    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
+END;
+GO
+
+/*RETURN ORDER RENTAL*/
+CREATE PROCEDURE returnOrder(session_id INT,
+                        id_ord INT,
+                        rental_stat VARCHAR(16))
+BEGIN
     
     DECLARE id_cart INT;
     DECLARE counter INT;
@@ -565,7 +576,7 @@ BEGIN
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
-    UPDATE order_information SET status=stat_ord WHERE id=id_ord;
+    UPDATE order_rental SET rental_status=rental_stat WHERE id=id_ord;
 
         WHILE counter < count_cart_prod DO
 
@@ -580,6 +591,7 @@ BEGIN
     CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
+
 /*DELETE ORDER*/
 CREATE PROCEDURE deleteOrder(session_id INT,
                             id3 INT)

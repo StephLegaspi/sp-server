@@ -30,6 +30,20 @@ exports.getAllPurchase = () =>{
   });
 };
 
+exports.getAllRental = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM order_information WHERE for_purchase=0;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM order_information;"

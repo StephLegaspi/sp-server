@@ -61,6 +61,20 @@ router.get('/orders/purchase', async (req, res) => {
   }
 });
 
+router.get('/orders/rental', async (req, res) => {
+  try {
+    const order_info = await controller.getAllRental();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched orders',
+      data: order_info
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 
 router.get('/orders/purchase/:id', async (req, res) => {
   try {
