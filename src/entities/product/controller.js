@@ -1,8 +1,22 @@
 const db = require('../../database');
 
-exports.getAll = () => {
+exports.getAllPurchase = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product;";
+	    const queryString = "SELECT * FROM product WHERE for_purchase=1;";
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
+exports.getAllRental = () => {
+	return new Promise((resolve, reject) => {
+	    const queryString = "SELECT * FROM product WHERE for_purchase=0;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -30,21 +44,6 @@ exports.getOne = (id) =>{
 	});
 };
 
-exports.getOneModal = (id) =>{
-	return new Promise((resolve, reject) => {
-		const queryString = "SELECT id, description, price FROM product WHERE id = '" + id +"';"
-
-		db.query(queryString, (err, rows) =>{
-			if (err){
-				return reject(500);
-			}
-			if (!rows.length){
-				return reject(404);
-			}
-			return resolve(rows);
-		});
-	});
-};
 
 exports.create = (user_id, name, description, price, for_purchase, display_product, total_quantity,admin_id) => {
 	return new Promise((resolve, reject) => {

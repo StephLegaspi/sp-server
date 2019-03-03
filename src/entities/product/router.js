@@ -6,9 +6,9 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-router.get('/products', async (req, res) => {
+router.get('/products/purchase', async (req, res) => {
   try {
-    const products = await controller.getAll();
+    const products = await controller.getAllPurchase();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched products',
@@ -20,9 +20,9 @@ router.get('/products', async (req, res) => {
   }
 });
 
-router.get('/products/modal/:id', async (req, res) => {
+router.get('/products/rental', async (req, res) => {
   try {
-    const products = await controller.getOneModal(req.params.id);
+    const products = await controller.getAllRental();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched products',
@@ -33,6 +33,7 @@ router.get('/products/modal/:id', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
 
 router.get('/products/:id', async (req, res) => {
   try {

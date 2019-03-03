@@ -22,18 +22,7 @@ const FAQsRouter = require('./entities/FAQs/router');
 router.use(authenticationRouter);
 router.use(administratorRouter);
 
-// Middleware for auth
-router.use((req, res, next) => {
-  //console.log(req.session.user);
-  if (req.session.user) {
-    return next();
-  }
 
-  res.status(401).json({
-    status: 401,
-    message: 'You are currently not logged in.'
-  });
-});
 
 router.use(contactRouter);
 router.use(FAQsRouter);
@@ -50,5 +39,18 @@ router.use(cart_productsRouter);
 router.use(order_infoRouter);
 router.use(inventoryRouter);
 router.use(order_rentalRouter);
+
+// Middleware for auth
+router.use((req, res, next) => {
+  //console.log(req.session.user);
+  if (req.session.user) {
+    return next();
+  }
+
+  res.status(401).json({
+    status: 401,
+    message: 'You are currently not logged in.'
+  });
+});
 
 module.exports = router;
