@@ -11,7 +11,7 @@ router.post('/packages', async (req, res) => {
   const name = req.body.name;
   const inclusion = req.body.inclusion;
   const price = req.body.price;
-  const session_id = req.session.user.id;
+  const session_id = 1;
     
     try {
       const catering_package = await controller.create(session_id, name, inclusion, price);
@@ -67,7 +67,7 @@ router.get('/packages/inclusions/:id', async (req, res) => {
 });
 
 router.delete('/packages/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
   try {
     const catering_package = await controller.remove(session_id, req.params.id);
@@ -86,7 +86,7 @@ router.put('/packages/:id', async (req, res) => {
   const name = req.body.name;
   const inclusion = req.body.inclusion;
   const price = req.body.price;
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
     try {
       const catering_package = await controller.edit(session_id, name, inclusion, price, id);

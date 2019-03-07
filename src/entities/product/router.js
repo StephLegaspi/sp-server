@@ -50,21 +50,44 @@ router.get('/products/:id', async (req, res) => {
 
 
 
-router.post('/products', async (req, res) => {
+router.post('/products/purchase', async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
   const price = req.body.price;
-  const for_purchase = req.body.for_purchase;
+  const for_purchase = 1;
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
-  const admin_id = req.body.admin_id;
-  const user_id = req.session.user.id;
+  const admin_id = 1;
+  const user_id = 1;
     
     try {
       const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, admin_id);
       res.status(200).json({
         status: 200,
-        message: 'Successfully created product',
+        message: 'Successfully created product for purchase',
+        data: product
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.post('/products/rental', async (req, res) => {
+  const name = req.body.name;
+  const description = req.body.description;
+  const price = req.body.price;
+  const for_purchase = 0;
+  const display_product = req.body.display_product;
+  const total_quantity = req.body.total_quantity;
+  const admin_id = 1;
+  const user_id = 1;
+    
+    try {
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, admin_id);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully created product for rental',
         data: product
       });
     } catch (status) {
@@ -81,7 +104,7 @@ router.put('/products/:id', async (req, res) => {
   const for_purchase = req.body.for_purchase;
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
-  const user_id = req.session.user.id;
+  const user_id = 1;
 
     try {
       const product = await controller.edit(user_id, id, name, description, price, for_purchase, display_product, total_quantity);
@@ -130,7 +153,7 @@ router.put('/products/enable/:id', async (req, res) => {
 });
 
 router.delete('/products/:id', async (req, res) => {
-  const user_id = req.session.user.id;
+  const user_id = 1;
 
   try {
     const product = await controller.remove(user_id, req.params.id);

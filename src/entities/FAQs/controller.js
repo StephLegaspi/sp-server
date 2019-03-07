@@ -29,6 +29,22 @@ exports.getAll = () =>{
   });
 };
 
+exports.getOne = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM FAQs WHERE id = '" + id +"';"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+  });
+};
+
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 

@@ -10,7 +10,7 @@ const await = require('asyncawait/await');
 router.post('/event_motifs', async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
-  const session_id = req.session.user.id;
+  const session_id = 1;
     
     try {
       const event_motif = await controller.create(session_id, name, description);
@@ -53,7 +53,7 @@ router.get('/event_motifs/:id', async (req, res) => {
 });
 
 router.delete('/event_motifs/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
   try {
     const event_motif = await controller.remove(session_id, req.params.id);
     res.status(200).json({
@@ -70,7 +70,7 @@ router.put('/event_motifs/:id', async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   const description = req.body.description;
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
     try {
       const event_motif = await controller.edit(session_id, id, name, description );
