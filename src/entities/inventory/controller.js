@@ -158,10 +158,10 @@ exports.getOutOfStockRental = (id) =>{
 	});
 };
 
-exports.edit = (session_id, id, total_quantity, remaining, renewal_timestamp) => {
+exports.edit = (session_id, id, total_quantity) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editInventory('"+session_id+"', '"+id+"', '"+total_quantity+"', '"+remaining+"', '"+renewal_timestamp+"')";
+      const queryString = "CALL editInventory('"+session_id+"', '"+id+"', '"+total_quantity+"')";
 
       db.query(queryString, (err, results) => {
         if (err) {

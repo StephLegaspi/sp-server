@@ -137,7 +137,7 @@ CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
-    renewal_timestamp DATE NULL,
+    renewal_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -920,12 +920,10 @@ GO
 /*EDIT INVENTORY*/
 CREATE PROCEDURE editInventory(session_id INT,
                         id3 INT,
-                        total_quantity3 INT,
-                        remaining3 INT,
-                        renewal_timestamp3 DATE)
+                        total_quantity3 INT)
 BEGIN
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=remaining3, renewal_timestamp=renewal_timestamp3 WHERE id=id3;
+    UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3 WHERE id=id3;
     CALL insertLog(concat('Updated inventory: ', id3),  'Administrator', session_id);
 END;
 GO
