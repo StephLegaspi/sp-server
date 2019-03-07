@@ -414,8 +414,7 @@ CREATE PROCEDURE insertProduct(user_id1 INT,
                                 price1 FLOAT,
                                 for_purchase1 BOOLEAN,
                                 display_product1 BOOLEAN,
-                                total_quantity1 INT,
-                                admin_id1 INT)
+                                total_quantity1 INT)
 BEGIN
     DECLARE prod_ID1 INT;
 
@@ -423,7 +422,7 @@ BEGIN
         values (name1, description1, price1, for_purchase1, display_product1);
 
     SET prod_ID1 = LAST_INSERT_ID();
-    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, admin_id1);
+    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, (SELECT id from administrator WHERE user_id = user_id1));
 
     CALL insertLog(concat('Added product: ', prod_ID1), 'Administrator', user_id1);
 END;
@@ -445,44 +444,17 @@ CREATE PROCEDURE updateProduct(user_id2 INT,
                             id2 INT, 
                             name2 VARCHAR(64), 
                             description2 VARCHAR(128), 
-                            price2 FLOAT, 
-                            for_purchase2 BOOLEAN,
-                            display_product2 BOOLEAN,
-                            total_quantity2 INT)
+                            price2 FLOAT,
+                            display_product2 BOOLEAN)
 BEGIN
 
-    UPDATE product SET name = name2, description = description2, price = price2, for_purchase = for_purchase2, display_product = display_product2 WHERE id = id2;
-
-    UPDATE inventory SET total_quantity = total_quantity2, remaining = total_quantity2 WHERE product_id = id2;
+    UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
 
     CALL insertLog(concat('Edited product: ', id2), 'Administrator', user_id2);
 
 END;
 GO
-/*DISABLE PRODUCT*/
-CREATE PROCEDURE disableProduct(user_id2 INT,
-                            id2 INT, 
-                            display_product2 BOOLEAN)
-BEGIN
 
-    UPDATE product SET display_product = display_product2 WHERE id = id2;
-
-    CALL insertLog(concat('Disabled product: ', id2), 'Administrator', user_id2);
-
-END;
-GO
-/*ENABLE PRODUCT*/
-CREATE PROCEDURE enableProduct(user_id2 INT,
-                            id2 INT, 
-                            display_product2 BOOLEAN)
-BEGIN
-
-    UPDATE product SET display_product = display_product2 WHERE id = id2;
-
-    CALL insertLog(concat('Enabled product: ', id2), 'Administrator', user_id2);
-
-END;
-GO
 /*UPDATE REMAINING IN INVENTORY TABLE*/
 CREATE PROCEDURE updateRemaining(cart_prod_count INT,
                                 cart_id INT)
@@ -1120,10 +1092,10 @@ CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$1
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
 
 
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0, 1);
-CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, 1);
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0, 1);
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 0, 1);
+CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0);
+CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40);
+CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0);
+CALL insertProduct(1, "Table", "table", 200, 0, 1, 0);
 
 CALL insertProductColor(1, "red", 1);
 CALL insertProductColor(1, "blue", 2);
