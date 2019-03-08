@@ -23,7 +23,7 @@ exports.create = (session_id, first_name, middle_name, last_name, email_address,
 
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT * FROM customer;"
+		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id FROM user, customer WHERE user.id=customer.user_id;";
 
 		db.query(queryString, (err, rows) => {
 	      if (err) {
