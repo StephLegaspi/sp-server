@@ -89,4 +89,38 @@ router.delete('/administrators/:id', async (req, res) => {
   }
 });
 
+router.put('/administrators/activate/:id', async (req, res) => {
+  const id = req.params.id;
+  const session_id = 1;
+
+    try {
+      const admin = await controller.activate(session_id, id);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully activated admin',
+        data: admin
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.put('/administrators/deactivate/:id', async (req, res) => {
+  const id = req.params.id;
+  const session_id = 1;
+
+    try {
+      const admin = await controller.deactivate(session_id, id);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully deactivated admin',
+        data: admin
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 module.exports = router;

@@ -601,6 +601,22 @@ BEGIN
     CALL insertLog(concat('Added administrator: ', LAST_INSERT_ID()), 'Administrator', session_id);
 END;
 GO
+/*ACTIVATE ADMINISTRATOR*/
+CREATE PROCEDURE activateAdmin(session_id INT,
+                            id2 INT)
+BEGIN
+    UPDATE administrator SET active=TRUE WHERE id=id2;
+    CALL insertLog(concat('Activated administrator: ', id2), 'Administrator', session_id);
+END;
+GO
+/*DEACTIVATE ADMINISTRATOR*/
+CREATE PROCEDURE deactivateAdmin(session_id INT,
+                            id2 INT)
+BEGIN
+    UPDATE administrator SET active=FALSE WHERE id=id2;
+    CALL insertLog(concat('Deactivated administrator: ', id2), 'Administrator', session_id);
+END;
+GO
 /*INSERT ROOT ADMINISTRATOR*/
 CREATE PROCEDURE insertRootAdmin(first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),

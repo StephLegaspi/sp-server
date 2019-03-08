@@ -21,9 +21,39 @@ exports.create = (session_id, first_name, middle_name, last_name, email_address,
   });
 };
 
+exports.activate = (session_id,  id) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "CALL activateAdmin('" +session_id+"', '" +id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
+      });
+    });
+};
+
+exports.deactivate = (session_id,  id) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "CALL deactivateAdmin('" +session_id+"', '" +id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
+      });
+    });
+};
+
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM administrator;"
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active FROM user, administrator WHERE user.id=administrator.user_id;";
 
       db.query(queryString, (err, rows) => {
         if (err) {
