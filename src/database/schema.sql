@@ -625,12 +625,10 @@ BEGIN
 END;
 GO
 /*DELETE ADMINISTRATOR*/
-CREATE PROCEDURE deleteAdmin(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteAdmin(id3 INT)
 BEGIN
 
     DELETE FROM administrator WHERE id = id3;
-    CALL insertLog(concat('Deleted administrator: ', id3), 'Administrator', session_id);
 END;
 GO
 /*INSERT CUSTOMER*/

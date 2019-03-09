@@ -110,7 +110,8 @@ exports.getOne = (id) =>{
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deleteAdmin('" + session_id +"', '" + id +"');";
+      const queryString = "CALL deleteAdmin('" + id +"');";
+      const queryString2= "CALL insertLog(concat('Deleted Administrator: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -121,7 +122,15 @@ exports.remove = (session_id, id) => {
         if (!results.affectedRows) {
           return reject(404);
         }
-        return resolve(id);
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
       });
+      
     });
 };
