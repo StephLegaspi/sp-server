@@ -161,14 +161,27 @@ exports.getOutOfStockRental = (id) =>{
 exports.edit = (session_id, id, total_quantity) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editInventory('"+session_id+"', '"+id+"', '"+total_quantity+"')";
+      const queryString = "CALL editInventory('"+id+"', '"+total_quantity+"')";
+      const queryString2= "CALL insertLog(concat('Edited Inventory: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
+      
     });
 };

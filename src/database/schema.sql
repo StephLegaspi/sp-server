@@ -911,13 +911,11 @@ BEGIN
 END;
 GO
 /*EDIT INVENTORY*/
-CREATE PROCEDURE editInventory(session_id INT,
-                        id3 INT,
+CREATE PROCEDURE editInventory(id3 INT,
                         total_quantity3 INT)
 BEGIN
 
     UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3 WHERE id=id3;
-    CALL insertLog(concat('Updated inventory: ', id3),  'Administrator', session_id);
 END;
 GO
 /*INSERT PACKAGE*/
