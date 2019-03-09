@@ -249,8 +249,7 @@ END;
 GO
 
 /*DELETE FAQ*/
-CREATE PROCEDURE deleteFAQ(session_id INT,
-                        id2 INT)
+CREATE PROCEDURE deleteFAQ(id2 INT)
 BEGIN
 
     DELETE FROM FAQs WHERE id=id2;
@@ -601,19 +600,15 @@ BEGIN
 END;
 GO
 /*ACTIVATE ADMINISTRATOR*/
-CREATE PROCEDURE activateAdmin(session_id INT,
-                            id2 INT)
+CREATE PROCEDURE activateAdmin(id2 INT)
 BEGIN
     UPDATE administrator SET active=TRUE WHERE id=id2;
-    CALL insertLog(concat('Activated administrator: ', id2), 'Administrator', session_id);
 END;
 GO
 /*DEACTIVATE ADMINISTRATOR*/
-CREATE PROCEDURE deactivateAdmin(session_id INT,
-                            id2 INT)
+CREATE PROCEDURE deactivateAdmin(id2 INT)
 BEGIN
     UPDATE administrator SET active=FALSE WHERE id=id2;
-    CALL insertLog(concat('Deactivated administrator: ', id2), 'Administrator', session_id);
 END;
 GO
 /*INSERT ROOT ADMINISTRATOR*/

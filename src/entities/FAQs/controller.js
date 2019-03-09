@@ -48,7 +48,7 @@ exports.getOne = (id) =>{
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deleteFAQ('" + session_id +"', '" + id +"');";
+      const queryString = "CALL deleteFAQ('" + id +"');";
       const queryString2= "CALL insertLog(concat('Deleted Frequently Asked Question: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {

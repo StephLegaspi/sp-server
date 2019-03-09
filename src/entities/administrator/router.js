@@ -101,7 +101,17 @@ router.put('/administrators/activate/:id', async (req, res) => {
         data: admin
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 404:
+          message = 'ID not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });
@@ -118,7 +128,17 @@ router.put('/administrators/deactivate/:id', async (req, res) => {
         data: admin
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 404:
+          message = 'ID not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });
