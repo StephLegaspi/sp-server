@@ -46,7 +46,7 @@ exports.getAllRental = () =>{
 
 exports.getAllPendingPurchase = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT count(*) FROM order_information WHERE status='Pending' AND for_purchase=1;"
+    const queryString = "SELECT count(*) as count FROM order_information WHERE status='Pending' AND for_purchase=1;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -60,7 +60,7 @@ exports.getAllPendingPurchase = () =>{
 
 exports.getAllPendingRental = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT count(*) FROM order_information WHERE status='Pending' AND for_purchase=0;"
+    const queryString = "SELECT count(*) as count FROM order_information WHERE status='Pending' AND for_purchase=0;"
 
       db.query(queryString, (err, rows) => {
         if (err) {

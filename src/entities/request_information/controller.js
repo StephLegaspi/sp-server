@@ -41,7 +41,7 @@ exports.getAll = () =>{
 
 exports.getPendingCount = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT count(*) FROM request_information WHERE status='Pending';"
+    const queryString = "SELECT count(*) as count FROM request_information WHERE status='Pending';"
 
       db.query(queryString, (err, rows) => {
         if (err) {
