@@ -162,3 +162,31 @@ exports.remove = (session_id, id) => {
       
     });
 };
+
+exports.edit = (session_id, id, first_name, middle_name,last_name, email_address, contact_number) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "CALL editAdmin('"+id+"', '"+session_id+"', '"+first_name+"', '"+middle_name+"', '"+last_name+"', '"+email_address+"', '"+contact_number+"');";
+      const queryString2= "CALL insertLog(concat('Edited Administrator: ', '"+id+"'), 'Administrator', '"+session_id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
+      });
+
+    });
+};

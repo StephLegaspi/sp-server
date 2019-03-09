@@ -118,6 +118,38 @@ router.delete('/administrators/:id', async (req, res) => {
   }
 });
 
+router.put('/administrators/:id', async (req, res) => {
+  const id = req.params.id;
+  const session_id = 1;
+  const first_name = req.body.first_name;
+  const middle_name = req.body.middle_name;
+  const last_name = req.body.last_name;
+  const email_address = req.body.email_address;
+  const contact_number = req.body.contact_number;
+
+    try {
+      const admin = await controller.edit(session_id, id,first_name, middle_name, last_name, email_address, contact_number);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited admin',
+        data: admin
+      });
+    } catch (status) {
+      let message = '';
+
+      switch (status) {
+        case 404:
+          message = 'ID not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
+    }
+ 
+});
+
 router.put('/administrators/activate/:id', async (req, res) => {
   const id = req.params.id;
   const session_id = 1;
