@@ -1041,12 +1041,10 @@ BEGIN
 END;
 GO
 /*DELETE REQUEST*/
-CREATE PROCEDURE deleteRequest(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteRequest(id3 INT)
 BEGIN
 
     DELETE FROM request_information WHERE id=id3;
-    CALL insertLog(concat('Deleted request: ', id3), 'Administrator', session_id);
 END;
 GO
 /*EDIT USER*/

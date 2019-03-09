@@ -110,7 +110,7 @@ router.get('/requests/status/:status', async (req, res) => {
 
 
 router.delete('/requests/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
   try {
     const request_info = await controller.remove(session_id, req.params.id);
@@ -120,7 +120,16 @@ router.delete('/requests/:id', async (req, res) => {
       data: request_info
     });
   } catch (status) {
-    res.status(status).json({ status });
+    let message = '';
+      switch (status) {
+        case 404:
+          message = 'ID not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+    res.status(status).json({ status, message });
   }
 });
 
