@@ -64,33 +64,55 @@ exports.getOneInclusion = (id) =>{
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deletePackage('" +session_id+"', '" +id+"');";
-
-      	db.query(queryString, (err, results) => {
-	      if (err) {
-	        console.log(err);
-	        return reject(500);
-	      }
-
-	      if (!results.affectedRows) {
-	        return reject(404);
-	      }
-	      return resolve(id);
-	    });
-    });
-};
-
-exports.edit = (session_id, name, inclusion, price, id) => {
-	return new Promise((resolve, reject) => {
-
-      const queryString = "CALL editPackage('" +session_id+"', '" +name+"', '" +inclusion+"', '" +price+"', '" +id+"');";
+      const queryString = "CALL deletePackage('" +id+"');";
+      const queryString2= "CALL insertLog(concat('Deleted Package: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
+      
+    });
+};
+
+exports.edit = (session_id, name, inclusion, price, id) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "CALL editPackage('" +name+"', '" +inclusion+"', '" +price+"', '" +id+"');";
+      const queryString2= "CALL insertLog(concat('Edited Package: ', '"+id+"'), 'Administrator', '"+session_id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
+      });
+
     });
 };

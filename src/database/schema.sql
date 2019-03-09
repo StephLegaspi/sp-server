@@ -966,8 +966,7 @@ BEGIN
 END;
 GO
 /*EDIT PACKAGE*/
-CREATE PROCEDURE editPackage(session_id INT,
-                        name2 VARCHAR(64),
+CREATE PROCEDURE editPackage(name2 VARCHAR(64),
                         inclusion2 VARCHAR(256),
                         price2 FLOAT,
                         id3 INT)
@@ -976,17 +975,14 @@ BEGIN
     UPDATE package SET name=name2, price=price2 WHERE id=id3;
     CALL deletePackageInclusion(id3);
     CALL insertPackageInclusion(id3, inclusion2);
-    CALL insertLog(concat('Updated package: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE PACKAGE*/
-CREATE PROCEDURE deletePackage(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deletePackage(id3 INT)
 BEGIN
 
     CALL deletePackageInclusion(id3);
     DELETE FROM package WHERE id=id3;
-    CALL insertLog(concat('Deleted package: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE PACKAGE INCLUSION*/
