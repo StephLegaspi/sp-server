@@ -48,33 +48,55 @@ exports.getOne = (id) =>{
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deleteMotif('" + session_id +"', '" + id +"');";
-
-      db.query(queryString, (err, results) => {
-	      if (err) {
-	        console.log(err);
-	        return reject(500);
-	      }
-
-	      if (!results.affectedRows) {
-	        return reject(404);
-	      }
-	      return resolve(id);
-	    });
-    });
-};
-
-exports.edit = (session_id, id, name, description) => {
-	return new Promise((resolve, reject) => {
-
-      const queryString = "CALL editMotif('"+session_id+"', '"+id+"', '"+name+"', '"+description+"');";
+      const queryString = "CALL deleteMotif('" + id +"');";
+      const queryString2= "CALL insertLog(concat('Deleted Event Motif: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
+
+    });
+};
+
+exports.edit = (session_id, id, name, description) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "CALL editMotif('"+id+"', '"+name+"', '"+description+"');";
+      const queryString2= "CALL insertLog(concat('Edited Event Motif: ', '"+id+"'), 'Administrator', '"+session_id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
+      });
+
     });
 };

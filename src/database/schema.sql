@@ -665,23 +665,19 @@ BEGIN
 END;
 GO
 /*EDIT EVENT MOTIF*/
-CREATE PROCEDURE editMotif(session_id INT,
-                        id3 INT,
+CREATE PROCEDURE editMotif(id3 INT,
                         name3 VARCHAR(64),
                         description3 VARCHAR(256))
 BEGIN
 
     UPDATE event_motif SET name=name3, description=description3 WHERE id=id3;
-    CALL insertLog(concat('Updated event motif: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE EVENT MOTIF*/
-CREATE PROCEDURE deleteMotif(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteMotif(id3 INT)
 BEGIN
 
     DELETE FROM event_motif WHERE id=id3;
-    CALL insertLog(concat('Deleted event motif: ', id3), 'Administrator', session_id);
 END;
 GO
 /*INSERT FOOD MENU*/
