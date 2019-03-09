@@ -47,7 +47,7 @@ exports.getPendingCount = () =>{
 
 exports.getInclusion = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT event_motif.name AS 'Event Motif', food_menu.name AS 'Food Menu', package.name AS 'Package' FROM request_information, event_motif, food_menu, package WHERE request_information.package_id=package.id AND request_information.motif_id=event_motif.id AND request_information.menu_id=food_menu.id AND request_information.id = '"+id+"';"
+    const queryString = "SELECT event_motif.name AS 'EventMotif', food_menu.name AS 'FoodMenu', package.name AS 'Package' FROM request_information, event_motif, food_menu, package WHERE request_information.package_id=package.id AND request_information.motif_id=event_motif.id AND request_information.menu_id=food_menu.id AND request_information.id = '"+id+"';"
 
       db.query(queryString, (err, rows) => {
         if (err) {
