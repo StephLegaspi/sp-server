@@ -73,6 +73,22 @@ router.get('/administrators/search/:name', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
+router.get('/administrators/profile', async (req, res) => {
+  const user_id = 1;
+
+  try {
+    const administrator = await controller.getProfile(user_id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched administrator',
+      data: administrator
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/administrators/:id', async (req, res) => {
   try {
     const administrator = await controller.getOne(req.params.id);
