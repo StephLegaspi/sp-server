@@ -830,8 +830,7 @@ BEGIN
 END;
 GO
 /*EDIT FOOD MENU*/
-CREATE PROCEDURE editMenu(session_id INT,
-                        name3 VARCHAR(64),
+CREATE PROCEDURE editMenu(name3 VARCHAR(64),
                         main_course2 VARCHAR(256),
                         appetizer2 VARCHAR(256),
                         dessert2 VARCHAR(256),
@@ -856,12 +855,10 @@ BEGIN
     CALL insertBeverage(id3, beverage2);
     CALL insertOthers(id3, others2);
 
-    CALL insertLog(concat('Updated food menu: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE FOOD MENU*/
-CREATE PROCEDURE deleteMenu(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteMenu(id3 INT)
 BEGIN
 
     CALL deleteMainCourse(id3);
@@ -871,7 +868,6 @@ BEGIN
     CALL deleteBeverage(id3);
     CALL deleteOthers(id3);
     DELETE FROM food_menu WHERE id=id3;
-    CALL insertLog(concat('Deleted food menu: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE MAIN COURSE*/
