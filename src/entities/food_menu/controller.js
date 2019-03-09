@@ -31,7 +31,7 @@ exports.getAll = () =>{
 
 exports.getAllNames = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT name FROM food_menu;"
+    const queryString = "SELECT id, name FROM food_menu;"
 
       db.query(queryString, (err, rows) => {
         if (err) {

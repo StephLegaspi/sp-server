@@ -19,8 +19,8 @@ router.post('/requests', async (req, res) => {
   const package_id = req.body.package_id;
   const motif_id = req.body.motif_id;
   const menu_id = req.body.menu_id;
-  const customer_id = req.body.customer_id;
-  const session_id = req.session.user.id;
+  const customer_id = 1;
+  const session_id = 1;
  
     
     try {

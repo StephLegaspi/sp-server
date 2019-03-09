@@ -31,7 +31,7 @@ exports.getAll = () =>{
 
 exports.getAllNames = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT name FROM event_motif;"
+    const queryString = "SELECT id, name FROM event_motif;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
