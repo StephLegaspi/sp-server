@@ -61,7 +61,7 @@ router.get('/administrators', async (req, res) => {
   }
 });
 
-router.get('/administrators/:name/name', async (req, res) => {
+router.get('/administrators/search/:name', async (req, res) => {
   try {
     const administrator = await controller.getOneByName(req.params.name);
     res.status(200).json({
