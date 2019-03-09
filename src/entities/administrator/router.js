@@ -61,6 +61,18 @@ router.get('/administrators', async (req, res) => {
   }
 });
 
+router.get('/administrators/:name/name', async (req, res) => {
+  try {
+    const administrator = await controller.getOneByName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched administrator',
+      data: administrator
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
 router.get('/administrators/:id', async (req, res) => {
   try {
     const administrator = await controller.getOne(req.params.id);
@@ -73,6 +85,7 @@ router.get('/administrators/:id', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
 
 router.delete('/administrators/:id', async (req, res) => {
   const session_id = req.session.user.id;
