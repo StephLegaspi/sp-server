@@ -44,6 +44,20 @@ router.get('/food_menus', async (req, res) => {
   }
 });
 
+router.get('/food_menus/names', async (req, res) => {
+  try {
+    const food_menus = await controller.getAllNames();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched food_menus',
+      data: food_menus
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 
 router.get('/food_menus/main_course/:id', async (req, res) => {
   try {

@@ -29,6 +29,20 @@ exports.getAll = () =>{
   });
 };
 
+exports.getAllNames = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT name FROM food_menu;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM food_menu WHERE id = '" + id +"';"

@@ -39,6 +39,20 @@ router.get('/event_motifs', async (req, res) => {
   }
 });
 
+router.get('/event_motifs/names', async (req, res) => {
+  try {
+    const event_motifs = await controller.getAllNames();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched event motifs',
+      data: event_motifs
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/event_motifs/:id', async (req, res) => {
   try {
     const event_motif = await controller.getOne(req.params.id);
