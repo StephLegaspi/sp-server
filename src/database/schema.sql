@@ -426,20 +426,17 @@ BEGIN
 END;
 GO
 /*DELETE PRODUCT AND INVENTORY*/
-CREATE PROCEDURE deleteProduct(user_id2 INT, id_2 INT)
+CREATE PROCEDURE deleteProduct(id_2 INT)
 BEGIN
 
     DELETE FROM inventory WHERE product_id = id_2;
     DELETE FROM product_color WHERE product_id = id_2;
     DELETE FROM product WHERE id = id_2;
 
-    CALL insertLog(concat('Deleted product: ', id_2), 'Administrator', user_id2);
-
 END;
 GO
 /*UPDATE PRODUCT AND INVENTORY*/
-CREATE PROCEDURE updateProduct(user_id2 INT,
-                            id2 INT, 
+CREATE PROCEDURE updateProduct(id2 INT, 
                             name2 VARCHAR(64), 
                             description2 VARCHAR(128), 
                             price2 FLOAT,
@@ -447,8 +444,6 @@ CREATE PROCEDURE updateProduct(user_id2 INT,
 BEGIN
 
     UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
-
-    CALL insertLog(concat('Edited product: ', id2), 'Administrator', user_id2);
 
 END;
 GO

@@ -63,33 +63,54 @@ exports.create = (user_id, name, description, price, for_purchase, display_produ
 exports.edit = (user_id, id, name, description, price, display_product) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL updateProduct('"+user_id+"', '"+id+"', '"+name+"', '"+description+"', '"+price+"', '"+display_product+"')";
+      const queryString = "CALL updateProduct('"+id+"', '"+name+"', '"+description+"', '"+price+"', '"+display_product+"')";
+      const queryString2= "CALL insertLog(concat('Edited Product: ', '"+id+"'), 'Administrator', '"+user_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
+
     });
 };
 
 exports.remove = (user_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deleteProduct('" + user_id +"', '" + id +"');";
+      const queryString = "CALL deleteProduct('" + id +"');";
+      const queryString2= "CALL insertLog(concat('Deleted Product: ', '"+id+"'), 'Administrator', '"+user_id+"');";
 
       	db.query(queryString, (err, results) => {
-	      if (err) {
-	        console.log(err);
-	        return reject(500);
-	      }
+	        if (err) {
+	          console.log(err);
+	          return reject(500);
+	        }
 
-	      if (!results.affectedRows) {
-	        return reject(404);
-	      }
-	      return resolve(id);
+	        if (!results.affectedRows) {
+	          return reject(404);
+	        }
+
+	        db.query(queryString2, (err2, results2) => {
+	          if (err) {
+	            console.log(err);
+	            return reject(500);
+	          }
+	        });
+	        return resolve(results);
 	    });
     });
 };
