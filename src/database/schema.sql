@@ -1031,13 +1031,11 @@ BEGIN
 END;
 GO
 /*EDIT PACKAGE*/
-CREATE PROCEDURE editRequest(session_id INT,
-                        id3 INT,
+CREATE PROCEDURE editRequest(id3 INT,
                         status3 VARCHAR(256))
 BEGIN
 
     UPDATE request_information SET status=status3 WHERE id=id3;
-    CALL insertLog(concat('Updated request: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE REQUEST*/

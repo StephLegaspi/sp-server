@@ -118,21 +118,34 @@ exports.remove = (session_id, id) => {
         });
         return resolve(results);
       });
-      
+
     });
 };
 
 exports.edit = (session_id, id, status) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editRequest('" + session_id +"', '" + id +"', '" + status +"');";
+      const queryString = "CALL editRequest('" + id +"', '" + status +"');";
+      const queryString2= "CALL insertLog(concat('Edited Request Status: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
+      
     });
 };
