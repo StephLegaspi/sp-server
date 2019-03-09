@@ -238,8 +238,7 @@ END;
 GO
 
 /*EDIT FAQ*/
-CREATE PROCEDURE editFAQ(session_id INT,
-                        id2 INT,
+CREATE PROCEDURE editFAQ(id2 INT,
                         question2 VARCHAR(256),
                         answer2 VARCHAR(256))
 BEGIN
