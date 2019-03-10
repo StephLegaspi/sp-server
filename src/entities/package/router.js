@@ -68,6 +68,32 @@ router.get('/packages/names', async (req, res) => {
   }
 });
 
+router.get('/packages/inclusions/:id', async (req, res) => {
+  try {
+    const catering_package = await controller.getOneInclusion(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched package inclusions',
+      data: catering_package
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/packages/search/:name', async (req, res) => {
+  try {
+    const catering_package = await controller.searchName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched package inclusions',
+      data: catering_package
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/packages/:id', async (req, res) => {
   try {
     const catering_package = await controller.getOne(req.params.id);
@@ -81,18 +107,6 @@ router.get('/packages/:id', async (req, res) => {
   }
 });
 
-router.get('/packages/inclusions/:id', async (req, res) => {
-  try {
-    const catering_package = await controller.getOneInclusion(req.params.id);
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched package inclusions',
-      data: catering_package
-    });
-  } catch (status) {
-    res.status(status).json({ status });
-  }
-});
 
 router.delete('/packages/:id', async (req, res) => {
   const session_id = 1;

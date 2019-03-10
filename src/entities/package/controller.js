@@ -29,6 +29,22 @@ exports.getAll = () =>{
   });
 };
 
+exports.searchName = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from package where LOWER(name)=LOWER('"+name+"');"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+  });
+};
+
 exports.getThree = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM package LIMIT 3;"
