@@ -29,6 +29,20 @@ exports.getAll = () =>{
   });
 };
 
+exports.getThree = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM package LIMIT 3;"
+
+     db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getAllNames = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT id, name FROM package;"

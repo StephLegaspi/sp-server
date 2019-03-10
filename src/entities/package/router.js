@@ -40,6 +40,20 @@ router.get('/packages', async (req, res) => {
   }
 });
 
+router.get('/packages/three', async (req, res) => {
+  try {
+    const catering_packages = await controller.getThree();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched packages',
+      data: catering_packages
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/packages/names', async (req, res) => {
   try {
     const catering_packages = await controller.getAllNames();
