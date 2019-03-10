@@ -29,6 +29,20 @@ exports.getAll = () =>{
   });
 };
 
+exports.getAllFour = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM event_motif LIMIT 4;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getAllNames = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT id, name FROM event_motif;"
