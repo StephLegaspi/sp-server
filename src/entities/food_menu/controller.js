@@ -168,6 +168,21 @@ exports.getOneOthers = (id) =>{
     });
   });
 };
+
+exports.searchName = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from food_menu where LOWER(name) REGEXP LOWER('.*" + name +".*');"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+  });
+};
+
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 

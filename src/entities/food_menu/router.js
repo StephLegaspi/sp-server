@@ -30,6 +30,19 @@ router.post('/food_menus', async (req, res) => {
  
 });
 
+router.get('/food_menus/search/:name', async (req, res) => {
+  try {
+    const food_menu = await controller.searchName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched food menu',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/food_menus/three', async (req, res) => {
   try {
     const food_menus = await controller.getAllThree();
