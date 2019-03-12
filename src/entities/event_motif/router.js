@@ -25,6 +25,19 @@ router.post('/event_motifs', async (req, res) => {
  
 });
 
+router.get('/event_motifs/search/:name', async (req, res) => {
+  try {
+    const event_motif = await controller.searchName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched package event motif',
+      data: event_motif
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/event_motifs/four', async (req, res) => {
   try {
     const event_motifs = await controller.getAllFour();

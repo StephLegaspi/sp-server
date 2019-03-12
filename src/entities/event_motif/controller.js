@@ -73,6 +73,20 @@ exports.getOne = (id) =>{
   });
 };
 
+exports.searchName = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from event_motif where LOWER(name) REGEXP LOWER('.*" + name +".*');"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+  });
+};
+
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
