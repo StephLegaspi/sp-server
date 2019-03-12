@@ -31,16 +31,14 @@ exports.getAll = () =>{
 
 exports.searchName = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from package where LOWER(name)=LOWER('"+name+"');"
+    const queryString = "select * from package where LOWER(name) REGEXP LOWER('.*" + name +".*');"
 
-    db.query(queryString, (err, rows) =>{
-      if (err){
-        return reject(500);
-      }
-      if (!rows.length){
-        return reject(404);
-      }
-      return resolve(rows);
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
     });
   });
 };
