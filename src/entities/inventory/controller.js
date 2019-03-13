@@ -14,6 +14,20 @@ exports.getAll = () => {
 	});
 };
 
+exports.searchName = (name) => {
+	return new Promise((resolve, reject) => {
+	   const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*');"
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
 exports.getAllPurchase = () =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=1;"
