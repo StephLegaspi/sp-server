@@ -19,12 +19,11 @@ router.post('/requests', async (req, res) => {
   const package_id = req.body.package_id;
   const motif_id = req.body.motif_id;
   const menu_id = req.body.menu_id;
-  const customer_id = 1;
-  const session_id = 1;
+  const session_id = 2;
  
     
     try {
-      const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id);
+      const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully created request',
