@@ -42,6 +42,34 @@ exports.searchName = (name) =>{
   });
 };
 
+exports.searchNamePurchase = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1;"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+  });
+};
+
+exports.searchNameRental = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0;"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+  });
+};
+
 exports.getOne = (id) =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT * FROM product WHERE id = '" + id +"';"

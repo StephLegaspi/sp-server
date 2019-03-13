@@ -107,6 +107,32 @@ router.get('/products/search/:name', async (req, res) => {
   }
 });
 
+router.get('/products-purchase/search/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNamePurchase(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products-rental/search/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNameRental(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 
 router.put('/products/:id', async (req, res) => {
   const id = req.params.id;
