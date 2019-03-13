@@ -14,9 +14,23 @@ exports.getAll = () => {
 	});
 };
 
-exports.searchName = (name) => {
+exports.searchNamePurchase = (name) => {
 	return new Promise((resolve, reject) => {
-	   const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*');"
+	   const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=1;"
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
+exports.searchNameRental = (name) => {
+	return new Promise((resolve, reject) => {
+	   const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=0;"
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {

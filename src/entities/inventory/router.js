@@ -6,9 +6,22 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-router.get('/inventories/search/:name', async (req, res) => {
+router.get('/inventories-purchase/search/:name', async (req, res) => {
   try {
-    const inventory = await controller.searchName(req.params.name);
+    const inventory = await controller.searchNamePurchase(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/inventories-rental/search/:name', async (req, res) => {
+  try {
+    const inventory = await controller.searchNameRental(req.params.name);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched inventory',
