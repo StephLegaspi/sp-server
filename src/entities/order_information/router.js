@@ -128,18 +128,6 @@ router.get('/orders/rental/pending-count', async (req, res) => {
   }
 });
 
-router.get('/orders/customer-info/:id', async (req, res) => {
-  try {
-    const order_info = await controller.getCustomerInfo(req.params.id);
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched order',
-      data: order_info
-    });
-  } catch (status) {
-    res.status(status).json({ status });
-  }
-});
 
 
 router.get('/orders/purchase/:delivery_status', async (req, res) => {

@@ -15,9 +15,10 @@ exports.create = (session_id, consignee_first_name, consignee_middle_name, consi
     });
 };
 
+
 exports.getAllPurchase = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1;"
+    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -60,20 +61,6 @@ exports.getAllPendingPurchase = () =>{
 exports.getAllPendingRental = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT count(*) as count FROM order_information WHERE status='Pending' AND for_purchase=0;"
-
-      db.query(queryString, (err, rows) => {
-        if (err) {
-          return reject(500);
-        }
-        return resolve(rows);
-        
-      });
-  });
-};
-
-exports.getCustomerInfo = (id) =>{
-  return new Promise((resolve, reject) => {
-    const queryString = "SELECT customer_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number FROM order_information WHERE id= '" + id +"';";
 
       db.query(queryString, (err, rows) => {
         if (err) {
