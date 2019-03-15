@@ -31,7 +31,7 @@ exports.getAll = () =>{
 
 exports.getOnePurchase = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM shopping_cart WHERE customer_id = '" + id +"' AND for_purchase=1 AND has_attended = 1 AND in_order=0;"
+    const queryString = "SELECT * FROM shopping_cart WHERE customer_id = '" + id +"' AND for_purchase=1 AND in_order=0;"
 
     db.query(queryString, (err, rows) =>{
       if (err){
@@ -47,7 +47,7 @@ exports.getOnePurchase = (id) =>{
 
 exports.getOneRental = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM shopping_cart WHERE customer_id = '" + id +"' AND for_purchase=0 AND has_attended = 1 AND in_order=0;"
+    const queryString = "SELECT * FROM shopping_cart WHERE customer_id = '" + id +"' AND for_purchase=0 AND in_order=0;"
 
     db.query(queryString, (err, rows) =>{
       if (err){

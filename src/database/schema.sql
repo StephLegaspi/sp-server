@@ -156,7 +156,6 @@ CREATE TABLE shopping_cart (
     total_items INT NOT NULL DEFAULT 0,
     total_bill FLOAT NOT NULL DEFAULT 0.0,
     for_purchase BOOLEAN,
-    has_attended BOOLEAN DEFAULT 0,
     in_order BOOLEAN DEFAULT 0,
     customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
@@ -299,7 +298,7 @@ BEGIN
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
         values (product_quantity, rental_duration, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET has_attended=1, total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
 END;
 GO
 /*INSERT CART PRODUCT RENTAL*/
@@ -315,7 +314,7 @@ BEGIN
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
         values (product_quantity, rental_duration, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET has_attended=1, total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
 END;
 GO
 /*DELETE CART PRODUCT*/
