@@ -1110,9 +1110,9 @@ CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$1
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
 
 
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0, "red, blue");
+CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 50, "red, blue");
 CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, "white");
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0, "green, violet");
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 0, "yellow, orange");
+CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 60, "green, violet");
+CALL insertProduct(1, "Table", "table", 200, 0, 1, 70, "yellow, orange");
 
 CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");

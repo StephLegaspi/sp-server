@@ -162,7 +162,7 @@ router.delete('/orders/purchase/:id', async (req, res) => {
 router.put('/orders/purchase/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
     try {
       const order_info = await controller.edit(session_id, id, status);
