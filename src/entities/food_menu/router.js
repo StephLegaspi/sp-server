@@ -8,7 +8,7 @@ const await = require('asyncawait/await');
 
 
 router.post('/food_menus', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
   const name = req.body.name;
   const main_course = req.body.main_course;
   const appetizer = req.body.appetizer;
@@ -30,9 +30,50 @@ router.post('/food_menus', async (req, res) => {
  
 });
 
+router.get('/food_menus/search/:name', async (req, res) => {
+  try {
+    const food_menu = await controller.searchName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched food menu',
+      data: food_menu
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/food_menus/three', async (req, res) => {
+  try {
+    const food_menus = await controller.getAllThree();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched food_menus',
+      data: food_menus
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/food_menus', async (req, res) => {
   try {
     const food_menus = await controller.getAll();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched food_menus',
+      data: food_menus
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/food_menus/names', async (req, res) => {
+  try {
+    const food_menus = await controller.getAllNames();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched food_menus',
@@ -137,7 +178,7 @@ router.get('/food_menus/:id', async (req, res) => {
 });
 
 router.delete('/food_menus/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
   try {
     const food_menu = await controller.remove(session_id, req.params.id);
@@ -160,7 +201,7 @@ router.put('/food_menus/:id', async (req, res) => {
   const soup = req.body.soup;
   const beverage = req.body.beverage;
   const others = req.body.others;
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
     try {
       const food_menu = await controller.edit(session_id, name, main_course, appetizer, dessert, soup, beverage, others, id);

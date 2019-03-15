@@ -8,7 +8,7 @@ const await = require('asyncawait/await');
 
 
 router.post('/shopping_carts/purchase', async (req, res) => {
-  const customer_id = req.body.customer_id;
+  const customer_id = 1;
   const for_purchase = 1;
     
     try {

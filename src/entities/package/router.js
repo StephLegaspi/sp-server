@@ -11,7 +11,7 @@ router.post('/packages', async (req, res) => {
   const name = req.body.name;
   const inclusion = req.body.inclusion;
   const price = req.body.price;
-  const session_id = req.session.user.id;
+  const session_id = 1;
     
     try {
       const catering_package = await controller.create(session_id, name, inclusion, price);
@@ -40,15 +40,30 @@ router.get('/packages', async (req, res) => {
   }
 });
 
-router.get('/packages/:id', async (req, res) => {
+router.get('/packages/three', async (req, res) => {
   try {
-    const catering_package = await controller.getOne(req.params.id);
+    const catering_packages = await controller.getThree();
     res.status(200).json({
       status: 200,
-      message: 'Successfully fetched package',
-      data: catering_package
+      message: 'Successfully fetched packages',
+      data: catering_packages
     });
   } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/packages/names', async (req, res) => {
+  try {
+    const catering_packages = await controller.getAllNames();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched packages',
+      data: catering_packages
+    });
+  } catch (status) {
+    let message = '';
     res.status(status).json({ status });
   }
 });
@@ -66,8 +81,35 @@ router.get('/packages/inclusions/:id', async (req, res) => {
   }
 });
 
+router.get('/packages/search/:name', async (req, res) => {
+  try {
+    const catering_package = await controller.searchName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched package inclusions',
+      data: catering_package
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/packages/:id', async (req, res) => {
+  try {
+    const catering_package = await controller.getOne(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched package',
+      data: catering_package
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+
 router.delete('/packages/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
   try {
     const catering_package = await controller.remove(session_id, req.params.id);
@@ -86,7 +128,7 @@ router.put('/packages/:id', async (req, res) => {
   const name = req.body.name;
   const inclusion = req.body.inclusion;
   const price = req.body.price;
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
     try {
       const catering_package = await controller.edit(session_id, name, inclusion, price, id);

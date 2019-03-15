@@ -19,12 +19,11 @@ router.post('/requests', async (req, res) => {
   const package_id = req.body.package_id;
   const motif_id = req.body.motif_id;
   const menu_id = req.body.menu_id;
-  const customer_id = req.body.customer_id;
-  const session_id = req.session.user.id;
+  const session_id = 2;
  
     
     try {
-      const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id);
+      const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully created request',
@@ -110,7 +109,7 @@ router.get('/requests/status/:status', async (req, res) => {
 
 
 router.delete('/requests/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
   try {
     const request_info = await controller.remove(session_id, req.params.id);
@@ -120,14 +119,23 @@ router.delete('/requests/:id', async (req, res) => {
       data: request_info
     });
   } catch (status) {
-    res.status(status).json({ status });
+    let message = '';
+      switch (status) {
+        case 404:
+          message = 'ID not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+    res.status(status).json({ status, message });
   }
 });
 
 router.put('/requests/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
     try {
       const request_info = await controller.edit(session_id, id, status);
@@ -137,7 +145,17 @@ router.put('/requests/:id', async (req, res) => {
         data: request_info
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 404:
+          message = 'ID not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });

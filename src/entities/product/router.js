@@ -50,21 +50,20 @@ router.get('/products/:id', async (req, res) => {
 
 
 
-router.post('/products', async (req, res) => {
+router.post('/products/purchase', async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
   const price = req.body.price;
-  const for_purchase = req.body.for_purchase;
+  const for_purchase = 1;
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
-  const admin_id = req.body.admin_id;
-  const user_id = req.session.user.id;
+  const user_id = 1;
     
     try {
-      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, admin_id);
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity);
       res.status(200).json({
         status: 200,
-        message: 'Successfully created product',
+        message: 'Successfully created product for purchase',
         data: product
       });
     } catch (status) {
@@ -73,18 +72,78 @@ router.post('/products', async (req, res) => {
  
 });
 
+router.post('/products/rental', async (req, res) => {
+  const name = req.body.name;
+  const description = req.body.description;
+  const price = req.body.price;
+  const for_purchase = 0;
+  const display_product = req.body.display_product;
+  const total_quantity = req.body.total_quantity;
+  const user_id = 1;
+    
+    try {
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully created product for rental',
+        data: product
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.get('/products/search/:name', async (req, res) => {
+  try {
+    const product = await controller.searchName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products-purchase/search/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNamePurchase(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products-rental/search/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNameRental(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+
 router.put('/products/:id', async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   const description = req.body.description;
   const price = req.body.price;
-  const for_purchase = req.body.for_purchase;
   const display_product = req.body.display_product;
-  const total_quantity = req.body.total_quantity;
-  const user_id = req.session.user.id;
+  const user_id = 1;
 
     try {
-      const product = await controller.edit(user_id, id, name, description, price, for_purchase, display_product, total_quantity);
+      const product = await controller.edit(user_id, id, name, description, price, display_product);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited product',
@@ -96,41 +155,9 @@ router.put('/products/:id', async (req, res) => {
  
 });
 
-router.put('/products/disable/:id', async (req, res) => {
-  const id = req.params.id;
-  const user_id = req.session.user.id;
-
-    try {
-      const product = await controller.disable(user_id, id, 0);
-      res.status(200).json({
-        status: 200,
-        message: 'Successfully disabled product',
-        data: product
-      });
-    } catch (status) {
-      res.status(status).json({ status });
-    } 
-});
-
-router.put('/products/enable/:id', async (req, res) => {
-  const id = req.params.id;
-  const user_id = req.session.user.id;
-    
-    try {
-      const product = await controller.enable(user_id, id, 1);
-      res.status(200).json({
-        status: 200,
-        message: 'Successfully enabled product',
-        data: product
-      });
-    } catch (status) {
-      res.status(status).json({ status });
-    }
- 
-});
 
 router.delete('/products/:id', async (req, res) => {
-  const user_id = req.session.user.id;
+  const user_id = 1;
 
   try {
     const product = await controller.remove(user_id, req.params.id);

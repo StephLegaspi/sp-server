@@ -18,6 +18,7 @@ const order_rentalRouter = require('./entities/order_rental/router');
 const authenticationRouter = require('./entities/authentication/router');
 const contactRouter = require('./entities/contact/router');
 const FAQsRouter = require('./entities/FAQs/router');
+const logRouter = require('./entities/log/router');
 
 router.use(authenticationRouter);
 router.use(administratorRouter);
@@ -39,6 +40,7 @@ router.use(cart_productsRouter);
 router.use(order_infoRouter);
 router.use(inventoryRouter);
 router.use(order_rentalRouter);
+router.use(logRouter);
 
 // Middleware for auth
 router.use((req, res, next) => {
