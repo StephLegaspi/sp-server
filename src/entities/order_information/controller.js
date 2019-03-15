@@ -32,7 +32,7 @@ exports.getAllPurchase = () =>{
 
 exports.getAllRental = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=0;"
+    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=0;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
