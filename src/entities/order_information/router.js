@@ -17,11 +17,10 @@ router.post('/orders/purchase', async (req, res) => {
   const zip_code = req.body.zip_code;
   const for_purchase = 1;
   const shopping_cart_id = req.body.shopping_cart_id;
-  const customer_id = req.body.customer_id;
-  const session_id = req.session.user.id;
+  const session_id = 2;
     
     try {
-      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id);
+      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id);
       res.status(200).json({
         status: 200,
         message: 'Successfully created order',
