@@ -165,8 +165,7 @@ CREATE TABLE shopping_cart_products (
     product_quantity INT NOT NULL DEFAULT 0,
     rental_duration INT,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
-    product_color_id INT NOT NULL,
-    FOREIGN KEY(product_color_id) REFERENCES product_color(id),
+    product_color_name VARCHAR (64),
     shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     product_id INT NOT NULL,
@@ -295,8 +294,8 @@ BEGIN
     
     SET @price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, rental_duration, (SELECT @price_total), (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
     UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
 END;
@@ -311,8 +310,8 @@ BEGIN
     
     SET @price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, rental_duration, (SELECT @price_total), (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
     UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
 END;
