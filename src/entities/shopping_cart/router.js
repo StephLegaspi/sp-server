@@ -8,11 +8,11 @@ const await = require('asyncawait/await');
 
 
 router.post('/shopping_carts/purchase', async (req, res) => {
-  const customer_id = 1;
+  const session_id = 2;
   const for_purchase = 1;
     
     try {
-      const shopping_cart = await controller.create(customer_id, for_purchase);
+      const shopping_cart = await controller.create(session_id, for_purchase);
       res.status(200).json({
         status: 200,
         message: 'Successfully created shopping_cart',
@@ -25,11 +25,11 @@ router.post('/shopping_carts/purchase', async (req, res) => {
 });
 
 router.post('/shopping_carts/rental', async (req, res) => {
-  const customer_id = req.body.customer_id;
+  const session_id = 2;
   const for_purchase = 0;
     
     try {
-      const shopping_cart = await controller.create(customer_id, for_purchase);
+      const shopping_cart = await controller.create(session_id, for_purchase);
       res.status(200).json({
         status: 200,
         message: 'Successfully created shopping_cart',
@@ -56,9 +56,22 @@ router.get('/shopping_carts', async (req, res) => {
 });
 
 
-router.get('/shopping_carts/:id', async (req, res) => {
+router.get('/shopping_carts/purchase/:id', async (req, res) => {
   try {
-    const shopping_cart = await controller.getOne(req.params.id);
+    const shopping_cart = await controller.getOnePurchase(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched shopping_cart',
+      data: shopping_cart
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/shopping_carts/rental/:id', async (req, res) => {
+  try {
+    const shopping_cart = await controller.getOneRental(req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched shopping_cart',

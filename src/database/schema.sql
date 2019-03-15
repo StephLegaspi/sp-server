@@ -307,13 +307,13 @@ CREATE PROCEDURE insertCartProductRental(product_quantity INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
-    
-    SET @price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
+    DECLARE price_total FLOAT;
+    SET price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
 
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
+        values (product_quantity, rental_duration, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
 END;
 GO
 /*DELETE CART PRODUCT*/
