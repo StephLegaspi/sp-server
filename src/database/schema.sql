@@ -442,10 +442,13 @@ CREATE PROCEDURE updateProduct(id2 INT,
                             name2 VARCHAR(64), 
                             description2 VARCHAR(128), 
                             price2 FLOAT,
-                            display_product2 BOOLEAN)
+                            display_product2 BOOLEAN,
+                            product_color2 VARCHAR(256))
 BEGIN
 
     UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
+    CALL deleteProductColor(id2);
+    CALL insertProductColor(product_color2, id2);
 
 END;
 GO
@@ -1027,23 +1030,12 @@ BEGIN
     
 END;
 GO
-/*EDIT PRODUCT COLOR*/
-CREATE PROCEDURE editProductColor(session_id INT,
-                        id2 INT,
-                        product_color2 VARCHAR(64))
-BEGIN
 
-    UPDATE product_color SET product_color=product_color2 WHERE id=id2;
-    CALL insertLog(concat('Updated product color: ', id2), 'Administrator', session_id);
-END;
-GO
 /*DELETE PRODUCT COLOR*/
-CREATE PROCEDURE deleteProductColor(session_id INT,
-                                id2 INT)
+CREATE PROCEDURE deleteProductColor(id2 INT)
 BEGIN
 
-    DELETE FROM product_color WHERE id=id2;
-    CALL insertLog(concat('Deleted product color: ', id2), 'Administrator', session_id);
+    DELETE FROM product_color WHERE product_id=id2;
 END;
 GO
 /*ADD REQUEST*/

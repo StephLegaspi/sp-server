@@ -142,10 +142,11 @@ router.put('/products/:id', async (req, res) => {
   const description = req.body.description;
   const price = req.body.price;
   const display_product = req.body.display_product;
+  const product_color = req.body.product_color;
   const user_id = 1;
 
     try {
-      const product = await controller.edit(user_id, id, name, description, price, display_product);
+      const product = await controller.edit(user_id, id, name, description, price, display_product, product_color);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited product',
