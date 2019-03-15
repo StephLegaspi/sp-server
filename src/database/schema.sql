@@ -291,13 +291,13 @@ CREATE PROCEDURE insertCartProductPurchase(product_quantity INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
-    
-    SET @price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
+    DECLARE total_price FLOAT;
+    SET total_price = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
+        values (product_quantity, rental_duration, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
 END;
 GO
 /*INSERT CART PRODUCT RENTAL*/
@@ -356,7 +356,7 @@ GO
 CREATE FUNCTION getOldTotalPrice(shopping_cart_products_id INT) RETURNS FLOAT
 BEGIN
     
-    DECLARE old_total INT;
+    DECLARE old_total FLOAT;
 
     SET old_total = (SELECT product_total_price FROM shopping_cart_products WHERE id = shopping_cart_products_id);
 
@@ -396,7 +396,7 @@ BEGIN
     /*SET @new_price_total = product_quant * (SELECT getProductPrice(id));*/
     UPDATE shopping_cart SET total_items = (total_items - (SELECT getOldQuantity(ID_s)))+product_quant, total_bill = (total_bill - (SELECT getOldTotalPrice(ID_s))) + (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID_s);
 
-    UPDATE shopping_cart_products SET product_quantity = product_quant, rental_duration = rental_dur, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)), product_color_id = product_color_id WHERE id = ID_s;
+    UPDATE shopping_cart_products SET product_quantity = product_quant, rental_duration = rental_dur, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)), product_color_name = (SELECT product_color FROM product_color WHERE id=product_color_id) WHERE id = ID_s;
 
 
     

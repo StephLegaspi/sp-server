@@ -38,7 +38,7 @@ exports.getAll = () =>{
 
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT product.name, product.price, shopping_cart_products.product_quantity, shopping_cart_products.product_color_name FROM shopping_cart_products, product WHERE shopping_cart_products.product_id=product.id AND shopping_cart_id = '" + id +"';"
+    const queryString = "SELECT product.id, product.name, product.price, shopping_cart_products.id as sc_id, shopping_cart_products.product_quantity, shopping_cart_products.product_color_name FROM shopping_cart_products, product WHERE shopping_cart_products.product_id=product.id AND shopping_cart_id = '" + id +"';"
 
     db.query(queryString, (err, rows) =>{
       if (err){
