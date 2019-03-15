@@ -403,6 +403,7 @@ BEGIN
     
 END;
 GO
+
 /*INSERT PRODUCT AND INVENTORY*/
 CREATE PROCEDURE insertProduct(user_id1 INT,
                                 name1 varchar(64),
@@ -410,7 +411,8 @@ CREATE PROCEDURE insertProduct(user_id1 INT,
                                 price1 FLOAT,
                                 for_purchase1 BOOLEAN,
                                 display_product1 BOOLEAN,
-                                total_quantity1 INT)
+                                total_quantity1 INT,
+                                color_list VARCHAR(256))
 BEGIN
     DECLARE prod_ID1 INT;
 
@@ -419,6 +421,8 @@ BEGIN
 
     SET prod_ID1 = LAST_INSERT_ID();
     INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, (SELECT id from administrator WHERE user_id = user_id1));
+
+    CALL insertProductColor(color_list, prod_ID1);
 
     CALL insertLog(concat('Added product: ', prod_ID1), 'Administrator', user_id1);
 END;
@@ -1002,13 +1006,25 @@ BEGIN
 END;
 GO
 /*INSERT PRODUCT COLOR*/
-CREATE PROCEDURE insertProductColor(session_id INT,
-                        product_color2 VARCHAR(64),
+CREATE PROCEDURE insertProductColor(color_list VARCHAR(256),
                         product_id2 INT)
 BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = color_list;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
 
-    INSERT INTO product_color(product_color, product_id) VALUES(product_color2, product_id2);
-    CALL insertLog(concat('Added product color: ', LAST_INSERT_ID()), 'Administrator', session_id);
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO product_color(product_color, product_id) VALUES(TRIM(string), product_id2);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO product_color(product_color, product_id) VALUES(TRIM(listcopy), product_id2);
+    
 END;
 GO
 /*EDIT PRODUCT COLOR*/
@@ -1104,14 +1120,9 @@ CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$1
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
 
 
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0);
-CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40);
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0);
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 0);
-
-CALL insertProductColor(1, "red", 1);
-CALL insertProductColor(1, "blue", 2);
-CALL insertProductColor(1, "white", 3);
-CALL insertProductColor(1, "green", 4);
+CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0, "red, blue");
+CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, "white");
+CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0, "green, violet");
+CALL insertProduct(1, "Table", "table", 200, 0, 1, 0, "yellow, orange");
 
 CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");

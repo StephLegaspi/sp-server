@@ -57,10 +57,11 @@ router.post('/products/purchase', async (req, res) => {
   const for_purchase = 1;
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
+  const product_color = req.body.product_color;
   const user_id = 1;
     
     try {
-      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity);
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product for purchase',
@@ -79,10 +80,11 @@ router.post('/products/rental', async (req, res) => {
   const for_purchase = 0;
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
+  const product_color = req.body.product_color;
   const user_id = 1;
     
     try {
-      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity);
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product for rental',
