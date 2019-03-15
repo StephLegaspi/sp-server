@@ -156,6 +156,8 @@ CREATE TABLE shopping_cart (
     total_items INT NOT NULL DEFAULT 0,
     total_bill FLOAT NOT NULL DEFAULT 0.0,
     for_purchase BOOLEAN,
+    has_attended BOOLEAN DEFAULT 0,
+    in_order BOOLEAN DEFAULT 0,
     customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
 );
@@ -297,7 +299,7 @@ BEGIN
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
         values (product_quantity, rental_duration, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET has_attended=1, total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
 END;
 GO
 /*INSERT CART PRODUCT RENTAL*/
@@ -313,7 +315,7 @@ BEGIN
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
         values (product_quantity, rental_duration, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET has_attended=1, total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
 END;
 GO
 /*DELETE CART PRODUCT*/
@@ -484,15 +486,14 @@ CREATE PROCEDURE insertOrder(session_id INT,
                             delivery_address2 VARCHAR(128), 
                             zip_code VARCHAR(16),  
                             for_purchase BOOLEAN, 
-                            shopping_cart_id2 INT, 
-                            customer_id INT)
+                            shopping_cart_id2 INT)
 BEGIN
 
     DECLARE cart_prod_count INT DEFAULT 0;
     DECLARE ctr INT DEFAULT 0;
     DECLARE id_order INT;
 
-    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, for_purchase, shopping_cart_id2, customer_id);
+    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, for_purchase, shopping_cart_id2, (SELECT id FROM customer WHERE user_id=session_id));
 
     SET id_order = LAST_INSERT_ID();
 
@@ -513,6 +514,7 @@ BEGIN
     END IF;
    
     CALL updateRemaining(cart_prod_count, shopping_cart_id2);
+    UPDATE shopping_cart SET in_order=1 WHERE id = shopping_cart_id2;
 END;
 GO
 
@@ -999,12 +1001,10 @@ BEGIN
 END;
 GO
 /*DELETE SHOPPING CART*/
-CREATE PROCEDURE deleteCart(session_id INT,
-                        id2 INT)
+CREATE PROCEDURE deleteCart(id2 INT)
 BEGIN
 
     DELETE FROM shopping_cart WHERE id=id2;
-    CALL insertLog(concat('Deleted shopping cart: ', id2), 'Customer', session_id);
 END;
 GO
 /*INSERT PRODUCT COLOR*/
