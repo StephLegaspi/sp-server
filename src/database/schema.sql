@@ -165,8 +165,7 @@ CREATE TABLE shopping_cart_products (
     product_quantity INT NOT NULL DEFAULT 0,
     rental_duration INT,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
-    product_color_id INT NOT NULL,
-    FOREIGN KEY(product_color_id) REFERENCES product_color(id),
+    product_color_name VARCHAR (64),
     shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     product_id INT NOT NULL,
@@ -292,13 +291,13 @@ CREATE PROCEDURE insertCartProductPurchase(product_quantity INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
-    
-    SET @price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
+    DECLARE total_price FLOAT;
+    SET total_price = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, rental_duration, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
 END;
 GO
 /*INSERT CART PRODUCT RENTAL*/
@@ -308,13 +307,13 @@ CREATE PROCEDURE insertCartProductRental(product_quantity INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
-    
-    SET @price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
+    DECLARE price_total FLOAT;
+    SET price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, rental_duration, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
 END;
 GO
 /*DELETE CART PRODUCT*/
@@ -357,7 +356,7 @@ GO
 CREATE FUNCTION getOldTotalPrice(shopping_cart_products_id INT) RETURNS FLOAT
 BEGIN
     
-    DECLARE old_total INT;
+    DECLARE old_total FLOAT;
 
     SET old_total = (SELECT product_total_price FROM shopping_cart_products WHERE id = shopping_cart_products_id);
 
@@ -397,12 +396,13 @@ BEGIN
     /*SET @new_price_total = product_quant * (SELECT getProductPrice(id));*/
     UPDATE shopping_cart SET total_items = (total_items - (SELECT getOldQuantity(ID_s)))+product_quant, total_bill = (total_bill - (SELECT getOldTotalPrice(ID_s))) + (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID_s);
 
-    UPDATE shopping_cart_products SET product_quantity = product_quant, rental_duration = rental_dur, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)), product_color_id = product_color_id WHERE id = ID_s;
+    UPDATE shopping_cart_products SET product_quantity = product_quant, rental_duration = rental_dur, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)), product_color_name = (SELECT product_color FROM product_color WHERE id=product_color_id) WHERE id = ID_s;
 
 
     
 END;
 GO
+
 /*INSERT PRODUCT AND INVENTORY*/
 CREATE PROCEDURE insertProduct(user_id1 INT,
                                 name1 varchar(64),
@@ -410,7 +410,8 @@ CREATE PROCEDURE insertProduct(user_id1 INT,
                                 price1 FLOAT,
                                 for_purchase1 BOOLEAN,
                                 display_product1 BOOLEAN,
-                                total_quantity1 INT)
+                                total_quantity1 INT,
+                                color_list VARCHAR(256))
 BEGIN
     DECLARE prod_ID1 INT;
 
@@ -419,6 +420,8 @@ BEGIN
 
     SET prod_ID1 = LAST_INSERT_ID();
     INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, (SELECT id from administrator WHERE user_id = user_id1));
+
+    CALL insertProductColor(color_list, prod_ID1);
 
     CALL insertLog(concat('Added product: ', prod_ID1), 'Administrator', user_id1);
 END;
@@ -438,10 +441,13 @@ CREATE PROCEDURE updateProduct(id2 INT,
                             name2 VARCHAR(64), 
                             description2 VARCHAR(128), 
                             price2 FLOAT,
-                            display_product2 BOOLEAN)
+                            display_product2 BOOLEAN,
+                            product_color2 VARCHAR(256))
 BEGIN
 
     UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
+    CALL deleteProductColor(id2);
+    CALL insertProductColor(product_color2, id2);
 
 END;
 GO
@@ -1002,32 +1008,33 @@ BEGIN
 END;
 GO
 /*INSERT PRODUCT COLOR*/
-CREATE PROCEDURE insertProductColor(session_id INT,
-                        product_color2 VARCHAR(64),
+CREATE PROCEDURE insertProductColor(color_list VARCHAR(256),
                         product_id2 INT)
 BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = color_list;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
 
-    INSERT INTO product_color(product_color, product_id) VALUES(product_color2, product_id2);
-    CALL insertLog(concat('Added product color: ', LAST_INSERT_ID()), 'Administrator', session_id);
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO product_color(product_color, product_id) VALUES(TRIM(string), product_id2);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO product_color(product_color, product_id) VALUES(TRIM(listcopy), product_id2);
+    
 END;
 GO
-/*EDIT PRODUCT COLOR*/
-CREATE PROCEDURE editProductColor(session_id INT,
-                        id2 INT,
-                        product_color2 VARCHAR(64))
-BEGIN
 
-    UPDATE product_color SET product_color=product_color2 WHERE id=id2;
-    CALL insertLog(concat('Updated product color: ', id2), 'Administrator', session_id);
-END;
-GO
 /*DELETE PRODUCT COLOR*/
-CREATE PROCEDURE deleteProductColor(session_id INT,
-                                id2 INT)
+CREATE PROCEDURE deleteProductColor(id2 INT)
 BEGIN
 
-    DELETE FROM product_color WHERE id=id2;
-    CALL insertLog(concat('Deleted product color: ', id2), 'Administrator', session_id);
+    DELETE FROM product_color WHERE product_id=id2;
 END;
 GO
 /*ADD REQUEST*/
@@ -1104,14 +1111,9 @@ CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$1
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
 
 
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0);
-CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40);
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0);
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 0);
-
-CALL insertProductColor(1, "red", 1);
-CALL insertProductColor(1, "blue", 2);
-CALL insertProductColor(1, "white", 3);
-CALL insertProductColor(1, "green", 4);
+CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0, "red, blue");
+CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, "white");
+CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0, "green, violet");
+CALL insertProduct(1, "Table", "table", 200, 0, 1, 0, "yellow, orange");
 
 CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");
