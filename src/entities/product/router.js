@@ -7,6 +7,7 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
 router.get('/products/purchase', async (req, res) => {
+
   try {
     const products = await controller.getAllPurchase();
     res.status(200).json({

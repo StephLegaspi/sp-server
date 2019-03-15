@@ -50,11 +50,14 @@ router.post('/customers', async (req, res) => {
 });
 
 router.get('/customers', async (req, res) => {
+  const session_id = 2;
+
   try {
     const customers = await controller.getAll();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched customers',
+      session_id: session_id,
       data: customers
     });
   } catch (status) {
@@ -66,6 +69,19 @@ router.get('/customers', async (req, res) => {
 router.get('/customers/modal/:id', async (req, res) => {
   try {
     const customer = await controller.getOneModal(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched customer',
+      data: customer
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/customers/users/:id', async (req, res) => {
+  try {
+    const customer = await controller.getByUserID(req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched customer',

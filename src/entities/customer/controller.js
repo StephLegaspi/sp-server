@@ -23,7 +23,7 @@ exports.create = (session_id, first_name, middle_name, last_name, email_address,
 
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id FROM user, customer WHERE user.id=customer.user_id;";
+		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.user_id FROM user, customer WHERE user.id=customer.user_id;";
 
 		db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -38,6 +38,22 @@ exports.getAll = () =>{
 exports.getOne = (id) =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT * FROM customer WHERE id = '" + id +"';"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+
+exports.getByUserID = (id) =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "SELECT * FROM customer WHERE user_id = '" + id +"';"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){

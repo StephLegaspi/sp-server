@@ -31,7 +31,7 @@ exports.getAll = () =>{
 
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM shopping_cart WHERE id = '" + id +"';"
+    const queryString = "SELECT * FROM shopping_cart WHERE customer_id = '" + id +"';"
 
     db.query(queryString, (err, rows) =>{
       if (err){
