@@ -145,6 +145,19 @@ router.get('/orders/purchase-status/:delivery_status', async (req, res) => {
   }
 });
 
+router.get('/orders/purchase/:id', async (req, res) => {
+  try {
+    const order_info = await controller.getOne(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched order',
+      data: order_info
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 
 router.delete('/orders/purchase/:id', async (req, res) => {
   const session_id = req.session.user.id;
