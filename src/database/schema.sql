@@ -156,7 +156,6 @@ CREATE TABLE shopping_cart (
     total_items INT NOT NULL DEFAULT 0,
     total_bill FLOAT NOT NULL DEFAULT 0.0,
     for_purchase BOOLEAN,
-    has_attended BOOLEAN DEFAULT 0,
     in_order BOOLEAN DEFAULT 0,
     customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
@@ -299,7 +298,7 @@ BEGIN
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
         values (product_quantity, rental_duration, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET has_attended=1, total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
 END;
 GO
 /*INSERT CART PRODUCT RENTAL*/
@@ -315,7 +314,7 @@ BEGIN
     INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
         values (product_quantity, rental_duration, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET has_attended=1, total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
 END;
 GO
 /*DELETE CART PRODUCT*/
@@ -1111,9 +1110,9 @@ CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$1
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
 
 
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0, "red, blue");
+CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 50, "red, blue");
 CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, "white");
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0, "green, violet");
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 0, "yellow, orange");
+CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 60, "green, violet");
+CALL insertProduct(1, "Table", "table", 200, 0, 1, 70, "yellow, orange");
 
 CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");
