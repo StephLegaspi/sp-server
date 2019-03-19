@@ -62,7 +62,14 @@ exports.getInclusion = (id) =>{
 
 exports.getByStatus = (status) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM request_information WHERE status = '" + status +"';"
+
+    var queryString;
+
+    if(status==='All'){
+      queryString = "SELECT * FROM request_information;"
+    }else{
+      queryString = "SELECT * FROM request_information WHERE status = '" + status +"';"
+    }
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -75,9 +82,34 @@ exports.getByStatus = (status) =>{
   });
 };
 
-exports.getOne = (id) =>{
+exports.getOne = (id, status) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM request_information WHERE id = '" + id +"';"
+
+    var queryString;
+
+    if(status==='All'){
+      queryString = "SELECT * FROM request_information WHERE id = '" + id +"';"
+    }else{
+      queryString = "SELECT * FROM request_information WHERE id = '" + id +"' AND status='" + status +"';"
+    }
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+
+  });
+};
+
+exports.getOneSimple = (id) =>{
+  return new Promise((resolve, reject) => {
+
+    var queryString;
+
+    queryString = "SELECT * FROM request_information WHERE id = '" + id +"';"
 
     db.query(queryString, (err, rows) =>{
       if (err){

@@ -7,6 +7,35 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
 
+router.post('/requests-one/:id', async (req, res) => {
+  const status = req.body.status;
+
+  try {
+    const request_info = await controller.getOne(req.params.id, status);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched requests',
+      data: request_info
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/requests/:id', async (req, res) => {
+
+  try {
+    const request_info = await controller.getOneSimple(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched requests',
+      data: request_info
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.post('/requests', async (req, res) => {
   const customer_first_name = req.body.customer_first_name;
   const customer_middle_name = req.body.customer_middle_name;
@@ -59,19 +88,6 @@ router.get('/requests/inclusion/:id', async (req, res) => {
     });
   } catch (status) {
     let message = '';
-    res.status(status).json({ status });
-  }
-});
-
-router.get('/requests/:id', async (req, res) => {
-  try {
-    const request_info = await controller.getOne(req.params.id);
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched requests',
-      data: request_info
-    });
-  } catch (status) {
     res.status(status).json({ status });
   }
 });
