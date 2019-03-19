@@ -142,7 +142,7 @@ exports.remove = (session_id, id) => {
 exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editOrder('"+session_id+"', '"+id+"', '"+status+"');";
+      const queryString = "CALL editOrder('"+id+"', '"+status+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

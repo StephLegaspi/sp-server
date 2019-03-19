@@ -518,19 +518,16 @@ END;
 GO
 
 /*EDIT ORDER_INFO*/
-CREATE PROCEDURE editOrder(session_id INT,
-                        id_ord INT,
+CREATE PROCEDURE editOrder(id_ord INT,
                         stat_ord VARCHAR(16))
 BEGIN
 
     UPDATE order_information SET status=stat_ord WHERE id=id_ord;
-    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
 
 /*RETURN ORDER RENTAL*/
-CREATE PROCEDURE returnOrder(session_id INT,
-                        id_ord INT,
+CREATE PROCEDURE returnOrder(id_ord INT,
                         rental_stat VARCHAR(16))
 BEGIN
     
@@ -546,7 +543,7 @@ BEGIN
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
-    UPDATE order_rental SET rental_status=rental_stat WHERE id=id_ord;
+    UPDATE order_rental SET rental_status=rental_stat WHERE order_id=id_ord;
 
         WHILE counter < count_cart_prod DO
 
@@ -556,9 +553,6 @@ BEGIN
 
             SET counter = counter + 1;
         END WHILE;
- 
-
-    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
 

@@ -31,10 +31,27 @@ exports.getOne = (id) =>{
   });
 };
 
+exports.getOneLimit = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM order_rental WHERE order_id = '" + id +"' LIMIT 1;"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+
+  });
+};
+
 exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL returnOrder('"+session_id+"', '"+id+"', '"+status+"');";;
+      const queryString = "CALL returnOrder('"+id+"', '"+status+"');";;
 
       db.query(queryString, (err, results) => {
         if (err) {
