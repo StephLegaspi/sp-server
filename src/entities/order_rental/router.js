@@ -20,18 +20,6 @@ router.get('/order_rentals', async (req, res) => {
   }
 });
 
-router.get('/order_rentals/limit/:id', async (req, res) => {
-  try {
-    const order_rental = await controller.getOneLimit(req.params.id);
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched order_rental',
-      data: order_rental
-    });
-  } catch (status) {
-    res.status(status).json({ status });
-  }
-});
 
 router.get('/order_rentals/:id', async (req, res) => {
   try {
