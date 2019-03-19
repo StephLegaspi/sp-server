@@ -149,7 +149,22 @@ router.post('/orders/purchase/:id', async (req, res) => {
   const status = req.body.status;
 
   try {
-    const order_info = await controller.getOne(req.params.id, status);
+    const order_info = await controller.getOnePurchase(req.params.id, status);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched order',
+      data: order_info
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.post('/orders/rental/:id', async (req, res) => {
+  /*const status = req.body.status;*/
+
+  try {
+    const order_info = await controller.getOneRental(req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched order',
