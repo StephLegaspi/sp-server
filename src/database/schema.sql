@@ -137,7 +137,7 @@ CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
-    renewal_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    renewal_timestamp TIMESTAMP NULL,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -917,7 +917,7 @@ CREATE PROCEDURE editInventory(id3 INT,
                         total_quantity3 INT)
 BEGIN
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3 WHERE id=id3;
+    UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=CURDATE() WHERE id=id3;
 END;
 GO
 /*INSERT PACKAGE*/
