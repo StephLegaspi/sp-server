@@ -64,6 +64,7 @@ router.put('/orders/rental/:id', async (req, res) => {
  
 });
 
+
 router.delete('/order_rentals/:id', async (req, res) => {
   try {
     const order_rental = await controller.remove(req.params.id);

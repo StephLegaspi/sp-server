@@ -15,12 +15,13 @@ router.post('/orders/purchase', async (req, res) => {
   const consignee_contact_number = req.body.consignee_contact_number;
   const delivery_address = req.body.delivery_address;
   const zip_code = req.body.zip_code;
+  const rental_duration = 1;
   const for_purchase = 1;
   const shopping_cart_id = req.body.shopping_cart_id;
   const session_id = 2;
     
     try {
-      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id);
+      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, rental_duration);
       res.status(200).json({
         status: 200,
         message: 'Successfully created order',
@@ -40,12 +41,13 @@ router.post('/orders/rental', async (req, res) => {
   const consignee_contact_number = req.body.consignee_contact_number;
   const delivery_address = req.body.delivery_address;
   const zip_code = req.body.zip_code;
+  const rental_duration = req.body.rental_duration;
   const for_purchase = 0;
   const shopping_cart_id = req.body.shopping_cart_id;
   const session_id = 2;
     
     try {
-      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id);
+      const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, rental_duration);
       res.status(200).json({
         status: 200,
         message: 'Successfully created order',

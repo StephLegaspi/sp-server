@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id) => {
+exports.create = (session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, rental_duration) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL insertOrder('" +session_id+"','" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +for_purchase+"', '" +shopping_cart_id+"');";
+      const queryString = "CALL insertOrder('" +session_id+"','" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +for_purchase+"', '" +shopping_cart_id+"', '" +rental_duration+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
