@@ -29,19 +29,18 @@ exports.getAll = () =>{
   });
 };
 
-exports.getOne = (id) =>{
+exports.getOne = (question) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM FAQs WHERE id = '" + id +"';"
+    const queryString = "SELECT * FROM FAQs WHERE LOWER(question) REGEXP LOWER('.*" + question +".*');"
 
-    db.query(queryString, (err, rows) =>{
-      if (err){
-        return reject(500);
-      }
-      if (!rows.length){
-        return reject(404);
-      }
-      return resolve(rows);
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
     });
+
   });
 };
 
