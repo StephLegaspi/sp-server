@@ -88,7 +88,13 @@ exports.getAll = () =>{
 
 exports.getByStatPurchase = (delivery_status) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.status = '" + delivery_status +"';";
+
+    var queryString;
+    if(delivery_status==='All'){
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1;";
+    }else{
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.status = '" + delivery_status +"';";
+    }
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -101,10 +107,17 @@ exports.getByStatPurchase = (delivery_status) =>{
   });
 };
 
-exports.getOne = (id) =>{
+exports.getOne = (id, status) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.id = '" + id +"';";
     
+    var queryString
+    if(status==='All'){
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.id = '" + id +"';";
+    }else{
+
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.id = '" + id +"' AND status='" + status +"';";
+    }
+
     db.query(queryString, (err, rows) => {
         if (err) {
           return reject(500);

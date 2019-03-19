@@ -145,9 +145,11 @@ router.get('/orders/purchase-status/:delivery_status', async (req, res) => {
   }
 });
 
-router.get('/orders/purchase/:id', async (req, res) => {
+router.post('/orders/purchase/:id', async (req, res) => {
+  const status = req.body.status;
+
   try {
-    const order_info = await controller.getOne(req.params.id);
+    const order_info = await controller.getOne(req.params.id, status);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched order',
