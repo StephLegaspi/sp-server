@@ -4,11 +4,32 @@ const router = express.Router();
 const controller = require('./controller');
 const authController = require('../authentication/controller');
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function(req, file, cb){
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb){
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+})
+const imageFilter = (req, file, cb) => {
+  if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+    cb(null, true);
+  }else{
+    cb(null, false);
+  }
+}
+const upload = multer({
+  storage: storage,
+  fileFilter: imageFilter
+})
+
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
 
-router.post('/administrators', async (req, res) => {
+router.post('/administrators', upload.single('image'), async (req, res) => {
   const session_id = 1;
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
@@ -17,12 +38,13 @@ router.post('/administrators', async (req, res) => {
   const password = req.body.password;
   const contact_number = req.body.contact_number;
   const user_type = "Administrator";
+  const image = req.file.path;
 
     try {
       await authController.checkValidContact(contact_number);
       await authController.checkValidEmail(email_address);
       await authController.checkEmailExists(email_address);
-      const administrator = await controller.create(session_id, first_name, middle_name, last_name, email_address, password, contact_number, user_type);
+      const administrator = await controller.create(session_id, first_name, middle_name, last_name, email_address, password, contact_number, user_type, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully created administrator',
