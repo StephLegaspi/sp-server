@@ -29,6 +29,36 @@ exports.getAllCustomer = () =>{
   });
 };
 
+exports.getOneAdmin = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM log_record WHERE user_id = '" +id+"' AND user_type='Administrator' ;"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+
+  });
+};
+
+exports.getOneCustomer = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM log_record WHERE user_id = '" +id+"' AND user_type='Customer' ;"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+
+  });
+};
+
 exports.remove = (id) => {
   return new Promise((resolve, reject) => {
 

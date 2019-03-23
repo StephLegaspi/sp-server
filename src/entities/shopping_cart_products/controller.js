@@ -1,14 +1,14 @@
 const db = require('../../database');
 
-exports.create = (product_quantity, rental_duration, product_color_id, shopping_cart_id, product_id) => {
+exports.create = (product_quantity, product_color_id, shopping_cart_id, product_id, for_purchase) => {
 	return new Promise((resolve, reject) => {
 
       var queryString;
 
-      if(rental_duration > 0){
-        queryString = "CALL insertCartProductRental('" +product_quantity+"', '" +rental_duration+"', '" +product_color_id+"', '"+shopping_cart_id+"', '" +product_id+"');";
+      if(for_purchase === 0){
+        queryString = "CALL insertCartProductRental('" +product_quantity+"', '" +product_color_id+"', '"+shopping_cart_id+"', '" +product_id+"');";
       }else{
-        queryString = "CALL insertCartProductPurchase('" +product_quantity+"', '" +rental_duration+"', '" +product_color_id+"', '"+shopping_cart_id+"', '" +product_id+"');";
+        queryString = "CALL insertCartProductPurchase('" +product_quantity+"', '" +product_color_id+"', '"+shopping_cart_id+"', '" +product_id+"');";
       }
 
       db.query(queryString, (err, results) => {
@@ -38,7 +38,7 @@ exports.getAll = () =>{
 
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT product.id, product.name, product.price, shopping_cart_products.id as sc_id, shopping_cart_products.rental_duration, shopping_cart_products.product_quantity, shopping_cart_products.product_color_name, shopping_cart_products.product_total_price FROM shopping_cart_products, product WHERE shopping_cart_products.product_id=product.id AND shopping_cart_id = '" + id +"';"
+    const queryString = "SELECT product.id, product.name, product.price, shopping_cart_products.id as sc_id, shopping_cart_products.product_quantity, shopping_cart_products.product_color_name, shopping_cart_products.product_total_price FROM shopping_cart_products, product WHERE shopping_cart_products.product_id=product.id AND shopping_cart_id = '" + id +"';"
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -69,10 +69,10 @@ exports.remove = ( id ) => {
     });
 };
 
-exports.edit = (id, product_quantity, rental_duration, product_color_id) => {
+exports.edit = (id, product_quantity, product_color_id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editCartProduct('" + id +"', '" + product_quantity +"','" + rental_duration +"', '" + product_color_id +"');";
+      const queryString = "CALL editCartProduct('" + id +"', '" + product_quantity +"', '" + product_color_id +"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

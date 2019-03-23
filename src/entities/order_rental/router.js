@@ -20,6 +20,7 @@ router.get('/order_rentals', async (req, res) => {
   }
 });
 
+
 router.get('/order_rentals/:id', async (req, res) => {
   try {
     const order_rental = await controller.getOne(req.params.id);
@@ -34,7 +35,7 @@ router.get('/order_rentals/:id', async (req, res) => {
 });
 
 router.put('/orders/rental/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
   const id = req.params.id;
   const rental_status = req.body.rental_status;
 
@@ -50,6 +51,7 @@ router.put('/orders/rental/:id', async (req, res) => {
     }
  
 });
+
 
 router.delete('/order_rentals/:id', async (req, res) => {
   try {

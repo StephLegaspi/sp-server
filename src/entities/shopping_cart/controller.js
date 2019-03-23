@@ -29,6 +29,22 @@ exports.getAll = () =>{
   });
 };
 
+exports.getOne = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM shopping_cart WHERE id = '" + id +"';"
+
+    db.query(queryString, (err, rows) =>{
+      if (err){
+        return reject(500);
+      }
+      if (!rows.length){
+        return reject(404);
+      }
+      return resolve(rows);
+    });
+  });
+};
+
 exports.getOnePurchase = (id) =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM shopping_cart WHERE customer_id = '" + id +"' AND for_purchase=1 AND in_order=0;"
@@ -59,6 +75,21 @@ exports.getOneRental = (id) =>{
       return resolve(rows);
     });
   });
+};
+
+exports.editRentalDuration = (id, rental_duration) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "UPDATE shopping_cart SET total_bill = total_bill * '" + rental_duration +"' WHERE id= '" + id +"';";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+        return resolve(results);
+      });
+    });
 };
 
 exports.remove = (id) => {

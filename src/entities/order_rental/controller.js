@@ -31,10 +31,11 @@ exports.getOne = (id) =>{
   });
 };
 
+
 exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL returnOrder('"+session_id+"', '"+id+"', '"+status+"');";;
+      const queryString = "CALL returnOrder('"+id+"', '"+status+"');";;
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -45,6 +46,7 @@ exports.edit = (session_id, id, status) => {
       });
     });
 };
+
 
 exports.remove = (id) => {
   return new Promise((resolve, reject) => {

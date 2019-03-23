@@ -137,7 +137,7 @@ CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
-    renewal_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+    renewal_timestamp TIMESTAMP NULL,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -164,7 +164,6 @@ CREATE TABLE shopping_cart (
 CREATE TABLE shopping_cart_products (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     product_quantity INT NOT NULL DEFAULT 0,
-    rental_duration INT,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
     product_color_name VARCHAR (64),
     shopping_cart_id INT NOT NULL,
@@ -287,7 +286,6 @@ END;
 GO
 /*INSERT CART PRODUCT PURCHASE*/
 CREATE PROCEDURE insertCartProductPurchase(product_quantity INT,
-                                rental_duration INT,
                                 product_color_id INT,
                                 shopping_cart_id INT,
                                 product_id INT)
@@ -295,24 +293,23 @@ BEGIN
     DECLARE total_price FLOAT;
     SET total_price = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
     UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
 END;
 GO
 /*INSERT CART PRODUCT RENTAL*/
 CREATE PROCEDURE insertCartProductRental(product_quantity INT,
-                                rental_duration INT,
                                 product_color_id INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
     DECLARE price_total FLOAT;
-    SET price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
+    SET price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_name, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
     UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
 END;
@@ -366,16 +363,13 @@ BEGIN
 END;
 GO
 /*GET NEW TOTAL PRICE*/
-CREATE FUNCTION getNewTotalPrice(prod_quant INT, id INT, dur_rental INT) RETURNS FLOAT
+CREATE FUNCTION getNewTotalPrice(prod_quant INT, id INT ) RETURNS FLOAT
 BEGIN
     
     DECLARE new_price_total FLOAT;
 
-    IF dur_rental > 0 THEN
-        SET new_price_total = prod_quant * dur_rental * (SELECT getProductPrice(id));
-    ELSE
-        SET new_price_total = prod_quant * (SELECT getProductPrice(id));
-    END IF;
+   
+    SET new_price_total = prod_quant * (SELECT getProductPrice(id));
 
     RETURN new_price_total;
 
@@ -384,7 +378,6 @@ GO
 /*EDIT CART PRODUCT*/
 CREATE PROCEDURE editCartProduct(ID_s INT,
                                 product_quant INT,
-                                rental_dur INT,
                                 product_color_id INT)
 BEGIN
     
@@ -395,9 +388,9 @@ BEGIN
     
 
     /*SET @new_price_total = product_quant * (SELECT getProductPrice(id));*/
-    UPDATE shopping_cart SET total_items = (total_items - (SELECT getOldQuantity(ID_s)))+product_quant, total_bill = (total_bill - (SELECT getOldTotalPrice(ID_s))) + (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID_s);
+    UPDATE shopping_cart SET total_items = (total_items - (SELECT getOldQuantity(ID_s)))+product_quant, total_bill = (total_bill - (SELECT getOldTotalPrice(ID_s))) + (SELECT getNewTotalPrice(product_quant, ID_s)) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID_s);
 
-    UPDATE shopping_cart_products SET product_quantity = product_quant, rental_duration = rental_dur, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)), product_color_name = (SELECT product_color FROM product_color WHERE id=product_color_id) WHERE id = ID_s;
+    UPDATE shopping_cart_products SET product_quantity = product_quant, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s)), product_color_name = (SELECT product_color FROM product_color WHERE id=product_color_id) WHERE id = ID_s;
 
 
     
@@ -485,7 +478,8 @@ CREATE PROCEDURE insertOrder(session_id INT,
                             delivery_address2 VARCHAR(128), 
                             zip_code VARCHAR(16),  
                             for_purchase BOOLEAN, 
-                            shopping_cart_id2 INT)
+                            shopping_cart_id2 INT,
+                            rental_dur INT)
 BEGIN
 
     DECLARE cart_prod_count INT DEFAULT 0;
@@ -501,15 +495,10 @@ BEGIN
     SET cart_prod_count = (SELECT count(*) from shopping_cart_products);
     SET ctr = 0;
 
-    IF for_purchase = 0 THEN
-        WHILE ctr < cart_prod_count DO
+    IF for_purchase = 0 THEN      
+    
+        INSERT INTO order_rental(rental_duration, order_id) VALUES(rental_dur, id_order);
 
-            INSERT INTO order_rental(rental_duration) SELECT rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
-
-            UPDATE order_rental SET order_id= id_order WHERE id = LAST_INSERT_ID();
-
-            SET ctr = ctr + 1;
-        END WHILE;
     END IF;
    
     CALL updateRemaining(cart_prod_count, shopping_cart_id2);
@@ -518,19 +507,16 @@ END;
 GO
 
 /*EDIT ORDER_INFO*/
-CREATE PROCEDURE editOrder(session_id INT,
-                        id_ord INT,
+CREATE PROCEDURE editOrder(id_ord INT,
                         stat_ord VARCHAR(16))
 BEGIN
 
     UPDATE order_information SET status=stat_ord WHERE id=id_ord;
-    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
 
 /*RETURN ORDER RENTAL*/
-CREATE PROCEDURE returnOrder(session_id INT,
-                        id_ord INT,
+CREATE PROCEDURE returnOrder(id_ord INT,
                         rental_stat VARCHAR(16))
 BEGIN
     
@@ -546,7 +532,7 @@ BEGIN
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
-    UPDATE order_rental SET rental_status=rental_stat WHERE id=id_ord;
+    UPDATE order_rental SET rental_status=rental_stat WHERE order_id=id_ord;
 
         WHILE counter < count_cart_prod DO
 
@@ -556,9 +542,6 @@ BEGIN
 
             SET counter = counter + 1;
         END WHILE;
- 
-
-    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
 
@@ -934,7 +917,7 @@ CREATE PROCEDURE editInventory(id3 INT,
                         total_quantity3 INT)
 BEGIN
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3 WHERE id=id3;
+    UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=CURDATE() WHERE id=id3;
 END;
 GO
 /*INSERT PACKAGE*/

@@ -82,6 +82,35 @@ router.get('/shopping_carts/rental/:id', async (req, res) => {
   }
 });
 
+router.put('/shopping_carts/rental-duration/:id', async (req, res) => {
+  const id = req.params.id;
+  const rental_duration = req.body.rental_duration;
+    try {
+      const order_info = await controller.editRentalDuration(id, rental_duration);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited order',
+        data: order_info
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.get('/shopping_carts/:id', async (req, res) => {
+  try {
+    const shopping_cart = await controller.getOne(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched shopping_cart',
+      data: shopping_cart
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.delete('/shopping_carts/:id', async (req, res) => {
 
   try {

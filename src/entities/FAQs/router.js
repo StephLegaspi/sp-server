@@ -39,9 +39,9 @@ router.get('/FAQs', async (req, res) => {
   }
 });
 
-router.get('/FAQs/:id', async (req, res) => {
+router.get('/FAQs/:question', async (req, res) => {
   try {
-    const FAQ = await controller.getOne(req.params.id);
+    const FAQ = await controller.getOne(req.params.question);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched FAQ',
