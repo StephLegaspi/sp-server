@@ -2,7 +2,7 @@ const db = require('../../database');
 
 exports.getAllPurchase = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=1;";
+	    const queryString = "SELECT * FROM product WHERE for_purchase=1 AND display_product=1;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -16,7 +16,7 @@ exports.getAllPurchase = () => {
 
 exports.getAllRental = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=0;";
+	    const queryString = "SELECT * FROM product WHERE for_purchase=0 AND display_product=1;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
