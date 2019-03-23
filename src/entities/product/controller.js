@@ -74,10 +74,10 @@ exports.getOne = (id) =>{
 };
 
 
-exports.create = (user_id, name, description, price, for_purchase, display_product, total_quantity, product_color) => {
+exports.create = (user_id, name, description, price, for_purchase, display_product, total_quantity, product_color, image) => {
 	return new Promise((resolve, reject) => {
 
-      	const queryString = "CALL insertProduct('" + user_id +"', '" + name +"', '" + description +"', '" + price+"', '" + for_purchase +"', '" + display_product+"', '" + total_quantity +"', '" + product_color +"');";
+      	const queryString = "CALL insertProduct('" + user_id +"', '" + name +"', '" + description +"', '" + price+"', '" + for_purchase +"', '" + display_product+"', '" + total_quantity +"', '" + product_color +"', '" + image +"');";
 
 	    db.query(queryString, (err, results) => {
 	        if (err) {

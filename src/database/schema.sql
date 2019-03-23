@@ -130,7 +130,8 @@ CREATE TABLE product (
     description VARCHAR(128) NOT NULL,
     price FLOAT NOT NULL,
     for_purchase BOOLEAN,
-    display_product BOOLEAN
+    display_product BOOLEAN,
+    image VARCHAR(256)
 );
 
 CREATE TABLE inventory (
@@ -405,12 +406,13 @@ CREATE PROCEDURE insertProduct(user_id1 INT,
                                 for_purchase1 BOOLEAN,
                                 display_product1 BOOLEAN,
                                 total_quantity1 INT,
-                                color_list VARCHAR(256))
+                                color_list VARCHAR(256),
+                                image1 VARCHAR(256))
 BEGIN
     DECLARE prod_ID1 INT;
 
-    INSERT INTO product(name, description, price, for_purchase, display_product)
-        values (name1, description1, price1, for_purchase1, display_product1);
+    INSERT INTO product(name, description, price, for_purchase, display_product, image)
+        values (name1, description1, price1, for_purchase1, display_product1, image1);
 
     SET prod_ID1 = LAST_INSERT_ID();
     INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, (SELECT id from administrator WHERE user_id = user_id1));
@@ -1091,11 +1093,5 @@ DELIMITER ;
 
 CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator");
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
-
-
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 50, "red, blue");
-CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, "white");
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 60, "green, violet");
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 70, "yellow, orange");
 
 CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");
