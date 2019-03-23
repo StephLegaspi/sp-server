@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (session_id, name, description) => {
+exports.create = (session_id, name, description, image_files) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL insertMotif('" +session_id+"', '" +name+"', '" +description+"');";
+      const queryString = "CALL insertMotif('" +session_id+"', '" +name+"', '" +description+"', '" +image_files+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
