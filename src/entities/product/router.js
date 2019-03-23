@@ -3,6 +3,27 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function(req, file, cb){
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb){
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+})
+const imageFilter = (req, file, cb) => {
+  if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+    cb(null, true);
+  }else{
+    cb(null, false);
+  }
+}
+const upload = multer({
+  storage: storage,
+  fileFilter: imageFilter
+})
+
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
@@ -51,7 +72,8 @@ router.get('/products/:id', async (req, res) => {
 
 
 
-router.post('/products/purchase', async (req, res) => {
+router.post('/products/purchase', upload.single('image'), async (req, res) => {
+
   const name = req.body.name;
   const description = req.body.description;
   const price = req.body.price;
@@ -60,9 +82,10 @@ router.post('/products/purchase', async (req, res) => {
   const total_quantity = req.body.total_quantity;
   const product_color = req.body.product_color;
   const user_id = 1;
+  const image = req.file.path;
     
     try {
-      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color);
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product for purchase',
@@ -74,7 +97,7 @@ router.post('/products/purchase', async (req, res) => {
  
 });
 
-router.post('/products/rental', async (req, res) => {
+router.post('/products/rental', upload.single('image'), async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
   const price = req.body.price;
@@ -83,9 +106,10 @@ router.post('/products/rental', async (req, res) => {
   const total_quantity = req.body.total_quantity;
   const product_color = req.body.product_color;
   const user_id = 1;
+  const image = req.file.path;
     
     try {
-      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color);
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product for rental',

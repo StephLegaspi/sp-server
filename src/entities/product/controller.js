@@ -2,7 +2,7 @@ const db = require('../../database');
 
 exports.getAllPurchase = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=1;";
+	    const queryString = "SELECT * FROM product WHERE for_purchase=1 AND display_product=1;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -16,7 +16,7 @@ exports.getAllPurchase = () => {
 
 exports.getAllRental = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=0;";
+	    const queryString = "SELECT * FROM product WHERE for_purchase=0 AND display_product=1;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -59,7 +59,7 @@ exports.searchNameRental = (name) =>{
 
 exports.getOne = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT * FROM product WHERE id = '" + id +"';"
+		const queryString = "SELECT product.id, product.name, product.price, product.description, product.image, inventory.remaining FROM product, inventory WHERE product.id=inventory.product_id AND product.id = '" + id +"';"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -74,10 +74,10 @@ exports.getOne = (id) =>{
 };
 
 
-exports.create = (user_id, name, description, price, for_purchase, display_product, total_quantity, product_color) => {
+exports.create = (user_id, name, description, price, for_purchase, display_product, total_quantity, product_color, image) => {
 	return new Promise((resolve, reject) => {
 
-      	const queryString = "CALL insertProduct('" + user_id +"', '" + name +"', '" + description +"', '" + price+"', '" + for_purchase +"', '" + display_product+"', '" + total_quantity +"', '" + product_color +"');";
+      	const queryString = "CALL insertProduct('" + user_id +"', '" + name +"', '" + description +"', '" + price+"', '" + for_purchase +"', '" + display_product+"', '" + total_quantity +"', '" + product_color +"', '" + image +"');";
 
 	    db.query(queryString, (err, results) => {
 	        if (err) {

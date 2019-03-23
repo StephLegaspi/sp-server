@@ -1,9 +1,8 @@
 const db = require('../../database');
 
-exports.create = (session_id, name, description) => {
+exports.create = (session_id, name, description, image_files) => {
 	return new Promise((resolve, reject) => {
-
-      const queryString = "CALL insertMotif('" +session_id+"', '" +name+"', '" +description+"');";
+      const queryString = "CALL insertMotif('" +session_id+"', '" +name+"', '" +description+"', '" +image_files+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
@@ -59,16 +58,14 @@ exports.getAllNames = () =>{
 
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM event_motif WHERE id = '" + id +"';"
+    const queryString = "SELECT event_motif.name, event_motif.description, event_motif_image.image FROM event_motif, event_motif_image WHERE event_motif_image.motif_id = '" + id +"' AND event_motif_image.motif_id = event_motif.id;"
 
-    db.query(queryString, (err, rows) =>{
-      if (err){
-        return reject(500);
-      }
-      if (!rows.length){
-        return reject(404);
-      }
-      return resolve(rows);
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
     });
   });
 };

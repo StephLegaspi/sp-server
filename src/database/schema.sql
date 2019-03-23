@@ -24,6 +24,7 @@ CREATE TABLE user (
 CREATE TABLE administrator (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     active BOOLEAN NOT NULL DEFAULT TRUE,
+    image VARCHAR(256),
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
@@ -89,6 +90,13 @@ CREATE TABLE event_motif (
     description VARCHAR(256)
 );
 
+CREATE TABLE event_motif_image (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    image VARCHAR(256),
+    motif_id INT,
+    FOREIGN KEY(motif_id) REFERENCES event_motif(id)
+);
+
 CREATE TABLE package (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(64),
@@ -130,7 +138,8 @@ CREATE TABLE product (
     description VARCHAR(128) NOT NULL,
     price FLOAT NOT NULL,
     for_purchase BOOLEAN,
-    display_product BOOLEAN
+    display_product BOOLEAN,
+    image VARCHAR(256)
 );
 
 CREATE TABLE inventory (
@@ -405,12 +414,13 @@ CREATE PROCEDURE insertProduct(user_id1 INT,
                                 for_purchase1 BOOLEAN,
                                 display_product1 BOOLEAN,
                                 total_quantity1 INT,
-                                color_list VARCHAR(256))
+                                color_list VARCHAR(256),
+                                image1 VARCHAR(256))
 BEGIN
     DECLARE prod_ID1 INT;
 
-    INSERT INTO product(name, description, price, for_purchase, display_product)
-        values (name1, description1, price1, for_purchase1, display_product1);
+    INSERT INTO product(name, description, price, for_purchase, display_product, image)
+        values (name1, description1, price1, for_purchase1, display_product1, image1);
 
     SET prod_ID1 = LAST_INSERT_ID();
     INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, (SELECT id from administrator WHERE user_id = user_id1));
@@ -575,10 +585,11 @@ CREATE PROCEDURE insertAdmin(session_id INT,
                             email_address2 VARCHAR(64),
                             password2 VARCHAR(256),
                             contact_number2 VARCHAR(11),
-                            user_type2 VARCHAR(20))
+                            user_type2 VARCHAR(20),
+                            image2 VARCHAR(256))
 BEGIN
     CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
-    INSERT INTO administrator(user_id) VALUES (LAST_INSERT_ID());
+    INSERT INTO administrator(user_id, image) VALUES (LAST_INSERT_ID(), image2);
     CALL insertLog(concat('Added administrator: ', LAST_INSERT_ID()), 'Administrator', session_id);
 END;
 GO
@@ -613,10 +624,11 @@ CREATE PROCEDURE insertRootAdmin(first_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
                             password2 VARCHAR(256),
                             contact_number2 VARCHAR(11),
-                            user_type2 VARCHAR(20))
+                            user_type2 VARCHAR(20),
+                            image2 VARCHAR(256))
 BEGIN
     CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
-    INSERT INTO administrator(user_id) VALUES (LAST_INSERT_ID());
+    INSERT INTO administrator(user_id, image) VALUES (LAST_INSERT_ID(), image2);
 END;
 GO
 /*DELETE ADMINISTRATOR*/
@@ -657,11 +669,32 @@ GO
 /*INSERT EVENT MOTIF*/
 CREATE PROCEDURE insertMotif(session_id INT,
                         name3 VARCHAR(64),
-                        description3 VARCHAR(256))
+                        description3 VARCHAR(256),
+                        image_files VARCHAR(1024))
 BEGIN
 
+
+    DECLARE listcopy varchar(1024);
+    DECLARE string varchar(256);
+    DECLARE i INT;
+    DECLARE id_motif INT;
+
+    SET listcopy = image_files;
+    SET i = INSTR(listcopy, '|');
+    SET string = '';
+
     INSERT INTO event_motif(name, description) VALUES(name3, description3);
-    CALL insertLog(concat('Added event motif: ', LAST_INSERT_ID()), 'Administrator', session_id);
+    SET id_motif = LAST_INSERT_ID();
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO event_motif_image(image, motif_id) VALUES(TRIM(string), id_motif);
+        SET string = CONCAT(string, '|');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, '|');
+    END WHILE;
+
+    CALL insertLog(concat('Added event motif: ', id_motif), 'Administrator', session_id);
 END;
 GO
 /*EDIT EVENT MOTIF*/
@@ -1089,13 +1122,7 @@ GO
 
 DELIMITER ;
 
-CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator");
+CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", "uploads/2019-03-23T09:01:09.107Zballoon.jpg");
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
-
-
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 50, "red, blue");
-CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, "white");
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 60, "green, violet");
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 70, "yellow, orange");
 
 CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");

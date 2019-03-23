@@ -4,10 +4,10 @@ const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 
 
-exports.create = (session_id, first_name, middle_name, last_name, email_address, password, contact_number, user_type) => {
+exports.create = (session_id, first_name, middle_name, last_name, email_address, password, contact_number, user_type, image) => {
 	return new Promise((resolve, reject) => {
       bcrypt.hash(password, salt, function(err, hash) {
-        const queryString = "CALL insertAdmin('" + session_id +"', '" + first_name +"', '" + middle_name +"', '" + last_name +"', '" + email_address +"', '" + hash +"', '" + contact_number +"', '" + user_type +"');";
+        const queryString = "CALL insertAdmin('" + session_id +"', '" + first_name +"', '" + middle_name +"', '" + last_name +"', '" + email_address +"', '" + hash +"', '" + contact_number +"', '" + user_type +"', '" + image +"');";
 
         db.query(queryString, (err, results) => {
             if (err) {
@@ -79,7 +79,7 @@ exports.deactivate = (session_id,  id) => {
 
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active FROM user, administrator WHERE user.id=administrator.user_id;";
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active, administrator.image FROM user, administrator WHERE user.id=administrator.user_id;";
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -93,7 +93,7 @@ exports.getAll = () =>{
 
 exports.getOneByName = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active FROM user, administrator WHERE LOWER(CONCAT(user.first_name, user.middle_name, user.last_name)) REGEXP LOWER('.*" + name +".*') AND  user.id=administrator.user_id;";
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active, administrator.image FROM user, administrator WHERE LOWER(CONCAT(user.first_name, user.middle_name, user.last_name)) REGEXP LOWER('.*" + name +".*') AND  user.id=administrator.user_id;";
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -107,7 +107,7 @@ exports.getOneByName = (name) =>{
 
 exports.getProfile = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active FROM user, administrator WHERE administrator.user_id = '" + id +"' AND  user.id=administrator.user_id;";
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active, administrator.image FROM user, administrator WHERE administrator.user_id = '" + id +"' AND  user.id=administrator.user_id;";
 
       db.query(queryString, (err, rows) => {
         if (err) {
