@@ -107,7 +107,7 @@ exports.getOneByName = (name) =>{
 
 exports.getProfile = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active FROM user, administrator WHERE administrator.user_id = '" + id +"' AND  user.id=administrator.user_id;";
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, administrator.id, administrator.active, administrator.image FROM user, administrator WHERE administrator.user_id = '" + id +"' AND  user.id=administrator.user_id;";
 
       db.query(queryString, (err, rows) => {
         if (err) {
