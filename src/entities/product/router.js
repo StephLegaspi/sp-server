@@ -82,8 +82,6 @@ router.post('/products/purchase', upload.single('image'), async (req, res) => {
   const product_color = req.body.product_color;
   const image = req.file.path;
   const user_id = 1;
-
-  console.log(image);
     
     try {
       const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color, image);
