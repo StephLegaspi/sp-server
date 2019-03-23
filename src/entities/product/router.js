@@ -73,6 +73,7 @@ router.get('/products/:id', async (req, res) => {
 
 
 router.post('/products/purchase', upload.single('image'), async (req, res) => {
+
   const name = req.body.name;
   const description = req.body.description;
   const price = req.body.price;
