@@ -674,13 +674,13 @@ CREATE PROCEDURE insertMotif(session_id INT,
 BEGIN
 
 
-    DECLARE listcopy varchar(255);
-    DECLARE string varchar(255);
+    DECLARE listcopy varchar(1024);
+    DECLARE string varchar(256);
     DECLARE i INT;
     DECLARE id_motif INT;
 
     SET listcopy = image_files;
-    SET i = INSTR(listcopy, ',');
+    SET i = INSTR(listcopy, '|');
     SET string = '';
 
     INSERT INTO event_motif(name, description) VALUES(name3, description3);
@@ -689,11 +689,10 @@ BEGIN
     WHILE i != 0 DO
         SET string = SUBSTRING(listcopy, 1, i - 1);
         INSERT INTO event_motif_image(image, motif_id) VALUES(TRIM(string), id_motif);
-        SET string = CONCAT(string, ',');
+        SET string = CONCAT(string, '|');
         SET listcopy = TRIM(LEADING string FROM listcopy);
-        SET i = INSTR(listcopy, ',');
+        SET i = INSTR(listcopy, '|');
     END WHILE;
-    INSERT INTO event_motif_image(image, motif_id) VALUES(TRIM(string), id_motif);
 
     CALL insertLog(concat('Added event motif: ', id_motif), 'Administrator', session_id);
 END;

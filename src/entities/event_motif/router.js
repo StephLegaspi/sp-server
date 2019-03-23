@@ -38,8 +38,10 @@ router.post('/event_motifs', upload.array('images', 5), async (req, res) => {
   
   image_files = image_files + req.files[0].path;
   for(i=1; i<5; i++){
-    image_files = image_files + ', ' + req.files[i].path;
+    image_files = image_files + '|' + req.files[i].path;
   }
+
+  image_files = image_files + '|';
 
     try {
       const event_motif = await controller.create(session_id, name, description, image_files);
@@ -66,6 +68,7 @@ router.get('/event_motifs/search/:name', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
 
 router.get('/event_motifs/four', async (req, res) => {
   try {
