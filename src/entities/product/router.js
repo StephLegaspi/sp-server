@@ -97,7 +97,7 @@ router.post('/products/purchase', upload.single('image'), async (req, res) => {
  
 });
 
-router.post('/products/rental', async (req, res) => {
+router.post('/products/rental', upload.single('image'), async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
   const price = req.body.price;
@@ -106,9 +106,10 @@ router.post('/products/rental', async (req, res) => {
   const total_quantity = req.body.total_quantity;
   const product_color = req.body.product_color;
   const user_id = 1;
+  const image = req.file.path;
     
     try {
-      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color);
+      const product = await controller.create(user_id, name, description, price, for_purchase, display_product, total_quantity, product_color, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully created product for rental',
