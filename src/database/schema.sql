@@ -949,8 +949,15 @@ GO
 CREATE PROCEDURE editInventory(id3 INT,
                         total_quantity3 INT)
 BEGIN
+    DECLARE prev_total INT;
+    DECLARE prev_remaining INT;
+    DECLARE deduction INT;
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=CURDATE() WHERE id=id3;
+    SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
+    SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
+    SET deduction = prev_total - prev_remaining;
+
+    UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=CURDATE() WHERE id=id3;
 END;
 GO
 /*INSERT PACKAGE*/
