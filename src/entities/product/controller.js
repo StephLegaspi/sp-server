@@ -59,7 +59,7 @@ exports.searchNameRental = (name) =>{
 
 exports.getOne = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT * FROM product WHERE id = '" + id +"';"
+		const queryString = "SELECT product.id, product.name, product.price, product.description, product.image, inventory.remaining FROM product, inventory WHERE product.id=inventory.product_id AND product.id = '" + id +"';"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
