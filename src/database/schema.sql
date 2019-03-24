@@ -559,8 +559,12 @@ GO
 CREATE PROCEDURE deleteOrder(session_id INT,
                             id3 INT)
 BEGIN
+    DECLARE cart_id INT;
+    SET cart_id = (SELECT shopping_cart_id FROM order_information WHERE id=id3);
 
+    DELETE FROM shopping_cart_products WHERE shopping_cart_id=cart_id;
     DELETE FROM order_information WHERE id=id3;
+    DELETE FROM shopping_cart WHERE id=cart_id;
     CALL insertLog(concat('Deleted order: ', id3), 'Administrator', session_id);
 END;
 GO
