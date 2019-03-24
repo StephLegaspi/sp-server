@@ -9,7 +9,6 @@ const await = require('asyncawait/await');
 
 
 router.post('/customers', async (req, res) => {
-  const session_id = req.session.user.id;
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
   const last_name = req.body.last_name;
@@ -24,7 +23,7 @@ router.post('/customers', async (req, res) => {
       await authController.checkValidContact(contact_number);
       await authController.checkValidEmail(email_address);
       await authController.checkEmailExists(email_address);
-      const customer = await controller.create(session_id, first_name, middle_name, last_name, email_address, password, contact_number, user_type, address, zip_code);
+      const customer = await controller.create(first_name, middle_name, last_name, email_address, password, contact_number, user_type, address, zip_code);
       res.status(200).json({
         status: 200,
         message: 'Successfully created customer',
