@@ -193,7 +193,22 @@ router.delete('/orders/purchase/:id', async (req, res) => {
   const session_id = 1;
 
   try {
-    const order_info = await controller.remove(session_id, req.params.id);
+    const order_info = await controller.removeOrderPurchase(session_id, req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully deleted order',
+      data: order_info
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.delete('/orders/rental/:id', async (req, res) => {
+  const session_id = 1;
+
+  try {
+    const order_info = await controller.removeOrderRental(session_id, req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted order',

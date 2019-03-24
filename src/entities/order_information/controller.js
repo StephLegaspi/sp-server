@@ -32,7 +32,7 @@ exports.getAllPurchase = () =>{
 
 exports.getAllRental = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=0;"
+    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id, order_rental.rental_status FROM order_information, shopping_cart, order_rental WHERE order_information.shopping_cart_id=shopping_cart.id AND order_information.id=order_rental.order_id AND order_information.for_purchase=0;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -188,10 +188,29 @@ exports.getByStatRental = (delivery_status, rental_status) =>{
   });
 };
 
-exports.remove = (session_id, id) => {
+exports.removeOrderPurchase = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
       const queryString = "CALL deleteOrder('"+session_id+"', '"+id+"');";
+
+        db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+        return resolve(id);
+      });
+    });
+};
+
+exports.removeOrderRental = (session_id, id) => {
+  return new Promise((resolve, reject) => {
+
+      const queryString = "CALL deleteOrderRental('"+session_id+"', '"+id+"');";
 
         db.query(queryString, (err, results) => {
         if (err) {

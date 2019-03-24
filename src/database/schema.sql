@@ -555,7 +555,7 @@ BEGIN
 END;
 GO
 
-/*DELETE ORDER*/
+/*DELETE ORDER FOR PURCHASE*/
 CREATE PROCEDURE deleteOrder(session_id INT,
                             id3 INT)
 BEGIN
@@ -568,6 +568,22 @@ BEGIN
     CALL insertLog(concat('Deleted order: ', id3), 'Administrator', session_id);
 END;
 GO
+
+/*DELETE ORDER FOR RENTAL*/
+CREATE PROCEDURE deleteOrderRental(session_id INT,
+                            id3 INT)
+BEGIN
+    DECLARE cart_id INT;
+    SET cart_id = (SELECT shopping_cart_id FROM order_information WHERE id=id3);
+
+    DELETE FROM shopping_cart_products WHERE shopping_cart_id=cart_id;
+    DELETE FROM order_rental WHERE order_id=id3;
+    DELETE FROM order_information WHERE id=id3;
+    DELETE FROM shopping_cart WHERE id=cart_id;
+    CALL insertLog(concat('Deleted order: ', id3), 'Administrator', session_id);
+END;
+GO
+
 /*INSERT USER*/
 CREATE PROCEDURE insertUser(first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
