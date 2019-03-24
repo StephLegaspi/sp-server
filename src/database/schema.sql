@@ -542,7 +542,7 @@ BEGIN
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
-    UPDATE order_rental SET rental_status=rental_stat WHERE order_id=id_ord;
+    UPDATE order_rental SET rental_status=rental_stat, returned_timestamp=CURDATE() WHERE order_id=id_ord;
 
         WHILE counter < count_cart_prod DO
 

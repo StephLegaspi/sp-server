@@ -107,15 +107,14 @@ exports.getByStatPurchase = (delivery_status) =>{
   });
 };
 
-exports.getOnePurchase = (id, status) =>{
+exports.getByRentalStatus = (rental_status) =>{
   return new Promise((resolve, reject) => {
-    
-    var queryString
-    if(status==='All'){
-      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.id = '" + id +"';";
-    }else{
 
-      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.id = '" + id +"' AND status='" + status +"';";
+    var queryString;
+    if(rental_status==='All'){
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=0;";
+    }else{
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart, order_rental WHERE order_information.shopping_cart_id=shopping_cart.id AND order_information.id=order_rental.order_id AND  order_information.for_purchase=0 AND order_rental.rental_status = '" + rental_status +"';";
     }
 
     db.query(queryString, (err, rows) => {
@@ -129,9 +128,37 @@ exports.getOnePurchase = (id, status) =>{
   });
 };
 
-exports.getOneRental = (id) =>{
+exports.getOnePurchase = (id, status) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=0 AND order_information.id = '" + id +"';"
+    
+    var queryString
+    if(status==='All'){
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.id = '" + id +"';";
+    }else{
+
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=1 AND order_information.id = '" + id +"' AND order_information.status='" + status +"';";
+    }
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+
+  });
+};
+
+exports.getOneRental = (id, rental_status) =>{
+  return new Promise((resolve, reject) => {
+    var queryString;
+    if(rental_status==='All'){
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart WHERE order_information.shopping_cart_id=shopping_cart.id AND  order_information.for_purchase=0 AND order_information.id = '" + id +"';";
+    }else{
+      queryString = "SELECT order_information.id, order_information.delivery_address, order_information.zip_code, order_information.order_timestamp, shopping_cart.total_items, shopping_cart.total_bill, order_information.status, order_information.shopping_cart_id, order_information.customer_id FROM order_information, shopping_cart, order_rental WHERE order_information.shopping_cart_id=shopping_cart.id AND order_information.id=order_rental.order_id AND  order_information.for_purchase=0 AND order_rental.rental_status = '" + rental_status +"' AND order_information.id = '" + id +"';";
+    }
+
 
       db.query(queryString, (err, rows) => {
         if (err) {
