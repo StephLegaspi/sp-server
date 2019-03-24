@@ -542,7 +542,7 @@ BEGIN
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
-    UPDATE order_rental SET rental_status=rental_stat WHERE order_id=id_ord;
+    UPDATE order_rental SET rental_status=rental_stat, returned_timestamp=CURDATE() WHERE order_id=id_ord;
 
         WHILE counter < count_cart_prod DO
 
@@ -949,8 +949,19 @@ GO
 CREATE PROCEDURE editInventory(id3 INT,
                         total_quantity3 INT)
 BEGIN
+    DECLARE prev_total INT;
+    DECLARE prev_remaining INT;
+    DECLARE deduction INT;
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=CURDATE() WHERE id=id3;
+    SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
+    SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
+    SET deduction = prev_total - prev_remaining;
+
+    IF prev_remaining=0 THEN
+        UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=CURDATE() WHERE id=id3;
+    ELSE
+        UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=CURDATE() WHERE id=id3;
+    END IF;
 END;
 GO
 /*INSERT PACKAGE*/

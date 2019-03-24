@@ -6,6 +6,29 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+router.post('/inquiry', async (req, res) => {
+  const first_name = req.body.first_name;
+  const middle_name = req.body.middle_name;
+  const last_name = req.body.last_name;
+  const email_address = req.body.email_address;
+  const contact_number = req.body.contact_number;
+  const message = req.body.message;
+
+  const full_name = first_name+' '+middle_name+' '+last_name;
+
+  try {
+      const msg = await controller.sendMessage(full_name, email_address, contact_number, message);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully sent message',
+        data: msg
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+
+});
+
 router.get('/contact_details', async (req, res) => {
   try {
     const contact_details = await controller.getAll();

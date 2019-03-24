@@ -145,6 +145,19 @@ router.get('/orders/purchase-status/:delivery_status', async (req, res) => {
   }
 });
 
+router.get('/orders/rental-status/:rental_status', async (req, res) => {
+  try {
+    const order_info = await controller.getByRentalStatus(req.params.rental_status);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched order',
+      data: order_info
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.post('/orders/purchase/:id', async (req, res) => {
   const status = req.body.status;
 
@@ -161,10 +174,10 @@ router.post('/orders/purchase/:id', async (req, res) => {
 });
 
 router.post('/orders/rental/:id', async (req, res) => {
-  /*const status = req.body.status;*/
+  const status = req.body.status;
 
   try {
-    const order_info = await controller.getOneRental(req.params.id);
+    const order_info = await controller.getOneRental(req.params.id, status);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched order',
