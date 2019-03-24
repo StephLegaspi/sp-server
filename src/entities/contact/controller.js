@@ -17,8 +17,8 @@ exports.sendMessage = (full_name, email_address, contact_number, message) =>{
         from: '"Stephanie Legaspi" <steph061099@gmail.com>', 
         to: email_address, 
         subject: "(LJPNCS) Inquiry from: " + full_name, 
-        text: contact_number +'\n'+ message, 
-        html: "<b>" +contact_number +'<br/>'+ message+ "</b>" 
+        text: full_name +'\n'+ contact_number +'\n'+ '\n'+ message, 
+        html: "<b>" +full_name +'<br/>' +contact_number +'<br/>'+ '<br/>'+ message+ "</b>" 
       };
      
       transporter.sendMail(mailOptions, (error, info) => {
