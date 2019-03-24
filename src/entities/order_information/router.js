@@ -190,7 +190,7 @@ router.post('/orders/rental/:id', async (req, res) => {
 
 
 router.delete('/orders/purchase/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = 1;
 
   try {
     const order_info = await controller.remove(session_id, req.params.id);
