@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
 
-const nodemailer = require("nodemailer");
+
 
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
@@ -18,31 +18,18 @@ router.post('/inquiry', async (req, res) => {
 
   const full_name = first_name+' '+middle_name+' '+last_name;
 
-  let transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, 
-    auth: {
-      user: 'steph061099@gmail.com',
-      pass: 'twilightsaga1' 
-    }
-  });
+  
 
-  let mailOptions = {
-    from: '"Stephanie Legaspi" <steph061099@gmail.com>', 
-    to: email_address, 
-    subject: "(LJPNCS) Inquiry from: " + full_name, 
-    text: contact_number +'\n'+ message, 
-    html: "<b>" +contact_number +'<br/>'+ message+ "</b>" 
-  };
- 
-  transporter.sendMail(mailOptions, (error, info) => {
-    try {
-      return console.log('Message %s sent: %s', info.messageId, info.response);
+  try {
+      const msg = await controller.sendMessage(full_name, email_address, contact_number, message);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully sent message',
+        data: msg
+      });
     } catch (status) {
-      return console.log(error);
-    }  
-  });
+      res.status(status).json({ status });
+    }
 
 });
 

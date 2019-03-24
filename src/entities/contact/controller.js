@@ -1,4 +1,34 @@
 const db = require('../../database');
+const nodemailer = require("nodemailer");
+
+exports.sendMessage = (full_name, email_address, contact_number, message) =>{
+  return new Promise((resolve, reject) => {
+
+      let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, 
+        auth: {
+          user: 'steph061099@gmail.com',
+          pass: 'twilightsaga1' 
+        }
+      });
+      let mailOptions = {
+        from: '"Stephanie Legaspi" <steph061099@gmail.com>', 
+        to: email_address, 
+        subject: "(LJPNCS) Inquiry from: " + full_name, 
+        text: contact_number +'\n'+ message, 
+        html: "<b>" +contact_number +'<br/>'+ message+ "</b>" 
+      };
+     
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return reject(500);
+        }
+        return resolve(info); 
+      });
+  });
+};
 
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
