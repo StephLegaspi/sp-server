@@ -3,8 +3,6 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
 
-
-
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
@@ -17,8 +15,6 @@ router.post('/inquiry', async (req, res) => {
   const message = req.body.message;
 
   const full_name = first_name+' '+middle_name+' '+last_name;
-
-  
 
   try {
       const msg = await controller.sendMessage(full_name, email_address, contact_number, message);
