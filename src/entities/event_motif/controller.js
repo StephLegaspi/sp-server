@@ -30,7 +30,7 @@ exports.getAll = () =>{
 
 exports.getAllFour = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM event_motif LIMIT 4;"
+    const queryString = "SELECT event_motif.name, event_motif.id, (SELECT image FROM event_motif_image WHERE motif_id=event_motif.id LIMIT 1) as img FROM event_motif LIMIT 4;";
 
       db.query(queryString, (err, rows) => {
         if (err) {
