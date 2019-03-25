@@ -125,7 +125,7 @@ router.get('/inventories/:id', async (req, res) => {
   }
 });
 
-router.get('/inventories/purchase/name/:name', async (req, res) => {
+/*router.get('/inventories/purchase/name/:name', async (req, res) => {
   try {
     const inventory = await controller.getByProdNamePurchase(req.params.name);
     res.status(200).json({
@@ -149,7 +149,7 @@ router.get('/inventories/rental/name/:name', async (req, res) => {
   } catch (status) {
     res.status(status).json({ status });
   }
-});
+});*/
 
 router.put('/inventories/:id', async (req, res) => {
   const id = req.params.id;

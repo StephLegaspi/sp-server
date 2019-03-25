@@ -977,9 +977,9 @@ BEGIN
     SET deduction = prev_total - prev_remaining;
 
     IF prev_remaining=0 THEN
-        UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=CURDATE() WHERE id=id3;
+        UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=NOW() WHERE id=id3;
     ELSE
-        UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=CURDATE() WHERE id=id3;
+        UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
     END IF;
 END;
 GO
