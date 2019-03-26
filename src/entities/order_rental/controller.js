@@ -16,7 +16,7 @@ exports.getAll = () =>{
 
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM order_rental WHERE order_id = '" + id +"';"
+    const queryString = "SELECT *, CONCAT(DATE_FORMAT(returned_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(returned_timestamp, '%h:%i:%s')) as returned_timestamp2 FROM order_rental WHERE order_id = '" + id +"';"
 
     db.query(queryString, (err, rows) =>{
       if (err){
