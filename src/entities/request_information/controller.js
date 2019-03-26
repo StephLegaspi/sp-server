@@ -1,9 +1,9 @@
 const db = require('../../database');
 
-exports.create = (session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) => {
+exports.create = (session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL addRequest('" +session_id+"','" +customer_first_name+"', '" +customer_middle_name+"', '" +customer_last_name+"', '" +customer_email+"', '" +customer_contact_number+"', (STR_TO_DATE('" +event_date+"', '%d-%m-%Y')), '" +event_location+"', '" +number_of_persons+"', '" +package_id+"', '" +motif_id+"', '" +menu_id+"');";
+      const queryString = "CALL addRequest('" +session_id+"','" +customer_first_name+"', '" +customer_middle_name+"', '" +customer_last_name+"', '" +customer_email+"', '" +customer_contact_number+"', (STR_TO_DATE('" +event_date+"', '%d-%m-%Y')), '" +event_time+"', '" +event_location+"', '" +number_of_persons+"', '" +package_id+"', '" +motif_id+"', '" +menu_id+"');";
 
       
 
@@ -19,7 +19,7 @@ exports.create = (session_id, customer_first_name, customer_middle_name, custome
 
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM request_information;"
+    const queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%h:%i:%s')) as request_timestamp2 FROM request_information;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -66,9 +66,9 @@ exports.getByStatus = (status) =>{
     var queryString;
 
     if(status==='All'){
-      queryString = "SELECT * FROM request_information;"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%h:%i:%s')) as request_timestamp2 FROM request_information;"
     }else{
-      queryString = "SELECT * FROM request_information WHERE status = '" + status +"';"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%h:%i:%s')) as request_timestamp2 FROM request_information WHERE status = '" + status +"';"
     }
 
     db.query(queryString, (err, rows) => {
@@ -88,9 +88,9 @@ exports.getOne = (id, status) =>{
     var queryString;
 
     if(status==='All'){
-      queryString = "SELECT * FROM request_information WHERE id = '" + id +"';"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%h:%i:%s')) as request_timestamp2 FROM request_information WHERE id = '" + id +"';"
     }else{
-      queryString = "SELECT * FROM request_information WHERE id = '" + id +"' AND status='" + status +"';"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%h:%i:%s')) as request_timestamp2 FROM request_information WHERE id = '" + id +"' AND status='" + status +"';"
     }
 
     db.query(queryString, (err, rows) => {
@@ -109,7 +109,7 @@ exports.getOneSimple = (id) =>{
 
     var queryString;
 
-    queryString = "SELECT * FROM request_information WHERE id = '" + id +"';"
+    queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%h:%i:%s')) as request_timestamp2 FROM request_information WHERE id = '" + id +"';"
 
     db.query(queryString, (err, rows) =>{
       if (err){

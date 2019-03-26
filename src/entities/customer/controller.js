@@ -4,10 +4,10 @@ const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 
 
-exports.create = (session_id, first_name, middle_name, last_name, email_address, password, contact_number, user_type, address, zip_code) => {
+exports.create = (first_name, middle_name, last_name, email_address, password, contact_number, user_type, address, zip_code) => {
 	return new Promise((resolve, reject) => {
 		bcrypt.hash(password, salt, function(err, hash) {
-	        const queryString = "CALL insertCustomer('" + session_id+"', '" + first_name+"', '" + middle_name+"', '" + last_name+"', '" + email_address+"', '" + hash+"', '" + contact_number+"', '" + user_type+"','" + address+"', '" +zip_code+"');";
+	        const queryString = "CALL insertCustomer('" + first_name+"', '" + middle_name+"', '" + last_name+"', '" + email_address+"', '" + hash+"', '" + contact_number+"', '" + user_type+"','" + address+"', '" +zip_code+"');";
 
 	        db.query(queryString, (err, results) => {
 	            if (err) {

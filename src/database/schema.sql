@@ -118,6 +118,7 @@ CREATE TABLE request_information (
     customer_email VARCHAR(64),
     customer_contact_number VARCHAR(11),
     event_date DATE NOT NULL,
+    event_time TIME NOT NULL,
     event_location VARCHAR(128),
     number_of_persons INT NOT NULL,
     status VARCHAR(64) DEFAULT 'Pending',
@@ -542,7 +543,7 @@ BEGIN
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
-    UPDATE order_rental SET rental_status=rental_stat, returned_timestamp=CURDATE() WHERE order_id=id_ord;
+    UPDATE order_rental SET rental_status=rental_stat, returned_timestamp=NOW() WHERE order_id=id_ord;
 
         WHILE counter < count_cart_prod DO
 
@@ -555,7 +556,7 @@ BEGIN
 END;
 GO
 
-/*DELETE ORDER*/
+/*DELETE ORDER FOR PURCHASE*/
 CREATE PROCEDURE deleteOrder(session_id INT,
                             id3 INT)
 BEGIN
@@ -568,6 +569,22 @@ BEGIN
     CALL insertLog(concat('Deleted order: ', id3), 'Administrator', session_id);
 END;
 GO
+
+/*DELETE ORDER FOR RENTAL*/
+CREATE PROCEDURE deleteOrderRental(session_id INT,
+                            id3 INT)
+BEGIN
+    DECLARE cart_id INT;
+    SET cart_id = (SELECT shopping_cart_id FROM order_information WHERE id=id3);
+
+    DELETE FROM shopping_cart_products WHERE shopping_cart_id=cart_id;
+    DELETE FROM order_rental WHERE order_id=id3;
+    DELETE FROM order_information WHERE id=id3;
+    DELETE FROM shopping_cart WHERE id=cart_id;
+    CALL insertLog(concat('Deleted order: ', id3), 'Administrator', session_id);
+END;
+GO
+
 /*INSERT USER*/
 CREATE PROCEDURE insertUser(first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
@@ -643,8 +660,7 @@ BEGIN
 END;
 GO
 /*INSERT CUSTOMER*/
-CREATE PROCEDURE insertCustomer(session_id INT,
-                            first_name2 VARCHAR(64),
+CREATE PROCEDURE insertCustomer(first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
                             last_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
@@ -962,9 +978,9 @@ BEGIN
     SET deduction = prev_total - prev_remaining;
 
     IF prev_remaining=0 THEN
-        UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=CURDATE() WHERE id=id3;
+        UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=NOW() WHERE id=id3;
     ELSE
-        UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=CURDATE() WHERE id=id3;
+        UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
     END IF;
 END;
 GO
@@ -1075,6 +1091,7 @@ CREATE PROCEDURE addRequest(session_id INT,
                         email_address2 VARCHAR(64),
                         contact_number2 VARCHAR(11),
                         event_date2 DATE,
+                        event_time2 TIME,
                         event_location2 VARCHAR(128),
                         number_of_persons2 INT,
                         package_id2 INT,
@@ -1082,7 +1099,7 @@ CREATE PROCEDURE addRequest(session_id INT,
                         menu_id2 INT)
 BEGIN
 
-    INSERT INTO request_information(customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) VALUES(first_name2, middle_name2, last_name2, email_address2, contact_number2, event_date2, event_location2, number_of_persons2, package_id2, motif_id2, menu_id2, (SELECT id FROM customer WHERE user_id=session_id));
+    INSERT INTO request_information(customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) VALUES(first_name2, middle_name2, last_name2, email_address2, contact_number2, event_date2, event_time2, event_location2, number_of_persons2, package_id2, motif_id2, menu_id2, (SELECT id FROM customer WHERE user_id=session_id));
     CALL insertLog(concat('Added request: ', LAST_INSERT_ID()), 'Customer', session_id);
 END;
 GO
@@ -1140,4 +1157,4 @@ DELIMITER ;
 CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", "uploads/2019-03-23T09:01:09.107Zballoon.jpg");
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
 
-CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");
+CALL insertCustomer("Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");
