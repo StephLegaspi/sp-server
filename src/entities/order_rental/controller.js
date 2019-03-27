@@ -35,13 +35,21 @@ exports.getOne = (id) =>{
 exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL returnOrder('"+id+"', '"+status+"');";;
+      const queryString = "CALL returnOrder('"+id+"', '"+status+"');";
+      const queryString2= "CALL insertLog(concat('Edited rental order status: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
     });
