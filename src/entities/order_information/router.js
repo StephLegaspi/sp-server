@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
+const authController = require('../authentication/controller');
 
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
@@ -21,6 +22,8 @@ router.post('/orders/purchase', async (req, res) => {
   const session_id = 2;
     
     try {
+      await authController.checkValidContact(consignee_contact_number);
+      await authController.checkValidEmail(consignee_email);
       const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, rental_duration);
       res.status(200).json({
         status: 200,
@@ -47,6 +50,8 @@ router.post('/orders/rental', async (req, res) => {
   const session_id = 2;
     
     try {
+      await authController.checkValidContact(consignee_contact_number);
+      await authController.checkValidEmail(consignee_email);
       const order_info = await controller.create(session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, rental_duration);
       res.status(200).json({
         status: 200,
@@ -54,7 +59,17 @@ router.post('/orders/rental', async (req, res) => {
         data: order_info
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 400:
+          message = 'Invalid email address or contact number';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });
