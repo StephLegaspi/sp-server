@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
+const authController = require('../authentication/controller');
 
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
@@ -67,6 +68,8 @@ router.post('/requests', async (req, res) => {
  
     
     try {
+      await authController.checkValidContact(customer_contact_number);
+      await authController.checkValidEmail(customer_email);
       const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id);
       res.status(200).json({
         status: 200,
@@ -74,7 +77,17 @@ router.post('/requests', async (req, res) => {
         data: request_info
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 400:
+          message = 'Invalid email address or contact number';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });

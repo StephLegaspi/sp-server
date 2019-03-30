@@ -37,7 +37,7 @@ exports.getOne = (id) =>{
 exports.edit = (session_id, id, first_name, middle_name, last_name, email_address, contact_number ) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editUser('" + session_id+"', '" + id +"', '" + first_name +"', '" + middle_name +"', '" + last_name +"', '" + email_address +"', '" + contact_number +"');";
+      const queryString = "CALL editUser('" + id +"', '" + first_name +"', '" + middle_name +"', '" + last_name +"', '" + email_address +"', '" + contact_number +"');";
 
       db.query(queryString, (err, results) => {
         if (err) {

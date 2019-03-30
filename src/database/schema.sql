@@ -676,14 +676,12 @@ BEGIN
 END;
 GO
 /*EDIT CUSTOMER*/
-CREATE PROCEDURE editCustomer(session_id INT,
-                        id3 INT,
+CREATE PROCEDURE editCustomer(id3 INT,
                         address3 VARCHAR(128),
                         zip_code3 VARCHAR(16))
 BEGIN
 
     UPDATE customer SET address=address3, zip_code=zip_code3 WHERE id=id3;
-    CALL insertLog(concat('Updated customer: ', id3), 'Administrator', session_id);
 END;
 GO
 /*INSERT EVENT MOTIF*/
@@ -1119,8 +1117,7 @@ BEGIN
 END;
 GO
 /*EDIT USER*/
-CREATE PROCEDURE editUser(session_id INT,
-                        id2 INT,
+CREATE PROCEDURE editUser(id2 INT,
                         first_name2 VARCHAR(64),
                         middle_name2 VARCHAR(64),
                         last_name2 VARCHAR(64),
@@ -1129,17 +1126,14 @@ CREATE PROCEDURE editUser(session_id INT,
 BEGIN
 
     UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=id2;
-    CALL insertLog(concat('Updated user: ', id2), 'Administrator', session_id);
 END;
 GO
 /*CHANGE USER PASSWORD*/
-CREATE PROCEDURE changePassword(session_id INT,
-                        id2 INT,
+CREATE PROCEDURE changePassword(id2 INT,
                         new_password VARCHAR(256))
 BEGIN
 
     UPDATE user SET password = new_password WHERE id=id2;
-    CALL insertLog(concat('Changed account password: ', id2), 'Administrator', session_id);
 END;
 GO
 

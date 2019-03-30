@@ -86,13 +86,25 @@ exports.getOneModal = (id) =>{
 exports.edit = (session_id, id, address, zip_code) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editCustomer('"+session_id+"', '"+id+"', '"+address+"', '"+zip_code+"');";
+      const queryString = "CALL editCustomer('"+id+"', '"+address+"', '"+zip_code+"');";
+      const queryString2= "CALL insertLog(concat('Edited customer profile: ', '"+id+"'), 'Customer', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
     });
