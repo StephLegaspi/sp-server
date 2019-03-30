@@ -31,6 +31,21 @@ exports.getOne = (id) =>{
   });
 };
 
+exports.getRentalDueCount = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT COUNT(*) as count FROM order_rental, order_information WHERE order_rental.order_id=order_information.id AND DATE_FORMAT(DATE_ADD(order_information.order_timestamp, INTERVAL order_rental.rental_duration DAY), '%e %b, %Y') <= NOW() AND order_rental.rental_status = 'On-rent';"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+
+  });
+};
+
 
 exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {

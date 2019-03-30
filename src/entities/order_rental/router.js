@@ -20,6 +20,20 @@ router.get('/order_rentals', async (req, res) => {
   }
 });
 
+router.get('/order_rentals/due-count', async (req, res) => {
+  try {
+    const order_rentals = await controller.getRentalDueCount();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched order_rentals',
+      data: order_rentals
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 
 router.get('/order_rentals/:id', async (req, res) => {
   try {
