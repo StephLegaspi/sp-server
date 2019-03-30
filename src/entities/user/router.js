@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
+const authController = require('../authentication/controller');
 
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
@@ -58,11 +59,14 @@ router.put('/users/:id', async (req, res) => {
 
 router.put('/users/change_password/:id', async (req, res) => {
   const id = req.params.id;
+  const email_address = req.body.email_address;
+  const old_password = req.body.old_password;
   const new_password = req.body.new_password;
   const confirm_password = req.body.confirm_password;
-  const session_id = req.session.user.id;
+  const session_id = 1;
     
     try {
+      await authController.checkEmailPass(email_address, old_password, session_id);
       const user = await controller.editPassword(session_id, id, new_password, confirm_password);
       res.status(200).json({
         status: 200,
@@ -70,7 +74,17 @@ router.put('/users/change_password/:id', async (req, res) => {
         data: user
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 404:
+          message = 'Email address or password does not exist';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });

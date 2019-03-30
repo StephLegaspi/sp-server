@@ -99,3 +99,28 @@ exports.checkEmailExists = (email) =>{
     });
   });
 };
+
+exports.checkEmailPass = ( email, password, session_id ) => {
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * from user where email_address = '" + email+"' AND id='" + session_id+"';";
+    db.query(queryString, email, (err, rows) => {
+      if (err) {
+        console.log(err);
+        return reject(500);
+      }
+
+      if (!rows.length) {
+        return reject(404);
+      }
+
+      bcrypt.compare(password, rows[0].password, (error, isMatch) => {
+        if (error) return reject(500);
+        else if (!isMatch){
+          console.log(rows[0].password);
+          return reject(404);
+        } 
+        return resolve(rows[0]);
+      });
+    });
+  });
+};
