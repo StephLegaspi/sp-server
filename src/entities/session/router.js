@@ -20,5 +20,19 @@ router.get('/session', async (req, res) => {
   }
 });
 
+router.get('/session/user', async (req, res) => {
+  const session_id = req.session.user;
+  console.log(session_id);
+  try {
+    res.status(200).json({
+      status: 200,
+      session_id: session_id
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 
 module.exports = router;
