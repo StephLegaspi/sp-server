@@ -6,6 +6,21 @@ const router = express.Router();
 /*const async = require('asyncawait/async');
 const await = require('asyncawait/await');*/
 
+router.get('/session/user', async (req, res) => {
+  const session = req.session.user;
+  console.log(session);
+
+  try {
+    res.status(200).json({
+      status: 200,
+      session: session
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/session', async (req, res) => {
   const session_id = 2;
 
@@ -19,6 +34,8 @@ router.get('/session', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
+
 
 
 module.exports = router;

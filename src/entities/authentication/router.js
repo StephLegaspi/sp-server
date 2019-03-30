@@ -15,6 +15,7 @@ router.post('/auth/login/admin', async (req, res) => {
     	const user = await controller.loginAdmin(email_address, password);
 
    		req.session.user = user;
+      console.log(req.session.user);
     	res.status(200).json({
 	        status: 200,
 	        message: 'Successfully logged in',

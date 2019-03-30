@@ -28,7 +28,7 @@ router.use(administratorRouter);
 
 router.use(contactRouter);
 router.use(FAQsRouter);
-router.use(productRouter);
+//router.use(productRouter);
 router.use(userRouter);
 router.use(customerRouter);
 router.use(product_colorRouter);
@@ -56,5 +56,7 @@ router.use((req, res, next) => {
     message: 'You are currently not logged in.'
   });
 });
+
+router.use(productRouter);
 
 module.exports = router;
