@@ -42,7 +42,7 @@ router.put('/users/:id', async (req, res) => {
   const last_name = req.body.last_name;
   const email_address = req.body.email_address;
   const contact_number = req.body.contact_number;
-  const session_id = req.session.user.id;
+  const session_id = req.body.session_id;
     
     try {
       const user = await controller.edit(session_id, id, first_name, middle_name, last_name, email_address, contact_number );
@@ -63,7 +63,7 @@ router.put('/users/change_password/:id', async (req, res) => {
   const old_password = req.body.old_password;
   const new_password = req.body.new_password;
   const confirm_password = req.body.confirm_password;
-  const session_id = 1;
+  const session_id = req.body.session_id;
     
     try {
       await authController.checkEmailPass(email_address, old_password, session_id);
