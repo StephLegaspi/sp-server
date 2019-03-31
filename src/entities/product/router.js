@@ -81,7 +81,7 @@ router.post('/products/purchase', upload.single('image'), async (req, res) => {
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
   const product_color = req.body.product_color;
-  const user_id = 1;
+  const user_id = req.body.session_id;
   const image = req.file.path;
     
     try {
@@ -105,7 +105,7 @@ router.post('/products/rental', upload.single('image'), async (req, res) => {
   const display_product = req.body.display_product;
   const total_quantity = req.body.total_quantity;
   const product_color = req.body.product_color;
-  const user_id = 1;
+  const user_id = req.body.session_id;
   const image = req.file.path;
     
     try {
@@ -156,7 +156,7 @@ router.put('/products/:id', async (req, res) => {
   const price = req.body.price;
   const display_product = req.body.display_product;
   const product_color = req.body.product_color;
-  const user_id = 1;
+  const user_id = req.body.session_id;
 
     try {
       const product = await controller.edit(user_id, id, name, description, price, display_product, product_color);
@@ -173,7 +173,7 @@ router.put('/products/:id', async (req, res) => {
 
 
 router.delete('/products/:id', async (req, res) => {
-  const user_id = 1;
+  const user_id = req.body.session_id;
 
   try {
     const product = await controller.remove(user_id, req.params.id);

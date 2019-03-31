@@ -154,7 +154,7 @@ router.get('/inventories/rental/name/:name', async (req, res) => {
 router.put('/inventories/:id', async (req, res) => {
   const id = req.params.id;
   const total_quantity = req.body.total_quantity;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const inventory = await controller.edit(session_id, id, total_quantity);
