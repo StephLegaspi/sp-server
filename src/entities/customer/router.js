@@ -49,14 +49,12 @@ router.post('/customers', async (req, res) => {
 });
 
 router.get('/customers', async (req, res) => {
-  const session_id = 2;
 
   try {
     const customers = await controller.getAll();
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched customers',
-      session_id: session_id,
       data: customers
     });
   } catch (status) {
@@ -108,7 +106,7 @@ router.put('/customers/:id', async (req, res) => {
   const id = req.params.id;
   const address = req.body.address;
   const zip_code = req.body.zip_code;
-  const session_id = req.session.user.id;
+  const session_id = req.body.session_id;
 
     try {
       const customer = await controller.edit(session_id, id, address, zip_code);
