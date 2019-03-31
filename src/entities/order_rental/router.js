@@ -49,7 +49,7 @@ router.get('/order_rentals/:id', async (req, res) => {
 });
 
 router.put('/orders/rental/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
   const id = req.params.id;
   const rental_status = req.body.rental_status;
 
