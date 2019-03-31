@@ -62,7 +62,7 @@ router.get('/logs/customer/:id', async (req, res) => {
 });
 
 router.delete('/logs/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
   try {
     const log = await controller.remove(req.params.id);
     res.status(200).json({
