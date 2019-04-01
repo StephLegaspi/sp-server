@@ -10,7 +10,7 @@ const await = require('asyncawait/await');
 router.post('/FAQs', async (req, res) => {
   const question = req.body.question;
   const answer = req.body.answer;
-  const session_id = 1;
+  const session_id = req.body.session_id;
     
     try {
       const faq = await controller.create(session_id, question, answer);
@@ -54,7 +54,7 @@ router.get('/FAQs/:question', async (req, res) => {
 
 
 router.delete('/FAQs/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
   try {
     const faq = await controller.remove(session_id, req.params.id);
     res.status(200).json({
@@ -80,7 +80,7 @@ router.put('/FAQs/:id', async (req, res) => {
   const id = req.params.id;
   const question = req.body.question;
   const answer = req.body.answer;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const faq = await controller.edit(session_id, id, question, answer );

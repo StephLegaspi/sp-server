@@ -8,7 +8,7 @@ const await = require('asyncawait/await');
 
 
 router.post('/food_menus', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
   const name = req.body.name;
   const main_course = req.body.main_course;
   const appetizer = req.body.appetizer;
@@ -178,7 +178,7 @@ router.get('/food_menus/:id', async (req, res) => {
 });
 
 router.delete('/food_menus/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
   try {
     const food_menu = await controller.remove(session_id, req.params.id);
@@ -201,7 +201,7 @@ router.put('/food_menus/:id', async (req, res) => {
   const soup = req.body.soup;
   const beverage = req.body.beverage;
   const others = req.body.others;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const food_menu = await controller.edit(session_id, name, main_course, appetizer, dessert, soup, beverage, others, id);

@@ -12,9 +12,8 @@ router.post('/auth/login/admin', async (req, res) => {
   const password = req.body.password;
  
     try {
-    	const user = await controller.loginAdmin(email_address, password);
+    	let user = await controller.loginAdmin(email_address, password);
 
-   		req.session.user = user;
     	res.status(200).json({
 	        status: 200,
 	        message: 'Successfully logged in',
@@ -33,7 +32,7 @@ router.post('/auth/login/customer', async (req, res) => {
     try {
       const user = await controller.loginCustomer(email_address, password);
 
-      req.session.user = user;
+      //req.session.user = user;
       res.status(200).json({
           status: 200,
           message: 'Successfully logged in',

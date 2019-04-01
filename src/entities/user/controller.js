@@ -53,7 +53,7 @@ exports.editPassword = (session_id, id, new_password, confirm_password) => {
   return new Promise((resolve, reject) => {
   	if(new_password === confirm_password){
 	    bcrypt.hash(new_password, salt, function(err, hash) {
-	        const queryString = "CALL changePassword('" + session_id +"', '" + id +"', '" + hash +"');";
+	        const queryString = "CALL changePassword('" + id +"', '" + hash +"');";
 
 	        db.query(queryString, (err, results) => {
 	            if (err) {

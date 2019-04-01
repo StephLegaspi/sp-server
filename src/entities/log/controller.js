@@ -3,7 +3,7 @@ const db = require('../../database');
 
 exports.getAllAdmin = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%h:%i:%s')) as log_timestamp from log_record WHERE user_type='Administrator' ORDER BY log_timestamp DESC";
+    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%H:%i:%s')) as log_timestamp from log_record WHERE user_type='Administrator' ORDER BY log_timestamp DESC";
       db.query(queryString, (err, rows) => {
         if (err) {
           return reject(500);
@@ -16,7 +16,7 @@ exports.getAllAdmin = () =>{
 
 exports.getAllCustomer = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%h:%i:%s')) as log_timestamp from log_record WHERE user_type='Customer' ORDER BY log_timestamp DESC";
+    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%H:%i:%s')) as log_timestamp from log_record WHERE user_type='Customer' ORDER BY log_timestamp DESC";
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -30,7 +30,7 @@ exports.getAllCustomer = () =>{
 
 exports.getOneAdmin = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%h:%i:%s')) as log_timestamp from log_record WHERE user_id = '" +id+"' AND user_type='Administrator' ORDER BY log_timestamp DESC;";
+    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%H:%i:%s')) as log_timestamp from log_record WHERE user_id = '" +id+"' AND user_type='Administrator' ORDER BY log_timestamp DESC;";
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -45,7 +45,7 @@ exports.getOneAdmin = (id) =>{
 
 exports.getOneCustomer = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%h:%i:%s')) as log_timestamp from log_record WHERE user_id = '" +id+"' AND user_type='Customer' ORDER BY log_timestamp DESC;";
+    const queryString = "select id, action, user_type, user_id, CONCAT(DATE_FORMAT(log_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(log_timestamp, '%H:%i:%s')) as log_timestamp from log_record WHERE user_id = '" +id+"' AND user_type='Customer' ORDER BY log_timestamp DESC;";
 
     db.query(queryString, (err, rows) => {
         if (err) {

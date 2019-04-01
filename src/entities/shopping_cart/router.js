@@ -8,7 +8,7 @@ const await = require('asyncawait/await');
 
 
 router.post('/shopping_carts/purchase', async (req, res) => {
-  const session_id = 2;
+  const session_id = req.body.session_id;
   const for_purchase = 1;
     
     try {
@@ -25,7 +25,7 @@ router.post('/shopping_carts/purchase', async (req, res) => {
 });
 
 router.post('/shopping_carts/rental', async (req, res) => {
-  const session_id = 2;
+  const session_id = req.body.session_id;
   const for_purchase = 0;
     
     try {

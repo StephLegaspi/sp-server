@@ -30,7 +30,7 @@ const await = require('asyncawait/await');
 
 
 router.post('/administrators', upload.single('image'), async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
   const last_name = req.body.last_name;
@@ -126,7 +126,7 @@ router.get('/administrators/:id', async (req, res) => {
 
 
 router.delete('/administrators/:id', async (req, res) => {
-  const session_id = req.session.user.id;
+  const session_id = req.body.session_id;
 
   try {
     const administrator = await controller.remove(session_id, req.params.id);
@@ -142,7 +142,7 @@ router.delete('/administrators/:id', async (req, res) => {
 
 router.put('/administrators/:id', async (req, res) => {
   const id = req.params.id;
-  const session_id = 1;
+  const session_id = req.body.session_id;
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
   const last_name = req.body.last_name;
@@ -174,7 +174,7 @@ router.put('/administrators/:id', async (req, res) => {
 
 router.put('/administrators/activate/:id', async (req, res) => {
   const id = req.params.id;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const admin = await controller.activate(session_id, id);
@@ -201,7 +201,7 @@ router.put('/administrators/activate/:id', async (req, res) => {
 
 router.put('/administrators/deactivate/:id', async (req, res) => {
   const id = req.params.id;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const admin = await controller.deactivate(session_id, id);

@@ -727,7 +727,7 @@ GO
 /*DELETE EVENT MOTIF*/
 CREATE PROCEDURE deleteMotif(id3 INT)
 BEGIN
-
+    DELETE FROM event_motif_image WHERE motif_id=id3;
     DELETE FROM event_motif WHERE id=id3;
 END;
 GO

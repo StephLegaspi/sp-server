@@ -64,7 +64,7 @@ router.post('/requests', async (req, res) => {
   const package_id = req.body.package_id;
   const motif_id = req.body.motif_id;
   const menu_id = req.body.menu_id;
-  const session_id = 2;
+  const session_id = req.body.session_id;
  
     
     try {
@@ -139,7 +139,7 @@ router.get('/requests/status/:status', async (req, res) => {
 
 
 router.delete('/requests/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
   try {
     const request_info = await controller.remove(session_id, req.params.id);
@@ -165,7 +165,7 @@ router.delete('/requests/:id', async (req, res) => {
 router.put('/requests/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const request_info = await controller.edit(session_id, id, status);

@@ -19,7 +19,7 @@ router.post('/orders/purchase', async (req, res) => {
   const rental_duration = 1;
   const for_purchase = 1;
   const shopping_cart_id = req.body.shopping_cart_id;
-  const session_id = 2;
+  const session_id = req.body.session_id;
     
     try {
       await authController.checkValidContact(consignee_contact_number);
@@ -47,7 +47,7 @@ router.post('/orders/rental', async (req, res) => {
   const rental_duration = req.body.rental_duration;
   const for_purchase = 0;
   const shopping_cart_id = req.body.shopping_cart_id;
-  const session_id = 2;
+  const session_id = req.body.session_id;
     
     try {
       await authController.checkValidContact(consignee_contact_number);
@@ -205,7 +205,7 @@ router.post('/orders/rental/:id', async (req, res) => {
 
 
 router.delete('/orders/purchase/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;;
 
   try {
     const order_info = await controller.removeOrderPurchase(session_id, req.params.id);
@@ -220,7 +220,7 @@ router.delete('/orders/purchase/:id', async (req, res) => {
 });
 
 router.delete('/orders/rental/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;;
 
   try {
     const order_info = await controller.removeOrderRental(session_id, req.params.id);
@@ -237,7 +237,7 @@ router.delete('/orders/rental/:id', async (req, res) => {
 router.put('/orders/purchase/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const order_info = await controller.edit(session_id, id, status);

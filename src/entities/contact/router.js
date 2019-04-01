@@ -49,7 +49,7 @@ router.put('/contact_details', async (req, res) => {
   const mobile_number = req.body.mobile_number;
   const email_address = req.body.email_address;
   const business_address = req.body.business_address;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const contact = await controller.edit(session_id, telephone_number, mobile_number, email_address, business_address);

@@ -31,7 +31,7 @@ const await = require('asyncawait/await');
 router.post('/event_motifs', upload.array('images', 5), async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
   let image_files = ''
   let i;
@@ -126,7 +126,7 @@ router.get('/event_motifs/:id', async (req, res) => {
 });
 
 router.delete('/event_motifs/:id', async (req, res) => {
-  const session_id = 1;
+  const session_id = req.body.session_id;
   try {
     const event_motif = await controller.remove(session_id, req.params.id);
     res.status(200).json({
@@ -143,7 +143,7 @@ router.put('/event_motifs/:id', async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   const description = req.body.description;
-  const session_id = 1;
+  const session_id = req.body.session_id;
 
     try {
       const event_motif = await controller.edit(session_id, id, name, description );
