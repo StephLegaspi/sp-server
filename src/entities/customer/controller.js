@@ -21,6 +21,20 @@ exports.create = (first_name, middle_name, last_name, email_address, password, c
 	});
 };
 
+exports.getProfile = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.address, customer.zip_code FROM user, customer WHERE customer.user_id = '" + id +"' AND  user.id=customer.user_id;";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.user_id FROM user, customer WHERE user.id=customer.user_id;";
