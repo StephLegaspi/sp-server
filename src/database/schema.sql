@@ -676,12 +676,19 @@ BEGIN
 END;
 GO
 /*EDIT CUSTOMER*/
-CREATE PROCEDURE editCustomer(id3 INT,
+CREATE PROCEDURE editCustomer(user_id3 INT,
                         address3 VARCHAR(128),
-                        zip_code3 VARCHAR(16))
+                        zip_code3 VARCHAR(16),
+                        first_name2 VARCHAR(64),
+                        middle_name2 VARCHAR(64),
+                        last_name2 VARCHAR(64),
+                        email_address2 VARCHAR(64),
+                        contact_number2 VARCHAR(11))
 BEGIN
+    UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=user_id3;
 
-    UPDATE customer SET address=address3, zip_code=zip_code3 WHERE id=id3;
+    UPDATE customer SET address=address3, zip_code=zip_code3 WHERE user_id=user_id3;
+
 END;
 GO
 /*INSERT EVENT MOTIF*/

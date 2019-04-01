@@ -97,10 +97,10 @@ exports.getOneModal = (id) =>{
 	});
 };
 
-exports.edit = (session_id, id, address, zip_code) => {
+exports.edit = (session_id, id, address, zip_code, first_name, middle_name, last_name, email_address, contact_number) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editCustomer('"+id+"', '"+address+"', '"+zip_code+"');";
+      const queryString = "CALL editCustomer('"+session_id+"', '"+address+"', '"+zip_code+"', '"+first_name+"', '"+middle_name+"', '"+last_name+"', '"+email_address+"', '"+contact_number+"');";
       const queryString2= "CALL insertLog(concat('Edited customer profile: ', '"+id+"'), 'Customer', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
