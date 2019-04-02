@@ -7,6 +7,26 @@ const authController = require('../authentication/controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: function(req, file, cb){
+    cb(null, './uploads/');
+  },
+  filename: function(req, file, cb){
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+})
+const imageFilter = (req, file, cb) => {
+  if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+    cb(null, true);
+  }else{
+    cb(null, false);
+  }
+}
+const upload = multer({
+  storage: storage,
+  fileFilter: imageFilter
+})
 
 router.post('/customers', async (req, res) => {
   const first_name = req.body.first_name;
@@ -117,7 +137,7 @@ router.get('/customers/:id', async (req, res) => {
   }
 });
 
-router.put('/customers/:id', async (req, res) => {
+router.put('/customers/:id', upload.single('image'), async (req, res) => {
   const id = req.params.id;
   const address = req.body.address;
   const zip_code = req.body.zip_code;
@@ -127,11 +147,16 @@ router.put('/customers/:id', async (req, res) => {
   const last_name = req.body.last_name;
   const email_address = req.body.email_address;
   const contact_number = req.body.contact_number;
-
   const session_id = req.body.session_id;
+  const image_changed = req.body.image_changed;
+  var image = '';
+
+  if(image_changed === 'true'){
+    image = req.file.path;
+  }
 
     try {
-      const customer = await controller.edit(session_id, id, address, zip_code, first_name, middle_name, last_name, email_address, contact_number);
+      const customer = await controller.edit(session_id, id, address, zip_code, first_name, middle_name, last_name, email_address, contact_number, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited customer',

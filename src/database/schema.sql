@@ -33,6 +33,7 @@ CREATE TABLE customer (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     address VARCHAR(128),
     zip_code VARCHAR(16),
+    image VARCHAR(256) DEFAULT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
@@ -683,11 +684,16 @@ CREATE PROCEDURE editCustomer(user_id3 INT,
                         middle_name2 VARCHAR(64),
                         last_name2 VARCHAR(64),
                         email_address2 VARCHAR(64),
-                        contact_number2 VARCHAR(11))
+                        contact_number2 VARCHAR(11),
+                        image2 VARCHAR(256))
 BEGIN
     UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=user_id3;
 
-    UPDATE customer SET address=address3, zip_code=zip_code3 WHERE user_id=user_id3;
+    IF image2 = '' THEN
+        UPDATE customer SET address=address3, zip_code=zip_code3 WHERE user_id=user_id3;
+    ELSE
+        UPDATE customer SET address=address3, zip_code=zip_code3, image=image2 WHERE user_id=user_id3;
+    END IF;
 
 END;
 GO
