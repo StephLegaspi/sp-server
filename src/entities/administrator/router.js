@@ -96,8 +96,8 @@ router.get('/administrators/search/:name', async (req, res) => {
   }
 });
 
-router.get('/administrators/profile', async (req, res) => {
-  const user_id = 1;
+router.get('/administrators/profile/:id', async (req, res) => {
+  const user_id = req.params.id;
 
   try {
     const administrator = await controller.getProfile(user_id);

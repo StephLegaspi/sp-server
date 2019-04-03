@@ -21,6 +21,20 @@ exports.create = (first_name, middle_name, last_name, email_address, password, c
 	});
 };
 
+exports.getProfile = (id) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.address, customer.zip_code, customer.image FROM user, customer WHERE customer.user_id = '" + id +"' AND  user.id=customer.user_id;";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.user_id FROM user, customer WHERE user.id=customer.user_id;";
@@ -83,10 +97,10 @@ exports.getOneModal = (id) =>{
 	});
 };
 
-exports.edit = (session_id, id, address, zip_code) => {
+exports.edit = (session_id, id, address, zip_code, first_name, middle_name, last_name, email_address, contact_number, image) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editCustomer('"+id+"', '"+address+"', '"+zip_code+"');";
+      const queryString = "CALL editCustomer('"+session_id+"', '"+address+"', '"+zip_code+"', '"+first_name+"', '"+middle_name+"', '"+last_name+"', '"+email_address+"', '"+contact_number+"', '"+image+"');";
       const queryString2= "CALL insertLog(concat('Edited customer profile: ', '"+id+"'), 'Customer', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
