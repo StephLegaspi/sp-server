@@ -676,6 +676,15 @@ BEGIN
     INSERT INTO customer(address, zip_code, user_id) VALUES (address2, zip_code2, LAST_INSERT_ID());
 END;
 GO
+/*INSERT CUSTOMER VIA SOCIAL*/
+CREATE PROCEDURE insertCustomerSocial(first_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            user_type2 VARCHAR(20))
+BEGIN
+    INSERT INTO user(first_name, email_address, user_type) VALUES(first_name2, email_address2, user_type2);
+    INSERT INTO customer(user_id) VALUES (LAST_INSERT_ID());
+END;
+GO
 /*EDIT CUSTOMER*/
 CREATE PROCEDURE editCustomer(user_id3 INT,
                         address3 VARCHAR(128),
