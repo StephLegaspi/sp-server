@@ -31,6 +31,7 @@ const upload = multer({
 router.post('/customers/social', async (req, res) => {
   const first_name = req.body.first_name;
   const email_address = req.body.email_address;
+  const image = req.body.image;
   const user_type = 'Customer';
     
     try {

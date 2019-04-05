@@ -1170,7 +1170,5 @@ GO
 
 DELIMITER ;
 
-CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", "uploads/2019-03-23T09:01:09.107Zballoon.jpg");
+CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", null);
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
-
-CALL insertCustomer("Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");
