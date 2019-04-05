@@ -18,6 +18,7 @@ CREATE TABLE user (
     email_address VARCHAR(64),
     password VARCHAR(256),
     contact_number VARCHAR(11),
+    root_admin BOOLEAN NOT NULL DEFAULT FALSE,
     user_type VARCHAR(20)
 );
 
@@ -653,7 +654,8 @@ CREATE PROCEDURE insertRootAdmin(first_name2 VARCHAR(64),
                             user_type2 VARCHAR(20),
                             image2 VARCHAR(256))
 BEGIN
-    CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
+    INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number, user_type, root_admin) VALUES (first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2, TRUE);
+
     INSERT INTO administrator(user_id, image) VALUES (LAST_INSERT_ID(), image2);
 END;
 GO
