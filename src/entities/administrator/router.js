@@ -140,7 +140,7 @@ router.delete('/administrators/:id', async (req, res) => {
   }
 });
 
-router.put('/administrators/:id', async (req, res) => {
+router.put('/administrators/:id', upload.single('image'), async (req, res) => {
   const id = req.params.id;
   const session_id = req.body.session_id;
   const first_name = req.body.first_name;
@@ -148,9 +148,15 @@ router.put('/administrators/:id', async (req, res) => {
   const last_name = req.body.last_name;
   const email_address = req.body.email_address;
   const contact_number = req.body.contact_number;
+  const image_changed = req.body.image_changed;
+  var image = '';
+
+  if(image_changed === 'true'){
+    image = req.file.path;
+  }
 
     try {
-      const admin = await controller.edit(session_id, id,first_name, middle_name, last_name, email_address, contact_number);
+      const admin = await controller.edit(session_id, id,first_name, middle_name, last_name, email_address, contact_number, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited admin',

@@ -18,6 +18,7 @@ CREATE TABLE user (
     email_address VARCHAR(64),
     password VARCHAR(256),
     contact_number VARCHAR(11),
+    root_admin BOOLEAN NOT NULL DEFAULT FALSE,
     user_type VARCHAR(20)
 );
 
@@ -616,15 +617,19 @@ BEGIN
 END;
 GO
 /*EDIT ADMIN*/
-CREATE PROCEDURE editAdmin(admin_id2 INT,
-                            user_id2 INT,
+CREATE PROCEDURE editAdmin(user_id2 INT,
                             first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
                             last_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
-                            contact_number2 VARCHAR(11))
+                            contact_number2 VARCHAR(11),
+                            image2 VARCHAR(256))
 BEGIN
     UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=user_id2;
+
+    IF image2 != '' THEN
+        UPDATE administrator SET image=image2 WHERE user_id=user_id2;
+    END IF;
 END;
 GO
 /*ACTIVATE ADMINISTRATOR*/
@@ -649,7 +654,8 @@ CREATE PROCEDURE insertRootAdmin(first_name2 VARCHAR(64),
                             user_type2 VARCHAR(20),
                             image2 VARCHAR(256))
 BEGIN
-    CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
+    INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number, user_type, root_admin) VALUES (first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2, TRUE);
+
     INSERT INTO administrator(user_id, image) VALUES (LAST_INSERT_ID(), image2);
 END;
 GO

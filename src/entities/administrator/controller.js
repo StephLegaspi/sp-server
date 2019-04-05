@@ -163,10 +163,10 @@ exports.remove = (session_id, id) => {
     });
 };
 
-exports.edit = (session_id, id, first_name, middle_name,last_name, email_address, contact_number) => {
+exports.edit = (session_id, id, first_name, middle_name,last_name, email_address, contact_number, image) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editAdmin('"+id+"', '"+session_id+"', '"+first_name+"', '"+middle_name+"', '"+last_name+"', '"+email_address+"', '"+contact_number+"');";
+      const queryString = "CALL editAdmin('"+session_id+"', '"+first_name+"', '"+middle_name+"', '"+last_name+"', '"+email_address+"', '"+contact_number+"', '"+image+"');";
       const queryString2= "CALL insertLog(concat('Edited Administrator: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
