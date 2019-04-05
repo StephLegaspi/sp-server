@@ -616,15 +616,19 @@ BEGIN
 END;
 GO
 /*EDIT ADMIN*/
-CREATE PROCEDURE editAdmin(admin_id2 INT,
-                            user_id2 INT,
+CREATE PROCEDURE editAdmin(user_id2 INT,
                             first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
                             last_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
-                            contact_number2 VARCHAR(11))
+                            contact_number2 VARCHAR(11),
+                            image2 VARCHAR(256))
 BEGIN
     UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=user_id2;
+
+    IF image2 != '' THEN
+        UPDATE administrator SET image=image2 WHERE user_id=user_id2;
+    END IF;
 END;
 GO
 /*ACTIVATE ADMINISTRATOR*/
