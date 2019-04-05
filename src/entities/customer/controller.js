@@ -4,6 +4,20 @@ const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 
 
+exports.createSocial = (first_name, email_address, user_type) => {
+	return new Promise((resolve, reject) => {
+		const queryString = "CALL insertCustomerSocial('" + first_name+"', '" + email_address+"', '" + user_type+"');";
+
+		db.query(queryString, (err, rows) => {
+	        if (err) {
+	          console.log(err);
+	          return reject(500);
+	        }
+	        return resolve(rows);
+      });
+	});
+};
+
 exports.create = (first_name, middle_name, last_name, email_address, password, contact_number, user_type, address, zip_code) => {
 	return new Promise((resolve, reject) => {
 		bcrypt.hash(password, salt, function(err, hash) {
@@ -19,6 +33,20 @@ exports.create = (first_name, middle_name, last_name, email_address, password, c
 	    });
 
 	});
+};
+
+exports.getByEmail = (email_address) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM user WHERE email_address='" + email_address+"' AND user_type='Customer';";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
 };
 
 exports.getProfile = (id) =>{

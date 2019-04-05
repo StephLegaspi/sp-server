@@ -676,6 +676,15 @@ BEGIN
     INSERT INTO customer(address, zip_code, user_id) VALUES (address2, zip_code2, LAST_INSERT_ID());
 END;
 GO
+/*INSERT CUSTOMER VIA SOCIAL*/
+CREATE PROCEDURE insertCustomerSocial(first_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            user_type2 VARCHAR(20))
+BEGIN
+    INSERT INTO user(first_name, email_address, user_type) VALUES(first_name2, email_address2, user_type2);
+    INSERT INTO customer(user_id) VALUES (LAST_INSERT_ID());
+END;
+GO
 /*EDIT CUSTOMER*/
 CREATE PROCEDURE editCustomer(user_id3 INT,
                         address3 VARCHAR(128),
@@ -1161,7 +1170,5 @@ GO
 
 DELIMITER ;
 
-CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", "uploads/2019-03-23T09:01:09.107Zballoon.jpg");
+CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", 'uploads/2019-04-05T11:02:58.063Zdefault_avatar.png');
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
-
-CALL insertCustomer("Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");

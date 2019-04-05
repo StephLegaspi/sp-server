@@ -28,6 +28,40 @@ const upload = multer({
   fileFilter: imageFilter
 })
 
+router.post('/customers/social', async (req, res) => {
+  const first_name = req.body.first_name;
+  const email_address = req.body.email_address;
+  const image = req.body.image;
+  const user_type = 'Customer';
+    
+    try {
+      await authController.checkValidEmail(email_address);
+      await authController.checkEmailExists(email_address);
+      const customer = await controller.createSocial(first_name, email_address, user_type);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully created customer',
+        data: customer
+      });
+    } catch (status) {
+      let message = '';
+
+      switch (status) {
+        case 400:
+          message = 'Invalid email address';
+          break;
+        case 406:
+          message = 'Email address already exists';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
+    }
+ 
+});
+
 router.post('/customers', async (req, res) => {
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
@@ -66,6 +100,19 @@ router.post('/customers', async (req, res) => {
       res.status(status).json({ status, message });
     }
  
+});
+
+router.get('/customers/email/:email_address', async (req, res) => {
+  try {
+    const customer = await controller.getByEmail(req.params.email_address);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched customer',
+      data: customer
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
 });
 
 router.get('/customers/profile/:id', async (req, res) => {
