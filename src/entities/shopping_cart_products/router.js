@@ -47,16 +47,17 @@ router.post('/shopping_cart/products/rental', async (req, res) => {
  
 });
 
-router.get('/shopping_cart/products', async (req, res) => {
+router.post('/shopping_cart_products/:id', async (req, res) => {
+  const cart_id = req.body.cart_id;
+
   try {
-    const shopping_cart_products = await controller.getAll();
+    const shopping_cart_product = await controller.getOneByProdID(req.params.id, cart_id);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched shopping_cart_products',
-      data: shopping_cart_products
+      data: shopping_cart_product
     });
   } catch (status) {
-    let message = '';
     res.status(status).json({ status });
   }
 });
@@ -70,6 +71,20 @@ router.get('/shopping_cart/products/:id', async (req, res) => {
       data: shopping_cart_product
     });
   } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/shopping_cart/products', async (req, res) => {
+  try {
+    const shopping_cart_products = await controller.getAll();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched shopping_cart_products',
+      data: shopping_cart_products
+    });
+  } catch (status) {
+    let message = '';
     res.status(status).json({ status });
   }
 });
