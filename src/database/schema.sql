@@ -12,12 +12,12 @@ USE transactionserver;
 
 CREATE TABLE user (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(64),
-    middle_name VARCHAR(64),
-    last_name VARCHAR(64),
-    email_address VARCHAR(64),
-    password VARCHAR(256),
-    contact_number VARCHAR(11),
+    first_name VARCHAR(64) DEFAULT '',
+    middle_name VARCHAR(64) DEFAULT '',
+    last_name VARCHAR(64) DEFAULT '',
+    email_address VARCHAR(64) DEFAULT '',
+    password VARCHAR(256) DEFAULT '',
+    contact_number VARCHAR(11) DEFAULT '',
     root_admin BOOLEAN NOT NULL DEFAULT FALSE,
     user_type VARCHAR(20)
 );
@@ -32,8 +32,8 @@ CREATE TABLE administrator (
 
 CREATE TABLE customer (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    address VARCHAR(128),
-    zip_code VARCHAR(16),
+    address VARCHAR(128) DEFAULT '',
+    zip_code VARCHAR(16) DEFAULT '',
     image VARCHAR(256) DEFAULT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
@@ -684,10 +684,12 @@ END;
 GO
 /*INSERT CUSTOMER VIA SOCIAL*/
 CREATE PROCEDURE insertCustomerSocial(first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
                             user_type2 VARCHAR(20))
 BEGIN
-    INSERT INTO user(first_name, email_address, user_type) VALUES(first_name2, email_address2, user_type2);
+    INSERT INTO user(first_name, middle_name, last_name, email_address, user_type) VALUES(first_name2, middle_name2,last_name2, email_address2, user_type2);
     INSERT INTO customer(user_id) VALUES (LAST_INSERT_ID());
 END;
 GO

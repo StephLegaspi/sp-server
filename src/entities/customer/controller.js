@@ -4,9 +4,23 @@ const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 
 
-exports.createSocial = (first_name, email_address, user_type) => {
+exports.createSocial = (full_name, email_address, user_type) => {
 	return new Promise((resolve, reject) => {
-		const queryString = "CALL insertCustomerSocial('" + first_name+"', '" + email_address+"', '" + user_type+"');";
+		var name = full_name.split(" ");
+		var first_name = '';
+		var middle_name = '';
+		var last_name = '';
+
+		if(name.length === 3){
+			first_name = name[0];
+			middle_name = name[1];
+			last_name = name[2];
+		}else{
+			first_name = name[0];
+			last_name = name[1];
+		}
+
+		const queryString = "CALL insertCustomerSocial('" + first_name+"', '" + middle_name+"', '" + last_name+"', '" + email_address+"', '" + user_type+"');";
 
 		db.query(queryString, (err, rows) => {
 	        if (err) {
