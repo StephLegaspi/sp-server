@@ -54,7 +54,7 @@ exports.getOneByProdID = (id, cart_id) =>{
 
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT product.id, product.name, product.price, product.image, shopping_cart_products.id as sc_id, shopping_cart_products.product_quantity, shopping_cart_products.product_color_name, shopping_cart_products.product_total_price FROM shopping_cart_products, product WHERE shopping_cart_products.product_id=product.id AND shopping_cart_id = '" + id +"';"
+    const queryString = "SELECT product.id, product.name, product.price, product.image, shopping_cart_products.id as sc_id, shopping_cart_products.product_quantity, shopping_cart_products.product_color_name, shopping_cart_products.product_total_price, inventory.remaining FROM shopping_cart_products, product, inventory WHERE shopping_cart_products.product_id=product.id AND shopping_cart_id = '" + id +"' AND product.id=inventory.product_id;";
 
     db.query(queryString, (err, rows) => {
         if (err) {
