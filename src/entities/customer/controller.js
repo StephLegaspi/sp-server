@@ -79,7 +79,7 @@ exports.getProfile = (id) =>{
 
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.user_id FROM user, customer WHERE user.id=customer.user_id;";
+		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.user_id, customer.image FROM user, customer WHERE user.id=customer.user_id;";
 
 		db.query(queryString, (err, rows) => {
 	      if (err) {
