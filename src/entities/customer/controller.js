@@ -91,6 +91,20 @@ exports.getAll = () =>{
 	});
 };
 
+exports.getOneByName = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.image FROM user, customer WHERE LOWER(CONCAT(user.first_name, user.middle_name, user.last_name)) REGEXP LOWER('.*" + name +".*') AND  user.id=customer.user_id;";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getOne = (id) =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT * FROM customer WHERE id = '" + id +"';"
