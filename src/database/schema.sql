@@ -1000,6 +1000,7 @@ BEGIN
     DECLARE prev_total INT;
     DECLARE prev_remaining INT;
     DECLARE deduction INT;
+    DECLARE deduc INT;
 
     SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
     SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
@@ -1007,6 +1008,11 @@ BEGIN
 
     IF prev_remaining=0 THEN
         UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=NOW() WHERE id=id3;
+
+    ELSEIF prev_remaining<0 THEN
+        SET deduc = prev_remaining * -1;
+        UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduc), renewal_timestamp=NOW() WHERE id=id3;
+
     ELSE
         UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
     END IF;
