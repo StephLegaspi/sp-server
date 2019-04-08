@@ -16,7 +16,7 @@ exports.create = (session_id, name, description, image_files) => {
 
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM event_motif;"
+    const queryString = "SELECT *, (SELECT image FROM event_motif_image WHERE motif_id=event_motif.id LIMIT 1) as img  FROM event_motif;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -72,7 +72,7 @@ exports.getOne = (id) =>{
 
 exports.searchName = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from event_motif where LOWER(name) REGEXP LOWER('.*" + name +".*');"
+    const queryString = "SELECT *, (SELECT image FROM event_motif_image WHERE motif_id=event_motif.id LIMIT 1) as img  FROM event_motif where LOWER(name) REGEXP LOWER('.*" + name +".*');"
 
     db.query(queryString, (err, rows) => {
         if (err) {
