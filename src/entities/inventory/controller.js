@@ -124,7 +124,7 @@ exports.getByProdNameRental = (name) =>{
 
 exports.getOutOfStockPurchaseCount = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=1;"
+		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=0 AND product.for_purchase=1;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -140,7 +140,7 @@ exports.getOutOfStockPurchaseCount = () =>{
 
 exports.getOutOfStockRentalCount = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=0;"
+		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=0 AND product.for_purchase=0;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -156,7 +156,7 @@ exports.getOutOfStockRentalCount = () =>{
 
 exports.getOutOfStockPurchase = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining<=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -172,7 +172,7 @@ exports.getOutOfStockPurchase = () =>{
 
 exports.getOutOfStockRental = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining<=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
