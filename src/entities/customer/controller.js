@@ -5,11 +5,24 @@ const salt = bcrypt.genSaltSync(10);
 
 
 exports.createSocial = (full_name, email_address, user_type) => {
-	return new Promise((resolve, reject) => {	
+	return new Promise((resolve, reject) => {
+		var name = full_name.split(" ");
+		var first_name = '';	
 		var middle_name = '';
 		var last_name = '';
+		const name_len = name.length;
 
-		const queryString = "CALL insertCustomerSocial('" + full_name+"', '" + middle_name+"', '" + last_name+"', '" + email_address+"', '" + user_type+"');";
+		
+		for(i=0; i<name_len; i++){
+			if(i===(name_len-1)){
+				last_name = name[i];
+			}else{
+				first_name = first_name+name[i];
+			}
+		}
+		
+
+		const queryString = "CALL insertCustomerSocial('" + first_name+"', '" + middle_name+"', '" + last_name+"', '" + email_address+"', '" + user_type+"');";
 
 		db.query(queryString, (err, rows) => {
 	        if (err) {
