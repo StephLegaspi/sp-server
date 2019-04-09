@@ -27,6 +27,35 @@ const upload = multer({
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+router.get('/products/purchase/table', async (req, res) => {
+
+  try {
+    const products = await controller.getAllPurchaseTable();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched products',
+      data: products
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products/rental/table', async (req, res) => {
+  try {
+    const products = await controller.getAllRentalTable();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched products',
+      data: products
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/products/purchase', async (req, res) => {
 
   try {

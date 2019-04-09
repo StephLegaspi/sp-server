@@ -1,5 +1,33 @@
 const db = require('../../database');
 
+exports.getAllPurchaseTable = () => {
+	return new Promise((resolve, reject) => {
+	    const queryString = "SELECT * FROM product WHERE for_purchase=1;";
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
+exports.getAllRentalTable = () => {
+	return new Promise((resolve, reject) => {
+	    const queryString = "SELECT * FROM product WHERE for_purchase=0;";
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
 exports.getAllPurchase = () => {
 	return new Promise((resolve, reject) => {
 	    const queryString = "SELECT * FROM product WHERE for_purchase=1 AND display_product=1;";
