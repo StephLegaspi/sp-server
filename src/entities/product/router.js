@@ -150,6 +150,31 @@ router.post('/products/rental', upload.single('image'), async (req, res) => {
  
 });
 
+router.get('/products-purchase/search/table/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNamePurchaseTable(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products-rental/search/table/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNameRentalTable(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
 
 router.get('/products-purchase/search/:name', async (req, res) => {
   try {
