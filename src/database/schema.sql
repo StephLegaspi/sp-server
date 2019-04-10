@@ -12,12 +12,12 @@ USE transactionserver;
 
 CREATE TABLE user (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(64),
-    middle_name VARCHAR(64),
-    last_name VARCHAR(64),
-    email_address VARCHAR(64),
-    password VARCHAR(256),
-    contact_number VARCHAR(11),
+    first_name VARCHAR(64) DEFAULT '',
+    middle_name VARCHAR(64) DEFAULT '',
+    last_name VARCHAR(64) DEFAULT '',
+    email_address VARCHAR(64) DEFAULT '',
+    password VARCHAR(256) DEFAULT '',
+    contact_number VARCHAR(11) DEFAULT '',
     root_admin BOOLEAN NOT NULL DEFAULT FALSE,
     user_type VARCHAR(20)
 );
@@ -32,8 +32,8 @@ CREATE TABLE administrator (
 
 CREATE TABLE customer (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    address VARCHAR(128),
-    zip_code VARCHAR(16),
+    address VARCHAR(128) DEFAULT '',
+    zip_code VARCHAR(16) DEFAULT '',
     image VARCHAR(256) DEFAULT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
@@ -684,10 +684,12 @@ END;
 GO
 /*INSERT CUSTOMER VIA SOCIAL*/
 CREATE PROCEDURE insertCustomerSocial(first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
                             user_type2 VARCHAR(20))
 BEGIN
-    INSERT INTO user(first_name, email_address, user_type) VALUES(first_name2, email_address2, user_type2);
+    INSERT INTO user(first_name, middle_name, last_name, email_address, user_type) VALUES(first_name2, middle_name2,last_name2, email_address2, user_type2);
     INSERT INTO customer(user_id) VALUES (LAST_INSERT_ID());
 END;
 GO
@@ -997,17 +999,28 @@ CREATE PROCEDURE editInventory(id3 INT,
 BEGIN
     DECLARE prev_total INT;
     DECLARE prev_remaining INT;
+
+    SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
+    SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
+
+    UPDATE inventory SET total_quantity=(total_quantity3+prev_remaining), remaining=(total_quantity3+prev_remaining), renewal_timestamp=NOW() WHERE id=id3;
+
+END;
+GO
+/*EDIT INVENTORY RENTAL*/
+CREATE PROCEDURE editInventoryRental(id3 INT,
+                        total_quantity3 INT)
+BEGIN
+    DECLARE prev_total INT;
+    DECLARE prev_remaining INT;
     DECLARE deduction INT;
 
     SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
     SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
     SET deduction = prev_total - prev_remaining;
 
-    IF prev_remaining=0 THEN
-        UPDATE inventory SET total_quantity=total_quantity3, remaining=total_quantity3, renewal_timestamp=NOW() WHERE id=id3;
-    ELSE
-        UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
-    END IF;
+    UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
+
 END;
 GO
 /*INSERT PACKAGE*/

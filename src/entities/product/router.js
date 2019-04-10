@@ -27,6 +27,35 @@ const upload = multer({
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+router.get('/products/purchase/table', async (req, res) => {
+
+  try {
+    const products = await controller.getAllPurchaseTable();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched products',
+      data: products
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products/rental/table', async (req, res) => {
+  try {
+    const products = await controller.getAllRentalTable();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched products',
+      data: products
+    });
+  } catch (status) {
+    let message = '';
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/products/purchase', async (req, res) => {
 
   try {
@@ -121,6 +150,31 @@ router.post('/products/rental', upload.single('image'), async (req, res) => {
  
 });
 
+router.get('/products-purchase/search/table/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNamePurchaseTable(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/products-rental/search/table/:name', async (req, res) => {
+  try {
+    const product = await controller.searchNameRentalTable(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product',
+      data: product
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
 
 router.get('/products-purchase/search/:name', async (req, res) => {
   try {

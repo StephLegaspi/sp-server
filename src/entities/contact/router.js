@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
+const authController = require('../authentication/controller');
 
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
@@ -17,6 +18,8 @@ router.post('/inquiry', async (req, res) => {
   const full_name = first_name+' '+middle_name+' '+last_name;
 
   try {
+      await authController.checkValidContact(contact_number);
+      await authController.checkValidEmail(email_address);
       const msg = await controller.sendMessage(full_name, email_address, contact_number, message);
       res.status(200).json({
         status: 200,

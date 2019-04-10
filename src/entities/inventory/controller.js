@@ -124,7 +124,7 @@ exports.getByProdNameRental = (name) =>{
 
 exports.getOutOfStockPurchaseCount = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=1;"
+		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=0 AND product.for_purchase=1;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -140,7 +140,7 @@ exports.getOutOfStockPurchaseCount = () =>{
 
 exports.getOutOfStockRentalCount = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=0;"
+		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=0 AND product.for_purchase=0;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -156,7 +156,7 @@ exports.getOutOfStockRentalCount = () =>{
 
 exports.getOutOfStockPurchase = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining<=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -172,7 +172,7 @@ exports.getOutOfStockPurchase = () =>{
 
 exports.getOutOfStockRental = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining<=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -186,10 +186,38 @@ exports.getOutOfStockRental = (id) =>{
 	});
 };
 
-exports.edit = (session_id, id, total_quantity) => {
+exports.editPurchase = (session_id, id, total_quantity) => {
 	return new Promise((resolve, reject) => {
 
       const queryString = "CALL editInventory('"+id+"', '"+total_quantity+"')";
+      const queryString2= "CALL insertLog(concat('Edited Inventory: ', '"+id+"'), 'Administrator', '"+session_id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
+      });
+      
+    });
+};
+
+exports.editRental = (session_id, id, total_quantity) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "CALL editInventoryRental('"+id+"', '"+total_quantity+"')";
       const queryString2= "CALL insertLog(concat('Edited Inventory: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {

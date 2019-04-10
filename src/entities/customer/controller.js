@@ -4,9 +4,25 @@ const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 
 
-exports.createSocial = (first_name, email_address, user_type) => {
+exports.createSocial = (full_name, email_address, user_type) => {
 	return new Promise((resolve, reject) => {
-		const queryString = "CALL insertCustomerSocial('" + first_name+"', '" + email_address+"', '" + user_type+"');";
+		var name = full_name.split(" ");
+		var first_name = '';	
+		var middle_name = '';
+		var last_name = '';
+		const name_len = name.length;
+
+		
+		for(i=0; i<name_len; i++){
+			if(i===(name_len-1)){
+				last_name = name[i];
+			}else{
+				first_name = first_name+name[i];
+			}
+		}
+		
+
+		const queryString = "CALL insertCustomerSocial('" + first_name+"', '" + middle_name+"', '" + last_name+"', '" + email_address+"', '" + user_type+"');";
 
 		db.query(queryString, (err, rows) => {
 	        if (err) {
@@ -65,7 +81,7 @@ exports.getProfile = (id) =>{
 
 exports.getAll = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.user_id FROM user, customer WHERE user.id=customer.user_id;";
+		const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.user_id, customer.image FROM user, customer WHERE user.id=customer.user_id;";
 
 		db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -75,6 +91,20 @@ exports.getAll = () =>{
 	      
 	    });
 	});
+};
+
+exports.getOneByName = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, customer.id, customer.image FROM user, customer WHERE LOWER(CONCAT(user.first_name, user.middle_name, user.last_name)) REGEXP LOWER('.*" + name +".*') AND  user.id=customer.user_id;";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
 };
 
 exports.getOne = (id) =>{
@@ -109,21 +139,6 @@ exports.getByUserID = (id) =>{
 	});
 };
 
-exports.getOneModal = (id) =>{
-	return new Promise((resolve, reject) => {
-		const queryString = "SELECT customer.id, user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number FROM customer, user WHERE customer.id = '" + id +"' AND customer.user_id=user.id;"
-
-		db.query(queryString, (err, rows) =>{
-			if (err){
-				return reject(500);
-			}
-			if (!rows.length){
-				return reject(404);
-			}
-			return resolve(rows);
-		});
-	});
-};
 
 exports.edit = (session_id, id, address, zip_code, first_name, middle_name, last_name, email_address, contact_number, image) => {
 	return new Promise((resolve, reject) => {

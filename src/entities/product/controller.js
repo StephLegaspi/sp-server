@@ -1,5 +1,33 @@
 const db = require('../../database');
 
+exports.getAllPurchaseTable = () => {
+	return new Promise((resolve, reject) => {
+	    const queryString = "SELECT * FROM product WHERE for_purchase=1;";
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
+exports.getAllRentalTable = () => {
+	return new Promise((resolve, reject) => {
+	    const queryString = "SELECT * FROM product WHERE for_purchase=0;";
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
 exports.getAllPurchase = () => {
 	return new Promise((resolve, reject) => {
 	    const queryString = "SELECT * FROM product WHERE for_purchase=1 AND display_product=1;";
@@ -28,8 +56,7 @@ exports.getAllRental = () => {
 	});
 };
 
-
-exports.searchNamePurchase = (name) =>{
+exports.searchNamePurchaseTable = (name) =>{
   return new Promise((resolve, reject) => {
     const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1;"
 
@@ -43,9 +70,37 @@ exports.searchNamePurchase = (name) =>{
   });
 };
 
-exports.searchNameRental = (name) =>{
+exports.searchNameRentalTable = (name) =>{
   return new Promise((resolve, reject) => {
     const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0;"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+  });
+};
+
+exports.searchNamePurchase = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1 AND display_product=1;"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+  });
+};
+
+exports.searchNameRental = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0 AND display_product=1;"
 
     db.query(queryString, (err, rows) => {
         if (err) {

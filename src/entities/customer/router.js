@@ -102,6 +102,19 @@ router.post('/customers', async (req, res) => {
  
 });
 
+router.get('/customers/search/:name', async (req, res) => {
+  try {
+    const customer = await controller.getOneByName(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched administrator',
+      data: customer
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/customers/email/:email_address', async (req, res) => {
   try {
     const customer = await controller.getByEmail(req.params.email_address);
@@ -141,19 +154,6 @@ router.get('/customers', async (req, res) => {
     });
   } catch (status) {
     let message = '';
-    res.status(status).json({ status });
-  }
-});
-
-router.get('/customers/modal/:id', async (req, res) => {
-  try {
-    const customer = await controller.getOneModal(req.params.id);
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully fetched customer',
-      data: customer
-    });
-  } catch (status) {
     res.status(status).json({ status });
   }
 });
