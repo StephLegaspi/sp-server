@@ -511,6 +511,7 @@ BEGIN
     IF for_purchase = 0 THEN      
     
         INSERT INTO order_rental(rental_duration, order_id) VALUES(rental_dur, id_order);
+        UPDATE shopping_cart SET total_bill=total_bill*rental_dur WHERE id = shopping_cart_id2;
 
     END IF;
    
