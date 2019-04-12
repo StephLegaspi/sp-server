@@ -35,6 +35,8 @@ CREATE TABLE customer (
     address VARCHAR(128) DEFAULT '',
     zip_code VARCHAR(16) DEFAULT '',
     image VARCHAR(256) DEFAULT NULL,
+    is_verified BOOLEAN DEFAULT FALSE,
+    verification_code VARCHAR(12),
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
@@ -690,8 +692,12 @@ CREATE PROCEDURE insertCustomerSocial(first_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
                             user_type2 VARCHAR(20))
 BEGIN
+    DECLARE id_user INT;    
+
     INSERT INTO user(first_name, middle_name, last_name, email_address, user_type) VALUES(first_name2, middle_name2,last_name2, email_address2, user_type2);
-    INSERT INTO customer(user_id) VALUES (LAST_INSERT_ID());
+    SET id_user = LAST_INSERT_ID();
+    INSERT INTO customer(user_id) VALUES (id_user);
+    UPDATE customer SET is_verified = TRUE WHERE user_id = id_user;
 END;
 GO
 /*EDIT CUSTOMER*/
