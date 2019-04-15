@@ -42,5 +42,7 @@ app.use(logger('dev'));
   })
 );*/
 
+const port = process.env.PORT || 80;
+
 app.use('/v1', routes)
-app.listen(3001);
+app.listen(port);
