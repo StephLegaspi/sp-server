@@ -1,0 +1,9 @@
+{
+	"db" : {
+		"host": "localhost",
+  		"user": "transactionserver",
+  		"password": "transactionserver",
+  		"database": "transactionserver"
+	},
+	"port" : "3001"
+}

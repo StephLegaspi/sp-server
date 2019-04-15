@@ -1,10 +1,11 @@
 const mysql = require('mysql');
+const dbase = require('../config.json');
 
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'transactionserver',
-  password: 'transactionserver',
-  db: 'transactionserver',
+  host: dbase.db.host,
+  user: dbase.db.user,
+  password: dbase.db.password,
+  db: dbase.db.database,
   multipleStatements: true
 });
 
