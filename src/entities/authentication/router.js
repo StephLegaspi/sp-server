@@ -113,7 +113,7 @@ router.post('/auth/verify-account/:email_address', async (req, res) => {
  
     try {
       await controller.checkVerificationCode(req.params.email_address, verification_code);
-      let auth = await controller.setVerify(req.params.email_address);
+      let auth = await controller.setVerify(req.params.email_address, verification_code);
 
       res.status(200).json({
           status: 200,

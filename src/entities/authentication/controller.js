@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 
 exports.setVerificationCode = (email_address, verification_code) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "UPDATE customer, user SET customer.verification_code = '" + verification_code+"' WHERE customer.user_id = user.id AND user.email_address = '" + email_address+"';";
+    const queryString = "UPDATE customer, user SET customer.verification_code = '" + verification_code+"' WHERE customer.user_id = user.id AND user.email_address = '" + email_address+"' AND customer.verification_code IS NULL;";
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -18,9 +18,9 @@ exports.setVerificationCode = (email_address, verification_code) =>{
   });
 };
 
-exports.setVerify = (email_address) =>{
+exports.setVerify = (email_address, verification_code) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "UPDATE customer, user SET customer.is_verified = TRUE WHERE user.email_address = '" + email_address+"';";
+    const queryString = "UPDATE customer, user SET customer.is_verified = TRUE WHERE customer.user_id = user.id AND user.email_address = '" + email_address+"' AND customer.verification_code='" + verification_code+"';";
 
       db.query(queryString, (err, rows) => {
         if (err) {
