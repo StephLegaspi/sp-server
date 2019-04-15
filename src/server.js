@@ -43,4 +43,4 @@ app.use(logger('dev'));
 );*/
 
 app.use('/v1', routes)
-app.listen(3306);
+app.listen(3001);
