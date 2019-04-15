@@ -42,7 +42,9 @@ app.use(logger('dev'));
   })
 );*/
 
-const port = process.env.PORT || 80;
+var port = process.env.PORT || 80;
 
 app.use('/v1', routes)
-app.listen(port);
+app.listen(port, function() {
+  console.log(' server running in'+ port);
+});
