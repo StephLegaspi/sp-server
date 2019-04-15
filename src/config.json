@@ -1,9 +1,9 @@
 {
 	"db" : {
-		"host": "localhost",
-  		"user": "transactionserver",
-  		"password": "transactionserver",
-  		"database": "transactionserver"
+		"host": "us-cdbr-iron-east-02.cleardb.net",
+  		"user": "b711681ef677ee",
+  		"password": "e7bce52d",
+  		"database": "heroku_c27a708bdacfb86"
 	},
 	"port" : "3001"
 }
