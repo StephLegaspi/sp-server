@@ -6,6 +6,32 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+router.get('/inventories-purchase/search/:name', async (req, res) => {
+  try {
+    const inventory = await controller.searchNamePurchase(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/inventories-rental/search/:name', async (req, res) => {
+  try {
+    const inventory = await controller.searchNameRental(req.params.name);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched inventory',
+      data: inventory
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/inventories/purchase/out-of-stock', async (req, res) => {
   try {
     const inventory = await controller.getOutOfStockPurchase();
@@ -99,7 +125,7 @@ router.get('/inventories/:id', async (req, res) => {
   }
 });
 
-router.get('/inventories/purchase/name/:name', async (req, res) => {
+/*router.get('/inventories/purchase/name/:name', async (req, res) => {
   try {
     const inventory = await controller.getByProdNamePurchase(req.params.name);
     res.status(200).json({
@@ -123,17 +149,33 @@ router.get('/inventories/rental/name/:name', async (req, res) => {
   } catch (status) {
     res.status(status).json({ status });
   }
-});
+});*/
 
-router.put('/inventories/:id', async (req, res) => {
+router.put('/inventories/purchase/:id', async (req, res) => {
   const id = req.params.id;
   const total_quantity = req.body.total_quantity;
-  const remaining = req.body.remaining;
-  const renewal_timestamp = req.body.renewal_timestamp;
-  const session_id = req.session.user.id;
+  const session_id = req.body.session_id;
 
     try {
-      const inventory = await controller.edit(session_id, id, total_quantity, remaining, renewal_timestamp);
+      const inventory = await controller.editPurchase(session_id, id, total_quantity);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited inventory',
+        data: inventory
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.put('/inventories/rental/:id', async (req, res) => {
+  const id = req.params.id;
+  const total_quantity = req.body.total_quantity;
+  const session_id = req.body.session_id;
+
+    try {
+      const inventory = await controller.editRental(session_id, id, total_quantity);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited inventory',

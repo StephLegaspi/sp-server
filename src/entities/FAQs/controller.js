@@ -29,10 +29,25 @@ exports.getAll = () =>{
   });
 };
 
+exports.getOne = (question) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM FAQs WHERE LOWER(question) REGEXP LOWER('.*" + question +".*');"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+
+  });
+};
+
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deleteFAQ('" + session_id +"', '" + id +"');";
+      const queryString = "CALL deleteFAQ('" + id +"');";
       const queryString2= "CALL insertLog(concat('Deleted Frequently Asked Question: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
@@ -60,7 +75,7 @@ exports.remove = (session_id, id) => {
 exports.edit = (session_id, id, question, answer) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editFAQ('"+session_id+"', '"+id+"', '"+question+"', '"+answer+"');";
+      const queryString = "CALL editFAQ('"+id+"', '"+question+"', '"+answer+"');";
       const queryString2= "CALL insertLog(concat('Edited Frequently Asked Question: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {

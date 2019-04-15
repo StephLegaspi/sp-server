@@ -29,6 +29,34 @@ exports.getAll = () =>{
   });
 };
 
+exports.getAllThree = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM food_menu LIMIT 3;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
+exports.getAllNames = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT id, name FROM food_menu;"
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM food_menu WHERE id = '" + id +"';"
@@ -140,36 +168,73 @@ exports.getOneOthers = (id) =>{
     });
   });
 };
+
+exports.searchName = (name) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "select * from food_menu where LOWER(name) REGEXP LOWER('.*" + name +".*');"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+    });
+  });
+};
+
 exports.remove = (session_id, id) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL deleteMenu('" +session_id+"', '" +id+"');";
-
-      	db.query(queryString, (err, results) => {
-	      if (err) {
-	        console.log(err);
-	        return reject(500);
-	      }
-
-	      if (!results.affectedRows) {
-	        return reject(404);
-	      }
-	      return resolve(id);
-	    });
-    });
-};
-
-exports.edit = (session_id, name, main_course, appetizer, dessert, soup, beverage, others, id) => {
-	return new Promise((resolve, reject) => {
-
-      const queryString = "CALL editMenu('" +session_id+"', '" +name+"', '" +main_course+"','" +appetizer+"', '" +dessert+"', '" +soup+"', '" +beverage+"', '" +others+"', '" +id+"');";
+      const queryString = "CALL deleteMenu('" +id+"');";
+      const queryString2= "CALL insertLog(concat('Deleted Food Menu: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
+
+    });
+};
+
+exports.edit = (session_id, name, main_course, appetizer, dessert, soup, beverage, others, id) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "CALL editMenu('" +name+"', '" +main_course+"','" +appetizer+"', '" +dessert+"', '" +soup+"', '" +beverage+"', '" +others+"', '" +id+"');";
+      const queryString2= "CALL insertLog(concat('Edited Food Menu: ', '"+id+"'), 'Administrator', '"+session_id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
+      });
+      
     });
 };

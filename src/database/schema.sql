@@ -12,26 +12,29 @@ USE transactionserver;
 
 CREATE TABLE user (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    first_name VARCHAR(64),
-    middle_name VARCHAR(64),
-    last_name VARCHAR(64),
-    email_address VARCHAR(64),
-    password VARCHAR(256),
-    contact_number VARCHAR(11),
+    first_name VARCHAR(64) DEFAULT '',
+    middle_name VARCHAR(64) DEFAULT '',
+    last_name VARCHAR(64) DEFAULT '',
+    email_address VARCHAR(64) DEFAULT '',
+    password VARCHAR(256) DEFAULT '',
+    contact_number VARCHAR(11) DEFAULT '',
+    root_admin BOOLEAN NOT NULL DEFAULT FALSE,
     user_type VARCHAR(20)
 );
 
 CREATE TABLE administrator (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     active BOOLEAN NOT NULL DEFAULT TRUE,
+    image VARCHAR(256),
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
 
 CREATE TABLE customer (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    address VARCHAR(128),
-    zip_code VARCHAR(16),
+    address VARCHAR(128) DEFAULT '',
+    zip_code VARCHAR(16) DEFAULT '',
+    image VARCHAR(256) DEFAULT NULL,
     user_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES user(id)
 );
@@ -89,6 +92,13 @@ CREATE TABLE event_motif (
     description VARCHAR(256)
 );
 
+CREATE TABLE event_motif_image (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    image VARCHAR(256),
+    motif_id INT,
+    FOREIGN KEY(motif_id) REFERENCES event_motif(id)
+);
+
 CREATE TABLE package (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(64),
@@ -110,6 +120,7 @@ CREATE TABLE request_information (
     customer_email VARCHAR(64),
     customer_contact_number VARCHAR(11),
     event_date DATE NOT NULL,
+    event_time TIME NOT NULL,
     event_location VARCHAR(128),
     number_of_persons INT NOT NULL,
     status VARCHAR(64) DEFAULT 'Pending',
@@ -130,14 +141,15 @@ CREATE TABLE product (
     description VARCHAR(128) NOT NULL,
     price FLOAT NOT NULL,
     for_purchase BOOLEAN,
-    display_product BOOLEAN
+    display_product BOOLEAN,
+    image VARCHAR(256)
 );
 
 CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     total_quantity INT NOT NULL,
     remaining INT NOT NULL,
-    renewal_timestamp DATE NULL,
+    renewal_timestamp TIMESTAMP NULL,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
@@ -156,6 +168,7 @@ CREATE TABLE shopping_cart (
     total_items INT NOT NULL DEFAULT 0,
     total_bill FLOAT NOT NULL DEFAULT 0.0,
     for_purchase BOOLEAN,
+    in_order BOOLEAN DEFAULT 0,
     customer_id INT,
     FOREIGN KEY(customer_id) REFERENCES customer(id)
 );
@@ -163,10 +176,8 @@ CREATE TABLE shopping_cart (
 CREATE TABLE shopping_cart_products (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     product_quantity INT NOT NULL DEFAULT 0,
-    rental_duration INT,
     product_total_price FLOAT NOT NULL DEFAULT 0.0,
-    product_color_id INT NOT NULL,
-    FOREIGN KEY(product_color_id) REFERENCES product_color(id),
+    product_color_name VARCHAR (64),
     shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     product_id INT NOT NULL,
@@ -238,8 +249,7 @@ END;
 GO
 
 /*EDIT FAQ*/
-CREATE PROCEDURE editFAQ(session_id INT,
-                        id2 INT,
+CREATE PROCEDURE editFAQ(id2 INT,
                         question2 VARCHAR(256),
                         answer2 VARCHAR(256))
 BEGIN
@@ -250,8 +260,7 @@ END;
 GO
 
 /*DELETE FAQ*/
-CREATE PROCEDURE deleteFAQ(session_id INT,
-                        id2 INT)
+CREATE PROCEDURE deleteFAQ(id2 INT)
 BEGIN
 
     DELETE FROM FAQs WHERE id=id2;
@@ -259,14 +268,12 @@ END;
 GO
 
 /*EDIT CONTACT*/
-CREATE PROCEDURE editContact(session_id INT,
-                        telephone_number2 VARCHAR(20),
+CREATE PROCEDURE editContact(telephone_number2 VARCHAR(20),
                         mobile_number2 VARCHAR(11),
                         email_address2 VARCHAR(64),
                         business_address2 VARCHAR(128))
 BEGIN
     UPDATE contact_details SET telephone_number=telephone_number2, mobile_number=mobile_number2, email_address=email_address2, business_address=business_address2 WHERE id=1;
-    CALL insertLog(concat('Updated contact details: ', 1), 'Administrator', session_id);
 END;
 GO
 
@@ -291,34 +298,32 @@ END;
 GO
 /*INSERT CART PRODUCT PURCHASE*/
 CREATE PROCEDURE insertCartProductPurchase(product_quantity INT,
-                                rental_duration INT,
                                 product_color_id INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
-    
-    SET @price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
+    DECLARE total_price FLOAT;
+    SET total_price = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, total_price, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ total_price WHERE id = shopping_cart_id;
 END;
 GO
 /*INSERT CART PRODUCT RENTAL*/
 CREATE PROCEDURE insertCartProductRental(product_quantity INT,
-                                rental_duration INT,
                                 product_color_id INT,
                                 shopping_cart_id INT,
                                 product_id INT)
 BEGIN
-    
-    SET @price_total = product_quantity * rental_duration * (SELECT price FROM product WHERE id = product_id);
+    DECLARE price_total FLOAT;
+    SET price_total = product_quantity * (SELECT price FROM product WHERE id = product_id);
 
-    INSERT INTO shopping_cart_products(product_quantity, rental_duration, product_total_price, product_color_id, shopping_cart_id, product_id)
-        values (product_quantity, rental_duration, (SELECT @price_total), product_color_id, shopping_cart_id, product_id);
+    INSERT INTO shopping_cart_products(product_quantity, product_total_price, product_color_name, shopping_cart_id, product_id)
+        values (product_quantity, price_total, (SELECT product_color from product_color WHERE id=product_color_id), shopping_cart_id, product_id);
 
-    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ (SELECT @price_total) WHERE id = shopping_cart_id;
+    UPDATE shopping_cart SET total_items = total_items+product_quantity, total_bill = total_bill+ price_total WHERE id = shopping_cart_id;
 END;
 GO
 /*DELETE CART PRODUCT*/
@@ -361,7 +366,7 @@ GO
 CREATE FUNCTION getOldTotalPrice(shopping_cart_products_id INT) RETURNS FLOAT
 BEGIN
     
-    DECLARE old_total INT;
+    DECLARE old_total FLOAT;
 
     SET old_total = (SELECT product_total_price FROM shopping_cart_products WHERE id = shopping_cart_products_id);
 
@@ -370,16 +375,13 @@ BEGIN
 END;
 GO
 /*GET NEW TOTAL PRICE*/
-CREATE FUNCTION getNewTotalPrice(prod_quant INT, id INT, dur_rental INT) RETURNS FLOAT
+CREATE FUNCTION getNewTotalPrice(prod_quant INT, id INT ) RETURNS FLOAT
 BEGIN
     
     DECLARE new_price_total FLOAT;
 
-    IF dur_rental > 0 THEN
-        SET new_price_total = prod_quant * dur_rental * (SELECT getProductPrice(id));
-    ELSE
-        SET new_price_total = prod_quant * (SELECT getProductPrice(id));
-    END IF;
+   
+    SET new_price_total = prod_quant * (SELECT getProductPrice(id));
 
     RETURN new_price_total;
 
@@ -388,7 +390,6 @@ GO
 /*EDIT CART PRODUCT*/
 CREATE PROCEDURE editCartProduct(ID_s INT,
                                 product_quant INT,
-                                rental_dur INT,
                                 product_color_id INT)
 BEGIN
     
@@ -399,14 +400,15 @@ BEGIN
     
 
     /*SET @new_price_total = product_quant * (SELECT getProductPrice(id));*/
-    UPDATE shopping_cart SET total_items = (total_items - (SELECT getOldQuantity(ID_s)))+product_quant, total_bill = (total_bill - (SELECT getOldTotalPrice(ID_s))) + (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID_s);
+    UPDATE shopping_cart SET total_items = (total_items - (SELECT getOldQuantity(ID_s)))+product_quant, total_bill = (total_bill - (SELECT getOldTotalPrice(ID_s))) + (SELECT getNewTotalPrice(product_quant, ID_s)) WHERE id = (SELECT shopping_cart_id FROM shopping_cart_products WHERE id = ID_s);
 
-    UPDATE shopping_cart_products SET product_quantity = product_quant, rental_duration = rental_dur, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s, rental_dur)), product_color_id = product_color_id WHERE id = ID_s;
+    UPDATE shopping_cart_products SET product_quantity = product_quant, product_total_price =  (SELECT getNewTotalPrice(product_quant, ID_s)), product_color_name = (SELECT product_color FROM product_color WHERE id=product_color_id) WHERE id = ID_s;
 
 
     
 END;
 GO
+
 /*INSERT PRODUCT AND INVENTORY*/
 CREATE PROCEDURE insertProduct(user_id1 INT,
                                 name1 varchar(64),
@@ -415,74 +417,48 @@ CREATE PROCEDURE insertProduct(user_id1 INT,
                                 for_purchase1 BOOLEAN,
                                 display_product1 BOOLEAN,
                                 total_quantity1 INT,
-                                admin_id1 INT)
+                                color_list VARCHAR(256),
+                                image1 VARCHAR(256))
 BEGIN
     DECLARE prod_ID1 INT;
 
-    INSERT INTO product(name, description, price, for_purchase, display_product)
-        values (name1, description1, price1, for_purchase1, display_product1);
+    INSERT INTO product(name, description, price, for_purchase, display_product, image)
+        values (name1, description1, price1, for_purchase1, display_product1, image1);
 
     SET prod_ID1 = LAST_INSERT_ID();
-    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, admin_id1);
+    INSERT INTO inventory(total_quantity, remaining, product_id, admin_id) values (total_quantity1, total_quantity1, prod_ID1, (SELECT id from administrator WHERE user_id = user_id1));
+
+    CALL insertProductColor(color_list, prod_ID1);
 
     CALL insertLog(concat('Added product: ', prod_ID1), 'Administrator', user_id1);
 END;
 GO
 /*DELETE PRODUCT AND INVENTORY*/
-CREATE PROCEDURE deleteProduct(user_id2 INT, id_2 INT)
+CREATE PROCEDURE deleteProduct(id_2 INT)
 BEGIN
 
     DELETE FROM inventory WHERE product_id = id_2;
     DELETE FROM product_color WHERE product_id = id_2;
     DELETE FROM product WHERE id = id_2;
 
-    CALL insertLog(concat('Deleted product: ', id_2), 'Administrator', user_id2);
-
 END;
 GO
 /*UPDATE PRODUCT AND INVENTORY*/
-CREATE PROCEDURE updateProduct(user_id2 INT,
-                            id2 INT, 
+CREATE PROCEDURE updateProduct(id2 INT, 
                             name2 VARCHAR(64), 
                             description2 VARCHAR(128), 
-                            price2 FLOAT, 
-                            for_purchase2 BOOLEAN,
+                            price2 FLOAT,
                             display_product2 BOOLEAN,
-                            total_quantity2 INT)
+                            product_color2 VARCHAR(256))
 BEGIN
 
-    UPDATE product SET name = name2, description = description2, price = price2, for_purchase = for_purchase2, display_product = display_product2 WHERE id = id2;
-
-    UPDATE inventory SET total_quantity = total_quantity2, remaining = total_quantity2 WHERE product_id = id2;
-
-    CALL insertLog(concat('Edited product: ', id2), 'Administrator', user_id2);
+    UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
+    CALL deleteProductColor(id2);
+    CALL insertProductColor(product_color2, id2);
 
 END;
 GO
-/*DISABLE PRODUCT*/
-CREATE PROCEDURE disableProduct(user_id2 INT,
-                            id2 INT, 
-                            display_product2 BOOLEAN)
-BEGIN
 
-    UPDATE product SET display_product = display_product2 WHERE id = id2;
-
-    CALL insertLog(concat('Disabled product: ', id2), 'Administrator', user_id2);
-
-END;
-GO
-/*ENABLE PRODUCT*/
-CREATE PROCEDURE enableProduct(user_id2 INT,
-                            id2 INT, 
-                            display_product2 BOOLEAN)
-BEGIN
-
-    UPDATE product SET display_product = display_product2 WHERE id = id2;
-
-    CALL insertLog(concat('Enabled product: ', id2), 'Administrator', user_id2);
-
-END;
-GO
 /*UPDATE REMAINING IN INVENTORY TABLE*/
 CREATE PROCEDURE updateRemaining(cart_prod_count INT,
                                 cart_id INT)
@@ -515,15 +491,15 @@ CREATE PROCEDURE insertOrder(session_id INT,
                             delivery_address2 VARCHAR(128), 
                             zip_code VARCHAR(16),  
                             for_purchase BOOLEAN, 
-                            shopping_cart_id2 INT, 
-                            customer_id INT)
+                            shopping_cart_id2 INT,
+                            rental_dur INT)
 BEGIN
 
     DECLARE cart_prod_count INT DEFAULT 0;
     DECLARE ctr INT DEFAULT 0;
     DECLARE id_order INT;
 
-    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, for_purchase, shopping_cart_id2, customer_id);
+    INSERT INTO order_information(consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) VALUES (consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address2, zip_code, for_purchase, shopping_cart_id2, (SELECT id FROM customer WHERE user_id=session_id));
 
     SET id_order = LAST_INSERT_ID();
 
@@ -532,35 +508,28 @@ BEGIN
     SET cart_prod_count = (SELECT count(*) from shopping_cart_products);
     SET ctr = 0;
 
-    IF for_purchase = 0 THEN
-        WHILE ctr < cart_prod_count DO
+    IF for_purchase = 0 THEN      
+    
+        INSERT INTO order_rental(rental_duration, order_id) VALUES(rental_dur, id_order);
 
-            INSERT INTO order_rental(rental_duration) SELECT rental_duration FROM shopping_cart_products WHERE shopping_cart_id = shopping_cart_id2 LIMIT ctr,1;
-
-            UPDATE order_rental SET order_id= id_order WHERE id = LAST_INSERT_ID();
-
-            SET ctr = ctr + 1;
-        END WHILE;
     END IF;
    
     CALL updateRemaining(cart_prod_count, shopping_cart_id2);
+    UPDATE shopping_cart SET in_order=1 WHERE id = shopping_cart_id2;
 END;
 GO
 
 /*EDIT ORDER_INFO*/
-CREATE PROCEDURE editOrder(session_id INT,
-                        id_ord INT,
+CREATE PROCEDURE editOrder(id_ord INT,
                         stat_ord VARCHAR(16))
 BEGIN
 
     UPDATE order_information SET status=stat_ord WHERE id=id_ord;
-    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
 
 /*RETURN ORDER RENTAL*/
-CREATE PROCEDURE returnOrder(session_id INT,
-                        id_ord INT,
+CREATE PROCEDURE returnOrder(id_ord INT,
                         rental_stat VARCHAR(16))
 BEGIN
     
@@ -576,7 +545,7 @@ BEGIN
     SET id_cart = (SELECT shopping_cart_id FROM order_information WHERE id = id_ord);
     SET is_for_purchase = (SELECT for_purchase FROM order_information WHERE id = id_ord);
 
-    UPDATE order_rental SET rental_status=rental_stat WHERE id=id_ord;
+    UPDATE order_rental SET rental_status=rental_stat, returned_timestamp=NOW() WHERE order_id=id_ord;
 
         WHILE counter < count_cart_prod DO
 
@@ -586,21 +555,38 @@ BEGIN
 
             SET counter = counter + 1;
         END WHILE;
- 
-
-    CALL insertLog(concat('Updated order: ', id_ord), 'Administrator', session_id);
 END;
 GO
 
-/*DELETE ORDER*/
+/*DELETE ORDER FOR PURCHASE*/
 CREATE PROCEDURE deleteOrder(session_id INT,
                             id3 INT)
 BEGIN
+    DECLARE cart_id INT;
+    SET cart_id = (SELECT shopping_cart_id FROM order_information WHERE id=id3);
 
+    DELETE FROM shopping_cart_products WHERE shopping_cart_id=cart_id;
     DELETE FROM order_information WHERE id=id3;
+    DELETE FROM shopping_cart WHERE id=cart_id;
     CALL insertLog(concat('Deleted order: ', id3), 'Administrator', session_id);
 END;
 GO
+
+/*DELETE ORDER FOR RENTAL*/
+CREATE PROCEDURE deleteOrderRental(session_id INT,
+                            id3 INT)
+BEGIN
+    DECLARE cart_id INT;
+    SET cart_id = (SELECT shopping_cart_id FROM order_information WHERE id=id3);
+
+    DELETE FROM shopping_cart_products WHERE shopping_cart_id=cart_id;
+    DELETE FROM order_rental WHERE order_id=id3;
+    DELETE FROM order_information WHERE id=id3;
+    DELETE FROM shopping_cart WHERE id=cart_id;
+    CALL insertLog(concat('Deleted order: ', id3), 'Administrator', session_id);
+END;
+GO
+
 /*INSERT USER*/
 CREATE PROCEDURE insertUser(first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
@@ -622,11 +608,40 @@ CREATE PROCEDURE insertAdmin(session_id INT,
                             email_address2 VARCHAR(64),
                             password2 VARCHAR(256),
                             contact_number2 VARCHAR(11),
-                            user_type2 VARCHAR(20))
+                            user_type2 VARCHAR(20),
+                            image2 VARCHAR(256))
 BEGIN
     CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
-    INSERT INTO administrator(user_id) VALUES (LAST_INSERT_ID());
+    INSERT INTO administrator(user_id, image) VALUES (LAST_INSERT_ID(), image2);
     CALL insertLog(concat('Added administrator: ', LAST_INSERT_ID()), 'Administrator', session_id);
+END;
+GO
+/*EDIT ADMIN*/
+CREATE PROCEDURE editAdmin(user_id2 INT,
+                            first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            contact_number2 VARCHAR(11),
+                            image2 VARCHAR(256))
+BEGIN
+    UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=user_id2;
+
+    IF image2 != '' THEN
+        UPDATE administrator SET image=image2 WHERE user_id=user_id2;
+    END IF;
+END;
+GO
+/*ACTIVATE ADMINISTRATOR*/
+CREATE PROCEDURE activateAdmin(id2 INT)
+BEGIN
+    UPDATE administrator SET active=TRUE WHERE id=id2;
+END;
+GO
+/*DEACTIVATE ADMINISTRATOR*/
+CREATE PROCEDURE deactivateAdmin(id2 INT)
+BEGIN
+    UPDATE administrator SET active=FALSE WHERE id=id2;
 END;
 GO
 /*INSERT ROOT ADMINISTRATOR*/
@@ -636,24 +651,23 @@ CREATE PROCEDURE insertRootAdmin(first_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
                             password2 VARCHAR(256),
                             contact_number2 VARCHAR(11),
-                            user_type2 VARCHAR(20))
+                            user_type2 VARCHAR(20),
+                            image2 VARCHAR(256))
 BEGIN
-    CALL insertUser(first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2);
-    INSERT INTO administrator(user_id) VALUES (LAST_INSERT_ID());
+    INSERT INTO user(first_name, middle_name, last_name, email_address, password, contact_number, user_type, root_admin) VALUES (first_name2, middle_name2, last_name2, email_address2, password2, contact_number2, user_type2, TRUE);
+
+    INSERT INTO administrator(user_id, image) VALUES (LAST_INSERT_ID(), image2);
 END;
 GO
 /*DELETE ADMINISTRATOR*/
-CREATE PROCEDURE deleteAdmin(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteAdmin(id3 INT)
 BEGIN
 
     DELETE FROM administrator WHERE id = id3;
-    CALL insertLog(concat('Deleted administrator: ', id3), 'Administrator', session_id);
 END;
 GO
 /*INSERT CUSTOMER*/
-CREATE PROCEDURE insertCustomer(session_id INT,
-                            first_name2 VARCHAR(64),
+CREATE PROCEDURE insertCustomer(first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
                             last_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
@@ -668,45 +682,83 @@ BEGIN
     INSERT INTO customer(address, zip_code, user_id) VALUES (address2, zip_code2, LAST_INSERT_ID());
 END;
 GO
-/*EDIT CUSTOMER*/
-CREATE PROCEDURE editCustomer(session_id INT,
-                        id3 INT,
-                        address3 VARCHAR(128),
-                        zip_code3 VARCHAR(16))
+/*INSERT CUSTOMER VIA SOCIAL*/
+CREATE PROCEDURE insertCustomerSocial(first_name2 VARCHAR(64),
+                            middle_name2 VARCHAR(64),
+                            last_name2 VARCHAR(64),
+                            email_address2 VARCHAR(64),
+                            user_type2 VARCHAR(20))
 BEGIN
+    INSERT INTO user(first_name, middle_name, last_name, email_address, user_type) VALUES(first_name2, middle_name2,last_name2, email_address2, user_type2);
+    INSERT INTO customer(user_id) VALUES (LAST_INSERT_ID());
+END;
+GO
+/*EDIT CUSTOMER*/
+CREATE PROCEDURE editCustomer(user_id3 INT,
+                        address3 VARCHAR(128),
+                        zip_code3 VARCHAR(16),
+                        first_name2 VARCHAR(64),
+                        middle_name2 VARCHAR(64),
+                        last_name2 VARCHAR(64),
+                        email_address2 VARCHAR(64),
+                        contact_number2 VARCHAR(11),
+                        image2 VARCHAR(256))
+BEGIN
+    UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=user_id3;
 
-    UPDATE customer SET address=address3, zip_code=zip_code3 WHERE id=id3;
-    CALL insertLog(concat('Updated customer: ', id3), 'Administrator', session_id);
+    IF image2 = '' THEN
+        UPDATE customer SET address=address3, zip_code=zip_code3 WHERE user_id=user_id3;
+    ELSE
+        UPDATE customer SET address=address3, zip_code=zip_code3, image=image2 WHERE user_id=user_id3;
+    END IF;
+
 END;
 GO
 /*INSERT EVENT MOTIF*/
 CREATE PROCEDURE insertMotif(session_id INT,
                         name3 VARCHAR(64),
-                        description3 VARCHAR(256))
+                        description3 VARCHAR(256),
+                        image_files VARCHAR(1024))
 BEGIN
 
+
+    DECLARE listcopy varchar(1024);
+    DECLARE string varchar(256);
+    DECLARE i INT;
+    DECLARE id_motif INT;
+
+    SET listcopy = image_files;
+    SET i = INSTR(listcopy, '|');
+    SET string = '';
+
     INSERT INTO event_motif(name, description) VALUES(name3, description3);
-    CALL insertLog(concat('Added event motif: ', LAST_INSERT_ID()), 'Administrator', session_id);
+    SET id_motif = LAST_INSERT_ID();
+
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO event_motif_image(image, motif_id) VALUES(TRIM(string), id_motif);
+        SET string = CONCAT(string, '|');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, '|');
+    END WHILE;
+
+    CALL insertLog(concat('Added event motif: ', id_motif), 'Administrator', session_id);
 END;
 GO
 /*EDIT EVENT MOTIF*/
-CREATE PROCEDURE editMotif(session_id INT,
-                        id3 INT,
+CREATE PROCEDURE editMotif(id3 INT,
                         name3 VARCHAR(64),
                         description3 VARCHAR(256))
 BEGIN
 
     UPDATE event_motif SET name=name3, description=description3 WHERE id=id3;
-    CALL insertLog(concat('Updated event motif: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE EVENT MOTIF*/
-CREATE PROCEDURE deleteMotif(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteMotif(id3 INT)
 BEGIN
-
+    DELETE FROM event_motif_image WHERE motif_id=id3;
     DELETE FROM event_motif WHERE id=id3;
-    CALL insertLog(concat('Deleted event motif: ', id3), 'Administrator', session_id);
 END;
 GO
 /*INSERT FOOD MENU*/
@@ -859,8 +911,7 @@ BEGIN
 END;
 GO
 /*EDIT FOOD MENU*/
-CREATE PROCEDURE editMenu(session_id INT,
-                        name3 VARCHAR(64),
+CREATE PROCEDURE editMenu(name3 VARCHAR(64),
                         main_course2 VARCHAR(256),
                         appetizer2 VARCHAR(256),
                         dessert2 VARCHAR(256),
@@ -885,12 +936,10 @@ BEGIN
     CALL insertBeverage(id3, beverage2);
     CALL insertOthers(id3, others2);
 
-    CALL insertLog(concat('Updated food menu: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE FOOD MENU*/
-CREATE PROCEDURE deleteMenu(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteMenu(id3 INT)
 BEGIN
 
     CALL deleteMainCourse(id3);
@@ -900,7 +949,6 @@ BEGIN
     CALL deleteBeverage(id3);
     CALL deleteOthers(id3);
     DELETE FROM food_menu WHERE id=id3;
-    CALL insertLog(concat('Deleted food menu: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE MAIN COURSE*/
@@ -946,15 +994,33 @@ BEGIN
 END;
 GO
 /*EDIT INVENTORY*/
-CREATE PROCEDURE editInventory(session_id INT,
-                        id3 INT,
-                        total_quantity3 INT,
-                        remaining3 INT,
-                        renewal_timestamp3 DATE)
+CREATE PROCEDURE editInventory(id3 INT,
+                        total_quantity3 INT)
 BEGIN
+    DECLARE prev_total INT;
+    DECLARE prev_remaining INT;
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=remaining3, renewal_timestamp=renewal_timestamp3 WHERE id=id3;
-    CALL insertLog(concat('Updated inventory: ', id3),  'Administrator', session_id);
+    SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
+    SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
+
+    UPDATE inventory SET total_quantity=(total_quantity3+prev_remaining), remaining=(total_quantity3+prev_remaining), renewal_timestamp=NOW() WHERE id=id3;
+
+END;
+GO
+/*EDIT INVENTORY RENTAL*/
+CREATE PROCEDURE editInventoryRental(id3 INT,
+                        total_quantity3 INT)
+BEGIN
+    DECLARE prev_total INT;
+    DECLARE prev_remaining INT;
+    DECLARE deduction INT;
+
+    SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
+    SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
+    SET deduction = prev_total - prev_remaining;
+
+    UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
+
 END;
 GO
 /*INSERT PACKAGE*/
@@ -993,8 +1059,7 @@ BEGIN
 END;
 GO
 /*EDIT PACKAGE*/
-CREATE PROCEDURE editPackage(session_id INT,
-                        name2 VARCHAR(64),
+CREATE PROCEDURE editPackage(name2 VARCHAR(64),
                         inclusion2 VARCHAR(256),
                         price2 FLOAT,
                         id3 INT)
@@ -1003,17 +1068,14 @@ BEGIN
     UPDATE package SET name=name2, price=price2 WHERE id=id3;
     CALL deletePackageInclusion(id3);
     CALL insertPackageInclusion(id3, inclusion2);
-    CALL insertLog(concat('Updated package: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE PACKAGE*/
-CREATE PROCEDURE deletePackage(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deletePackage(id3 INT)
 BEGIN
 
     CALL deletePackageInclusion(id3);
     DELETE FROM package WHERE id=id3;
-    CALL insertLog(concat('Deleted package: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE PACKAGE INCLUSION*/
@@ -1024,65 +1086,79 @@ BEGIN
 END;
 GO
 /*DELETE SHOPPING CART*/
-CREATE PROCEDURE deleteCart(session_id INT,
-                        id2 INT)
+CREATE PROCEDURE deleteCart(id2 INT)
 BEGIN
 
     DELETE FROM shopping_cart WHERE id=id2;
-    CALL insertLog(concat('Deleted shopping cart: ', id2), 'Customer', session_id);
 END;
 GO
 /*INSERT PRODUCT COLOR*/
-CREATE PROCEDURE insertProductColor(session_id INT,
-                        product_color2 VARCHAR(64),
+CREATE PROCEDURE insertProductColor(color_list VARCHAR(256),
                         product_id2 INT)
 BEGIN
+    DECLARE listcopy varchar(255);
+    DECLARE string varchar(255);
+    DECLARE i INT;
+    SET listcopy = color_list;
+    SET i = INSTR(listcopy, ',');
+    SET string = '';
 
-    INSERT INTO product_color(product_color, product_id) VALUES(product_color2, product_id2);
-    CALL insertLog(concat('Added product color: ', LAST_INSERT_ID()), 'Administrator', session_id);
+    WHILE i != 0 DO
+        SET string = SUBSTRING(listcopy, 1, i - 1);
+        INSERT INTO product_color(product_color, product_id) VALUES(TRIM(string), product_id2);
+        SET string = CONCAT(string, ',');
+        SET listcopy = TRIM(LEADING string FROM listcopy);
+        SET i = INSTR(listcopy, ',');
+    END WHILE;
+    INSERT INTO product_color(product_color, product_id) VALUES(TRIM(listcopy), product_id2);
+    
 END;
 GO
-/*EDIT PRODUCT COLOR*/
-CREATE PROCEDURE editProductColor(session_id INT,
-                        id2 INT,
-                        product_color2 VARCHAR(64))
-BEGIN
 
-    UPDATE product_color SET product_color=product_color2 WHERE id=id2;
-    CALL insertLog(concat('Updated product color: ', id2), 'Administrator', session_id);
-END;
-GO
 /*DELETE PRODUCT COLOR*/
-CREATE PROCEDURE deleteProductColor(session_id INT,
-                                id2 INT)
+CREATE PROCEDURE deleteProductColor(id2 INT)
 BEGIN
 
-    DELETE FROM product_color WHERE id=id2;
-    CALL insertLog(concat('Deleted product color: ', id2), 'Administrator', session_id);
+    DELETE FROM product_color WHERE product_id=id2;
+END;
+GO
+/*ADD REQUEST*/
+CREATE PROCEDURE addRequest(session_id INT,
+                        first_name2 VARCHAR(64),
+                        middle_name2 VARCHAR(64),
+                        last_name2 VARCHAR(64),
+                        email_address2 VARCHAR(64),
+                        contact_number2 VARCHAR(11),
+                        event_date2 DATE,
+                        event_time2 TIME,
+                        event_location2 VARCHAR(128),
+                        number_of_persons2 INT,
+                        package_id2 INT,
+                        motif_id2 INT,
+                        menu_id2 INT)
+BEGIN
+
+    INSERT INTO request_information(customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) VALUES(first_name2, middle_name2, last_name2, email_address2, contact_number2, event_date2, event_time2, event_location2, number_of_persons2, package_id2, motif_id2, menu_id2, (SELECT id FROM customer WHERE user_id=session_id));
+    CALL insertLog(concat('Added request: ', LAST_INSERT_ID()), 'Customer', session_id);
 END;
 GO
 /*EDIT PACKAGE*/
-CREATE PROCEDURE editRequest(session_id INT,
-                        id3 INT,
+CREATE PROCEDURE editRequest(id3 INT,
                         status3 VARCHAR(256))
 BEGIN
 
     UPDATE request_information SET status=status3 WHERE id=id3;
-    CALL insertLog(concat('Updated request: ', id3), 'Administrator', session_id);
 END;
 GO
 /*DELETE REQUEST*/
-CREATE PROCEDURE deleteRequest(session_id INT,
-                        id3 INT)
+CREATE PROCEDURE deleteRequest(id3 INT)
 BEGIN
 
     DELETE FROM request_information WHERE id=id3;
-    CALL insertLog(concat('Deleted request: ', id3), 'Administrator', session_id);
 END;
 GO
 /*EDIT USER*/
-CREATE PROCEDURE editUser(session_id INT,
-                        id2 INT,
+CREATE PROCEDURE editUser(id2 INT,
                         first_name2 VARCHAR(64),
                         middle_name2 VARCHAR(64),
                         last_name2 VARCHAR(64),
@@ -1091,17 +1167,14 @@ CREATE PROCEDURE editUser(session_id INT,
 BEGIN
 
     UPDATE user SET first_name=first_name2, middle_name=middle_name2, last_name=last_name2, email_address=email_address2, contact_number=contact_number2 WHERE id=id2;
-    CALL insertLog(concat('Updated user: ', id2), 'Administrator', session_id);
 END;
 GO
 /*CHANGE USER PASSWORD*/
-CREATE PROCEDURE changePassword(session_id INT,
-                        id2 INT,
+CREATE PROCEDURE changePassword(id2 INT,
                         new_password VARCHAR(256))
 BEGIN
 
     UPDATE user SET password = new_password WHERE id=id2;
-    CALL insertLog(concat('Changed account password: ', id2), 'Administrator', session_id);
 END;
 GO
 
@@ -1116,18 +1189,5 @@ GO
 
 DELIMITER ;
 
-CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator");
+CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", 'uploads/2019-04-05T11:02:58.063Zdefault_avatar.png');
 INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("09087145509", "09498812448", "janette@gmail.com", "Pembo, Makati City");
-
-
-CALL insertProduct(1, "Balloon", "balloon", 12.50, 1, 1, 0, 1);
-CALL insertProduct(1, "Party Hat", "party hat", 8.50, 1, 1, 40, 1);
-CALL insertProduct(1, "Monoblock", "monoblock", 25, 0, 1, 0, 1);
-CALL insertProduct(1, "Table", "table", 200, 0, 1, 0, 1);
-
-CALL insertProductColor(1, "red", 1);
-CALL insertProductColor(1, "blue", 2);
-CALL insertProductColor(1, "white", 3);
-CALL insertProductColor(1, "green", 4);
-
-CALL insertCustomer(1, "Stephanie", "Yambot", "Legaspi", "tep@gmail.com", "$2b$10$1UhBDUqD.7arg/CpfgH8luSX.R8tp4MPXJvzVKg2.vpxDNDDs77sa", "09498812448", "Customer", "Palar", "1200");

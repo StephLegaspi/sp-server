@@ -8,11 +8,11 @@ const await = require('asyncawait/await');
 
 
 router.post('/shopping_carts/purchase', async (req, res) => {
-  const customer_id = req.body.customer_id;
+  const session_id = req.body.session_id;
   const for_purchase = 1;
     
     try {
-      const shopping_cart = await controller.create(customer_id, for_purchase);
+      const shopping_cart = await controller.create(session_id, for_purchase);
       res.status(200).json({
         status: 200,
         message: 'Successfully created shopping_cart',
@@ -25,11 +25,11 @@ router.post('/shopping_carts/purchase', async (req, res) => {
 });
 
 router.post('/shopping_carts/rental', async (req, res) => {
-  const customer_id = req.body.customer_id;
+  const session_id = req.body.session_id;
   const for_purchase = 0;
     
     try {
-      const shopping_cart = await controller.create(customer_id, for_purchase);
+      const shopping_cart = await controller.create(session_id, for_purchase);
       res.status(200).json({
         status: 200,
         message: 'Successfully created shopping_cart',
@@ -56,6 +56,48 @@ router.get('/shopping_carts', async (req, res) => {
 });
 
 
+router.get('/shopping_carts/purchase/:id', async (req, res) => {
+  try {
+    const shopping_cart = await controller.getOnePurchase(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched shopping_cart',
+      data: shopping_cart
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.get('/shopping_carts/rental/:id', async (req, res) => {
+  try {
+    const shopping_cart = await controller.getOneRental(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched shopping_cart',
+      data: shopping_cart
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
+router.put('/shopping_carts/rental-duration/:id', async (req, res) => {
+  const id = req.params.id;
+  const rental_duration = req.body.rental_duration;
+    try {
+      const order_info = await controller.editRentalDuration(id, rental_duration);
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully edited order',
+        data: order_info
+      });
+    } catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
 router.get('/shopping_carts/:id', async (req, res) => {
   try {
     const shopping_cart = await controller.getOne(req.params.id);
@@ -70,10 +112,9 @@ router.get('/shopping_carts/:id', async (req, res) => {
 });
 
 router.delete('/shopping_carts/:id', async (req, res) => {
-  const session_id = req.session.user.id;
 
   try {
-    const shopping_cart = await controller.remove(session_id, req.params.id);
+    const shopping_cart = await controller.remove(req.params.id);
     res.status(200).json({
       status: 200,
       message: 'Successfully deleted shopping_cart',

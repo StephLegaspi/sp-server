@@ -1,22 +1,5 @@
 const db = require('../../database');
 
-
-exports.create = (session_id, consignee_first_name, consignee_middle_name, consignee_last_name, consignee_email, consignee_contact_number, delivery_address, zip_code, for_purchase, shopping_cart_id, customer_id) => {
-  return new Promise((resolve, reject) => {
-
-      const queryString = "CALL insertOrder('" +session_id+"','" +consignee_first_name+"', '" +consignee_middle_name+"', '" +consignee_last_name+"', '" +consignee_email+"', '" +consignee_contact_number+"', '" +delivery_address+"', '" +zip_code+"', '" +for_purchase+"', '" +shopping_cart_id+"', '" +customer_id+"');";
-      console.log(session_id);
-
-      db.query(queryString, (err, results) => {
-        if (err) {
-          console.log(err);
-          return reject(500);
-        }
-        return resolve(results);
-      });
-    });
-};
-
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
     const queryString = "SELECT * FROM order_rental;"
@@ -33,7 +16,7 @@ exports.getAll = () =>{
 
 exports.getOne = (id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM order_rental WHERE order_id = '" + id +"';"
+    const queryString = "SELECT *, CONCAT(DATE_FORMAT(returned_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(returned_timestamp, '%H:%i:%s')) as returned_timestamp2, DATE_FORMAT(DATE_ADD(order_information.order_timestamp, INTERVAL order_rental.rental_duration DAY), '%e %b, %Y') as due_date FROM order_rental, order_information WHERE order_rental.order_id=order_information.id AND  order_id = '" + id +"';"
 
     db.query(queryString, (err, rows) =>{
       if (err){
@@ -48,20 +31,45 @@ exports.getOne = (id) =>{
   });
 };
 
+exports.getRentalDueCount = () =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT COUNT(*) as count FROM order_rental, order_information WHERE order_rental.order_id=order_information.id AND DATE_FORMAT(DATE_ADD(order_information.order_timestamp, INTERVAL order_rental.rental_duration DAY), '%e %b, %Y') >= NOW() AND order_rental.rental_status = 'On-rent';"
+
+    db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+
+  });
+};
+
+
 exports.edit = (session_id, id, status) => {
   return new Promise((resolve, reject) => {
 
-      const queryString = "CALL returnOrder('"+session_id+"', '"+id+"', '"+status+"');";;
+      const queryString = "CALL returnOrder('"+id+"', '"+status+"');";
+      const queryString2= "CALL insertLog(concat('Edited rental order status: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
     });
 };
+
 
 exports.remove = (id) => {
   return new Promise((resolve, reject) => {

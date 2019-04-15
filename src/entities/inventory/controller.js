@@ -14,9 +14,37 @@ exports.getAll = () => {
 	});
 };
 
+exports.searchNamePurchase = (name) => {
+	return new Promise((resolve, reject) => {
+	   const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=1;"
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
+exports.searchNameRental = (name) => {
+	return new Promise((resolve, reject) => {
+	   const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=0;"
+
+	    db.query(queryString, (err, rows) => {
+	      if (err) {
+	      	return reject(500);
+	      }
+	      return resolve(rows);
+	      
+	    });
+	});
+};
+
 exports.getAllPurchase = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=1;"
+		const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=1;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -32,7 +60,7 @@ exports.getAllPurchase = () =>{
 
 exports.getAllRental = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=0;"
+		const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=0;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -62,7 +90,7 @@ exports.getByID = (id) =>{
 	});
 };
 
-exports.getByProdNamePurchase = (name) =>{
+/*exports.getByProdNamePurchase = (name) =>{
 	return new Promise((resolve, reject) => {
 		const queryString = "SELECT * FROM inventory, product WHERE inventory.product_id=product.id AND LOWER(product.name) = LOWER('" + name +"') AND product.for_purchase=1;"
 
@@ -92,11 +120,11 @@ exports.getByProdNameRental = (name) =>{
 			return resolve(rows);
 		});
 	});
-};
+};*/
 
 exports.getOutOfStockPurchaseCount = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select count(*) from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=1;"
+		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=0 AND product.for_purchase=1;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -112,7 +140,7 @@ exports.getOutOfStockPurchaseCount = () =>{
 
 exports.getOutOfStockRentalCount = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select count(*) from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining=0 AND product.for_purchase=0;"
+		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=0 AND product.for_purchase=0;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -128,7 +156,7 @@ exports.getOutOfStockRentalCount = () =>{
 
 exports.getOutOfStockPurchase = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "CALL getInventoryOutOfStockPurchase();"
+		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining<=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -144,7 +172,7 @@ exports.getOutOfStockPurchase = () =>{
 
 exports.getOutOfStockRental = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining<=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -158,17 +186,58 @@ exports.getOutOfStockRental = (id) =>{
 	});
 };
 
-exports.edit = (session_id, id, total_quantity, remaining, renewal_timestamp) => {
+exports.editPurchase = (session_id, id, total_quantity) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL editInventory('"+session_id+"', '"+id+"', '"+total_quantity+"', '"+remaining+"', '"+renewal_timestamp+"')";
+      const queryString = "CALL editInventory('"+id+"', '"+total_quantity+"')";
+      const queryString2= "CALL insertLog(concat('Edited Inventory: ', '"+id+"'), 'Administrator', '"+session_id+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
           console.log(err);
           return reject(500);
         }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
         return resolve(results);
       });
+      
+    });
+};
+
+exports.editRental = (session_id, id, total_quantity) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "CALL editInventoryRental('"+id+"', '"+total_quantity+"')";
+      const queryString2= "CALL insertLog(concat('Edited Inventory: ', '"+id+"'), 'Administrator', '"+session_id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
+      });
+      
     });
 };
