@@ -40,7 +40,17 @@ router.post('/auth/login/customer', async (req, res) => {
           data: user
       });
     } catch (status) {
-      res.status(status).json({ status });
+      let message = '';
+
+      switch (status) {
+        case 404:
+          message = 'Account not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
     }
  
 });
@@ -67,6 +77,55 @@ router.get('/auth/reset-password/:email_address', async (req, res) => {
       switch (status) {
         case 404:
           message = 'Email not found';
+          break;
+        case 500:
+          message = 'Internal server error';
+          break;
+      }
+      res.status(status).json({ status, message });
+    }
+ 
+});
+
+router.get('/auth/send-verification/:email_address', async (req, res) => {
+  const verification_code = generator.generate({
+    length: 10,
+    numbers: true
+  });
+ 
+    try {
+      await controller.sendVerificationCode(req.params.email_address, verification_code);
+      let auth = await controller.setVerificationCode(req.params.email_address, verification_code);
+
+      res.status(200).json({
+          status: 200,
+          message: 'Successfully sent verified code',
+          data: auth
+      });
+    }catch (status) {
+      res.status(status).json({ status });
+    }
+ 
+});
+
+router.post('/auth/verify-account/:email_address', async (req, res) => {
+  const verification_code = req.body.verification_code;
+ 
+    try {
+      await controller.checkVerificationCode(req.params.email_address, verification_code);
+      let auth = await controller.setVerify(req.params.email_address, verification_code);
+
+      res.status(200).json({
+          status: 200,
+          message: 'Successfully verified account',
+          data: auth
+      });
+    }catch (status) {
+      let message = '';
+
+      switch (status) {
+        case 404:
+          message = 'Wrong verification code';
           break;
         case 500:
           message = 'Internal server error';

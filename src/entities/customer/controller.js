@@ -53,7 +53,7 @@ exports.create = (first_name, middle_name, last_name, email_address, password, c
 
 exports.getByEmail = (email_address) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM user WHERE email_address='" + email_address+"' AND user_type='Customer';";
+    const queryString = "SELECT user.id, user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, user.password, user.root_admin, user.user_type FROM user, customer WHERE user.id=customer.user_id AND email_address='" + email_address+"' AND user_type='Customer' AND customer.is_verified=TRUE;";
 
       db.query(queryString, (err, rows) => {
         if (err) {

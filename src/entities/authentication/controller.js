@@ -4,6 +4,50 @@ const bcrypt    = require('bcrypt');
 const salt = bcrypt.genSaltSync(10);
 const nodemailer = require("nodemailer");
 
+exports.setVerificationCode = (email_address, verification_code) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "UPDATE customer, user SET customer.verification_code = '" + verification_code+"' WHERE customer.user_id = user.id AND user.email_address = '" + email_address+"' AND customer.verification_code IS NULL;";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
+exports.setVerify = (email_address, verification_code) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "UPDATE customer, user SET customer.is_verified = TRUE WHERE customer.user_id = user.id AND user.email_address = '" + email_address+"' AND customer.verification_code='" + verification_code+"';";
+
+      db.query(queryString, (err, rows) => {
+        if (err) {
+          return reject(500);
+        }
+        return resolve(rows);
+        
+      });
+  });
+};
+
+exports.checkVerificationCode = (email_address, verification_code) =>{
+  return new Promise((resolve, reject) => {
+    const queryString = "SELECT * FROM customer, user WHERE user.email_address='" + email_address+"' AND customer.verification_code='" + verification_code+"';";
+
+      db.query(queryString, (err, rows) =>{
+        if (err){
+          return reject(500);
+        }
+        if (!rows.length){
+          return reject(404);
+        }
+        return resolve(rows);
+      });
+  });
+};
+
 exports.resetPassword = (email_address, new_password) =>{
   return new Promise((resolve, reject) => {
 
@@ -22,6 +66,35 @@ exports.resetPassword = (email_address, new_password) =>{
         subject: "Reset Password", 
         text: "New Password: " +new_password +'\n', 
         html: "<p>"+ "New Password: " +new_password+ '<br/>' + "Please make sure to change your password immediately." + "</p>"
+      };
+     
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return reject(500);
+        }
+        return resolve(mailOptions); 
+      });
+  });
+};
+
+exports.sendVerificationCode = (email_address, verification_code) =>{
+  return new Promise((resolve, reject) => {
+
+      let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, 
+        auth: {
+          user: 'steph061099@gmail.com',
+          pass: 'twilightsaga1' 
+        }
+      });
+      let mailOptions = {
+        from: '"Stephanie Legaspi" <steph061099@gmail.com>', 
+        to: email_address, 
+        subject: "Verification Code", 
+        text: "To confirm your account, please enter this verification code: " +verification_code +'\n', 
+        html: "<p>"+ "To confirm your account, please enter this verification code: " +verification_code+ '<br/>' + "Thank you!" + "</p>"
       };
      
       transporter.sendMail(mailOptions, (error, info) => {
@@ -99,7 +172,7 @@ exports.loginCustomer = ( email, password ) => {
   const type = "Customer";
 
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * from user where email_address = '" + email+"' AND user_type = '" + type+"' ";
+    const queryString = "SELECT user.id, user.first_name, user.middle_name, user.last_name, user.email_address, user.contact_number, user.user_type, user.root_admin, user.password from user, customer where user.id=customer.user_id AND user.email_address = '" + email+"' AND user.user_type = '" + type+"' AND customer.is_verified=TRUE;";
     db.query(queryString, email, (err, rows) => {
       if (err) {
         console.log(err);
@@ -149,7 +222,7 @@ exports.checkValidContact =  (contact_number) =>  {
 
 exports.checkEmailExists = (email) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM user WHERE email_address = '" +email+"';"
+    const queryString = "SELECT * FROM user, customer WHERE user.id=customer.user_id AND user.email_address = '" +email+"' AND customer.is_verified=TRUE;"
 
     db.query(queryString, email, (err, res) => {
       if (err) {
