@@ -42,9 +42,9 @@ app.use(logger('dev'));
   })
 );*/
 
-var port = process.env.PORT || 3001;
+var port =  3001;
 
 app.use('/v1', routes)
 app.listen(port, function() {
-  console.log(' server running in'+ port);
+  console.log('Server running in '+ port);
 });

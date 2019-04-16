@@ -1,5 +1,11 @@
+DROP USER IF EXISTS 'transactionserver'@'localhost';
+CREATE USER 'transactionserver'@'localhost' IDENTIFIED BY 'transactionserver';
+
 DROP DATABASE IF EXISTS transactionserver;
 CREATE DATABASE transactionserver;
+
+GRANT ALL PRIVILEGES ON transactionserver.* TO 'transactionserver'@'localhost';
+GRANT EXECUTE ON transactionserver.* TO 'transactionserver'@'localhost';
 
 USE transactionserver;
 /*SET GLOBAL sql_mode = '';*/
