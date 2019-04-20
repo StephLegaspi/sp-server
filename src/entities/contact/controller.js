@@ -9,16 +9,16 @@ exports.sendMessage = (full_name, email_address, contact_number, message) =>{
         port: 465,
         secure: true, 
         auth: {
-          user: 'steph061099@gmail.com',
-          pass: 'twilightsaga1' 
+          user: 'leirajanecatering@gmail.com',
+          pass: 'arielsalvador123.' 
         }
       });
       let mailOptions = {
-        from: '"Stephanie Legaspi" <steph061099@gmail.com>', 
-        to: 'steph061099@gmail.com', 
-        subject: "(LJPNCS) Inquiry from: " + full_name, 
+        from: '"Leira Jane Party Needs and Catering Services" <leirajanecatering@gmail.com>', 
+        to: 'leirajanecatering@gmail.com', 
+        subject: "Inquiry from: " + full_name, 
         text: full_name +'\n'+ contact_number +'\n'+ email_address +'\n'+'\n'+ message, 
-        html: "<b>" +full_name +'<br/>' +contact_number + '<br/>'+ email_address +'<br/>'+ '<br/>'+ message+ "</b>" 
+        html: "<p>" +full_name +'<br/>' +contact_number + '<br/>'+ email_address +'<br/>'+ '<br/>'+ message+ "</p>" 
       };
      
       transporter.sendMail(mailOptions, (error, info) => {
