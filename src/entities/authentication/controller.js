@@ -56,12 +56,12 @@ exports.resetPassword = (email_address, new_password) =>{
         port: 465,
         secure: true, 
         auth: {
-          user: 'steph061099@gmail.com',
-          pass: 'twilightsaga1' 
+          user: 'leirajanecatering@gmail.com',
+          pass: 'arielsalvador123.' 
         }
       });
       let mailOptions = {
-        from: '"Stephanie Legaspi" <steph061099@gmail.com>', 
+        from: '"Leira Jane Party Needs and Catering Services" <leirajanecatering@gmail.com>', 
         to: email_address, 
         subject: "Reset Password", 
         text: "New Password: " +new_password +'\n', 
