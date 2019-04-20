@@ -28,7 +28,7 @@ const upload = multer({
   fileFilter: imageFilter
 })
 
-router.post('/customers/social', upload.single('image'), async (req, res) => {
+router.post('/customers/social', async (req, res) => {
   const first_name = req.body.first_name;
   const email_address = req.body.email_address;
   const image = req.body.image;
