@@ -85,12 +85,12 @@ exports.sendVerificationCode = (email_address, verification_code) =>{
         port: 465,
         secure: true, 
         auth: {
-          user: 'steph061099@gmail.com',
-          pass: 'twilightsaga1' 
+          user: 'leirajanecatering@gmail.com',
+          pass: 'arielsalvador123.' 
         }
       });
       let mailOptions = {
-        from: '"Stephanie Legaspi" <steph061099@gmail.com>', 
+        from: '"Leira Jane Party Needs and Catering Services" <leirajanecatering@gmail.com>', 
         to: email_address, 
         subject: "Verification Code", 
         text: "To confirm your account, please enter this verification code: " +verification_code +'\n', 
