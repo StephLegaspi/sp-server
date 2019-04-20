@@ -690,13 +690,14 @@ CREATE PROCEDURE insertCustomerSocial(first_name2 VARCHAR(64),
                             middle_name2 VARCHAR(64),
                             last_name2 VARCHAR(64),
                             email_address2 VARCHAR(64),
-                            user_type2 VARCHAR(20))
+                            user_type2 VARCHAR(20),
+                            image2 VARCHAR(256))
 BEGIN
     DECLARE id_user INT;    
 
     INSERT INTO user(first_name, middle_name, last_name, email_address, user_type) VALUES(first_name2, middle_name2,last_name2, email_address2, user_type2);
     SET id_user = LAST_INSERT_ID();
-    INSERT INTO customer(user_id) VALUES (id_user);
+    INSERT INTO customer(user_id, image) VALUES (id_user, image2);
     UPDATE customer SET is_verified = TRUE WHERE user_id = id_user;
 END;
 GO

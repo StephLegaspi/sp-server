@@ -28,7 +28,7 @@ const upload = multer({
   fileFilter: imageFilter
 })
 
-router.post('/customers/social', async (req, res) => {
+router.post('/customers/social', upload.single('image'), async (req, res) => {
   const first_name = req.body.first_name;
   const email_address = req.body.email_address;
   const image = req.body.image;
@@ -37,7 +37,7 @@ router.post('/customers/social', async (req, res) => {
     try {
       await authController.checkValidEmail(email_address);
       await authController.checkEmailExists(email_address);
-      const customer = await controller.createSocial(first_name, email_address, user_type);
+      const customer = await controller.createSocial(first_name, email_address, user_type, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully created customer',
