@@ -1,4 +1,40 @@
 const db = require('../../database');
+const nodemailer = require("nodemailer");
+
+exports.sendRequest = (email_address, package_id, motif_id, menu_id) =>{
+  return new Promise((resolve, reject) => {
+
+      let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, 
+        auth: {
+          user: 'leirajanecatering@gmail.com',
+          pass: 'arielsalvador123.' 
+        }
+      });
+      let mailOptions = {
+        from: '"Leira Jane Party Needs and Catering Services" <leirajanecatering@gmail.com>', 
+        to: email_address, 
+        subject: "Request for Catering Package sent", 
+        text: "You have successfully sent your request for catering package with the following inclusions: \nPackage ID: " +package_id+ "\nMotif ID: " +motif_id+ "\nMenu ID: "+menu_id+ "Thank you for trusting Leira Jane Party Needs and Catering Services. We will get back to you as soon as we can.", 
+        html: "<p>" +
+                "You have successfully sent your request for catering package with the following inclusions:" +'<br/>'+ 
+                "Package ID: " +package_id+ '<br/>'+
+                "Motif ID: " +motif_id+ '<br/>'+
+                "Menu ID: " +menu_id+ '<br/>'+
+                "Thank you for trusting Leira Jane Party Needs and Catering Services. We will get back to you as soon as we can."+
+              "</p>" 
+      };
+     
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return reject(500);
+        }
+        return resolve(info); 
+      });
+  });
+};
 
 exports.create = (session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) => {
 	return new Promise((resolve, reject) => {

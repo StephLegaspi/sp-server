@@ -70,10 +70,12 @@ router.post('/requests', async (req, res) => {
     try {
       await authController.checkValidContact(customer_contact_number);
       await authController.checkValidEmail(customer_email);
+      await controller.sendRequest(customer_email, package_id, motif_id, menu_id);
       const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id);
+
       res.status(200).json({
         status: 200,
-        message: 'Successfully created request',
+        message: 'Successfully created and sent request',
         data: request_info
       });
     } catch (status) {
