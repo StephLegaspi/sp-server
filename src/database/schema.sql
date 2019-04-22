@@ -1034,7 +1034,7 @@ GO
 /*INSERT PACKAGE*/
 CREATE PROCEDURE insertPackage(session_id INT,
                         name2 VARCHAR(64),
-                        inclusion3 VARCHAR(256),
+                        inclusion3 VARCHAR(1024),
                         price2 VARCHAR(64))
 BEGIN
     DECLARE pkg_id INT;
@@ -1047,9 +1047,9 @@ END;
 GO
 /*INSERT PACKAGE INCLUSION*/
 CREATE PROCEDURE insertPackageInclusion(package_id2 INT,
-                        inclusion_list VARCHAR(256))
+                        inclusion_list VARCHAR(1024))
 BEGIN
-    DECLARE listcopy varchar(255);
+    DECLARE listcopy varchar(1024);
     DECLARE string varchar(255);
     DECLARE i INT;
     SET listcopy = inclusion_list;
@@ -1068,7 +1068,7 @@ END;
 GO
 /*EDIT PACKAGE*/
 CREATE PROCEDURE editPackage(name2 VARCHAR(64),
-                        inclusion2 VARCHAR(256),
+                        inclusion2 VARCHAR(1024),
                         price2 VARCHAR(64),
                         id3 INT)
 BEGIN
