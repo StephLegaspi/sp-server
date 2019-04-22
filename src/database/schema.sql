@@ -104,7 +104,7 @@ CREATE TABLE event_motif_image (
 CREATE TABLE package (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(64),
-    price FLOAT NOT NULL
+    price VARCHAR(64) NOT NULL
 );
 
 CREATE TABLE package_inclusion (
@@ -1035,7 +1035,7 @@ GO
 CREATE PROCEDURE insertPackage(session_id INT,
                         name2 VARCHAR(64),
                         inclusion3 VARCHAR(256),
-                        price2 FLOAT)
+                        price2 VARCHAR(64))
 BEGIN
     DECLARE pkg_id INT;
 
@@ -1069,7 +1069,7 @@ GO
 /*EDIT PACKAGE*/
 CREATE PROCEDURE editPackage(name2 VARCHAR(64),
                         inclusion2 VARCHAR(256),
-                        price2 FLOAT,
+                        price2 VARCHAR(64),
                         id3 INT)
 BEGIN
 
@@ -1198,4 +1198,4 @@ GO
 DELIMITER ;
 
 CALL insertRootAdmin("Janette", "Asido", "Salvador", "janette@gmail.com", "$2b$10$7TnMnRj7Yy8pLE9.YlGGjuOiCgsJuHhVE5T3pNhUNxqV8I8PQ8J3S", "09087145509", "Administrator", 'uploads/2019-04-05T11:02:58.063Zdefault_avatar.png');
-INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("838-3262", "09485856256", "janette@gmail.com", "Block 214 Lot 3 African Daisy St. Pembo, Makati City");
+INSERT INTO contact_details(telephone_number, mobile_number, email_address, business_address) VALUES("8383-262", "09485856256", "janette@gmail.com", "Block 214 Lot 3 African Daisy St. Pembo, Makati City");
