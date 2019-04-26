@@ -61,6 +61,7 @@ router.post('/requests', async (req, res) => {
   const event_time = req.body.event_time;
   const event_location = req.body.event_location;
   const number_of_persons = req.body.number_of_persons;
+  const additional_request = req.body.additional_request;
   const package_id = req.body.package_id;
   const motif_id = req.body.motif_id;
   const menu_id = req.body.menu_id;
@@ -71,7 +72,7 @@ router.post('/requests', async (req, res) => {
       await authController.checkValidContact(customer_contact_number);
       await authController.checkValidEmail(customer_email);
       await controller.sendRequest(customer_email, package_id, motif_id, menu_id);
-      const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id);
+      const request_info = await controller.create(session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id, additional_request);
 
       res.status(200).json({
         status: 200,

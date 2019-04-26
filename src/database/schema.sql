@@ -126,6 +126,7 @@ CREATE TABLE request_information (
     event_location VARCHAR(128),
     number_of_persons INT NOT NULL,
     status VARCHAR(64) DEFAULT 'Pending',
+    additional_request VARCHAR(1024),
     request_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     package_id INT NOT NULL,
     FOREIGN KEY(package_id) REFERENCES package(id),
@@ -1143,10 +1144,11 @@ CREATE PROCEDURE addRequest(session_id INT,
                         number_of_persons2 INT,
                         package_id2 INT,
                         motif_id2 INT,
-                        menu_id2 INT)
+                        menu_id2 INT,
+                        additional_request2 VARCHAR(1024))
 BEGIN
 
-    INSERT INTO request_information(customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) VALUES(first_name2, middle_name2, last_name2, email_address2, contact_number2, event_date2, event_time2, event_location2, number_of_persons2, package_id2, motif_id2, menu_id2, (SELECT id FROM customer WHERE user_id=session_id));
+    INSERT INTO request_information(customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, additional_request, package_id, motif_id, menu_id, customer_id) VALUES(first_name2, middle_name2, last_name2, email_address2, contact_number2, event_date2, event_time2, event_location2, number_of_persons2, additional_request2, package_id2, motif_id2, menu_id2, (SELECT id FROM customer WHERE user_id=session_id));
     CALL insertLog(concat('Added request: ', LAST_INSERT_ID()), 'Customer', session_id);
 END;
 GO

@@ -36,12 +36,10 @@ exports.sendRequest = (email_address, package_id, motif_id, menu_id) =>{
   });
 };
 
-exports.create = (session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id, customer_id) => {
+exports.create = (session_id, customer_first_name, customer_middle_name, customer_last_name, customer_email, customer_contact_number, event_date, event_time, event_location, number_of_persons, package_id, motif_id, menu_id,additional_request) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL addRequest('" +session_id+"','" +customer_first_name+"', '" +customer_middle_name+"', '" +customer_last_name+"', '" +customer_email+"', '" +customer_contact_number+"', (STR_TO_DATE('" +event_date+"', '%d-%m-%Y')), '" +event_time+"', '" +event_location+"', '" +number_of_persons+"', '" +package_id+"', '" +motif_id+"', '" +menu_id+"');";
-
-      
+      const queryString = "CALL addRequest('" +session_id+"','" +customer_first_name+"', '" +customer_middle_name+"', '" +customer_last_name+"', '" +customer_email+"', '" +customer_contact_number+"', (STR_TO_DATE('" +event_date+"', '%d-%m-%Y')), '" +event_time+"', '" +event_location+"', '" +number_of_persons+"', '" +package_id+"', '" +motif_id+"', '" +menu_id+"', '" +additional_request+"');";
 
       db.query(queryString, (err, results) => {
         if (err) {
