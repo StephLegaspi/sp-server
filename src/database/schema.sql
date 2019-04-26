@@ -199,6 +199,7 @@ CREATE TABLE order_information (
     for_purchase BOOLEAN,
     status VARCHAR(16) DEFAULT "Pending",
     order_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     shopping_cart_id INT NOT NULL,
     FOREIGN KEY(shopping_cart_id) REFERENCES shopping_cart(id),
     customer_id INT,
