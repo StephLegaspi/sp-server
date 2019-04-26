@@ -128,6 +128,7 @@ CREATE TABLE request_information (
     status VARCHAR(64) DEFAULT 'Pending',
     additional_request VARCHAR(1024),
     request_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    update_timestamp TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
     package_id INT NOT NULL,
     FOREIGN KEY(package_id) REFERENCES package(id),
     motif_id INT NOT NULL,

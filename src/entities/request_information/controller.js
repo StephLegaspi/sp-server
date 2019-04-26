@@ -53,7 +53,7 @@ exports.create = (session_id, customer_first_name, customer_middle_name, custome
 
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2 FROM request_information;"
+    const queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -100,9 +100,9 @@ exports.getByStatus = (status) =>{
     var queryString;
 
     if(status==='All'){
-      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2 FROM request_information;"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information;"
     }else{
-      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2 FROM request_information WHERE status = '" + status +"';"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information WHERE status = '" + status +"';"
     }
 
     db.query(queryString, (err, rows) => {
@@ -122,9 +122,9 @@ exports.getOne = (id, status) =>{
     var queryString;
 
     if(status==='All'){
-      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2 FROM request_information WHERE id = '" + id +"';"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information WHERE id = '" + id +"';"
     }else{
-      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2 FROM request_information WHERE id = '" + id +"' AND status='" + status +"';"
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information WHERE id = '" + id +"' AND status='" + status +"';"
     }
 
     db.query(queryString, (err, rows) => {
@@ -143,7 +143,7 @@ exports.getOneSimple = (id) =>{
 
     var queryString;
 
-    queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2 FROM request_information WHERE id = '" + id +"';"
+    queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information WHERE id = '" + id +"';"
 
     db.query(queryString, (err, rows) =>{
       if (err){
