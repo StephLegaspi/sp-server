@@ -163,6 +163,7 @@ CREATE TABLE inventory (
 CREATE TABLE product_color (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     product_color VARCHAR(64) NOT NULL,
+    product_quantity INT,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id)
 );
@@ -1110,18 +1111,47 @@ BEGIN
     DECLARE listcopy varchar(255);
     DECLARE string varchar(255);
     DECLARE i INT;
+
+    DECLARE init_string varchar(255);
+    DECLARE quantity_index INT;
+    DECLARE quantity_string varchar(64);
+    DECLARE quantity_length INT;
+    DECLARE int_quantity INT;
+
+    DECLARE color_string varchar(255);
+
     SET listcopy = color_list;
     SET i = INSTR(listcopy, ',');
     SET string = '';
 
     WHILE i != 0 DO
         SET string = SUBSTRING(listcopy, 1, i - 1);
-        INSERT INTO product_color(product_color, product_id) VALUES(TRIM(string), product_id2);
+
+        SET quantity_index = INSTR(string, '-');
+        SET color_string = SUBSTRING(string, 1, quantity_index-1);
+        /*product quantity*/
+        SET init_string = string;
+        SET quantity_length = LENGTH(init_string);
+        SET quantity_string = TRIM(SUBSTRING(init_string, quantity_index+1, quantity_length - quantity_index));
+        SET int_quantity = CAST(quantity_string AS UNSIGNED);
+        /*product quantity*/
+
+        INSERT INTO product_color(product_color, product_quantity, product_id) VALUES(TRIM(color_string), int_quantity, product_id2);
+
         SET string = CONCAT(string, ',');
         SET listcopy = TRIM(LEADING string FROM listcopy);
         SET i = INSTR(listcopy, ',');
     END WHILE;
-    INSERT INTO product_color(product_color, product_id) VALUES(TRIM(listcopy), product_id2);
+
+    SET quantity_index = INSTR(listcopy, '-');
+    SET color_string = SUBSTRING(listcopy, 1, quantity_index-1);
+    /*product quantity*/
+    SET init_string = listcopy;
+    SET quantity_length = LENGTH(init_string);
+    SET quantity_string = TRIM(SUBSTRING(init_string, quantity_index+1, quantity_length - quantity_index));
+    SET int_quantity = CAST(quantity_string AS UNSIGNED);
+    /*product quantity*/
+    INSERT INTO product_color(product_color, product_quantity, product_id) VALUES(TRIM(color_string), int_quantity, product_id2);
     
 END;
 GO
