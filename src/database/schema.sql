@@ -151,10 +151,10 @@ CREATE TABLE product (
 
 CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    total_quantity INT NOT NULL,
-    remaining INT NOT NULL,
+    total_quantity INT,
+    remaining INT,
     renewal_timestamp TIMESTAMP NULL,
-    product_id INT NOT NULL,
+    product_id INT,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
     FOREIGN KEY(admin_id) REFERENCES administrator(id)
