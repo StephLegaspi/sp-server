@@ -455,12 +455,15 @@ CREATE PROCEDURE updateProduct(id2 INT,
                             description2 VARCHAR(128), 
                             price2 FLOAT,
                             display_product2 BOOLEAN,
-                            product_color2 VARCHAR(256))
+                            product_color2 VARCHAR(256),
+                            total_quantity2 INT)
 BEGIN
 
     UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
     CALL deleteProductColor(id2);
     CALL insertProductColor(product_color2, id2);
+
+    UPDATE inventory SET total_quantity=total_quantity2, remaining=total_quantity2 WHERE product_id=id2;
 
 END;
 GO
