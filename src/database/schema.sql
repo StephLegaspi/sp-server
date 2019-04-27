@@ -473,14 +473,20 @@ BEGIN
     DECLARE iterator INT DEFAULT 0;
     DECLARE id_prod INT;
     DECLARE quantity_prod INT;
+    DECLARE color_prod VARCHAR(64);
 
     SET iterator = 0;
 
     WHILE iterator < cart_prod_count DO
 
         SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator,1);
+
+        SET color_prod = (SELECT product_color_name FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator, 1);
+
         SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator,1);
         UPDATE inventory SET remaining = remaining - quantity_prod WHERE product_id = id_prod;
+
+        UPDATE product_color SET product_quantity=product_quantity - quantity_prod WHERE product_color=color_prod AND product_id=id_prod;
 
         SET iterator = iterator + 1;
     END WHILE;
