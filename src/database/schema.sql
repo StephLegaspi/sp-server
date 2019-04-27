@@ -1240,6 +1240,21 @@ BEGIN
 END;
 GO
 
+/*EDIT ORDER_INFO*/
+CREATE PROCEDURE updateProductColorQuantity(product_id2 INT,
+                        product_quantity2 INT,
+                        product_color2 VARCHAR(64))
+BEGIN
+    DECLARE prev_total_color INT;
+
+    SET prev_total_color = (SELECT product_quantity FROM product_color WHERE product_id=product_id2 AND product_color=product_color2);
+
+    UPDATE product_color SET product_quantity=product_quantity2+prev_total_color WHERE product_id=product_id2 AND product_color=product_color2;
+
+    CALL editInventory(product_id2, product_quantity2);
+END;
+GO
+
 
 DELIMITER ;
 
