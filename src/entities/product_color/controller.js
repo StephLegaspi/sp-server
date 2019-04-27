@@ -31,3 +31,19 @@ exports.getOne = (id) =>{
 	});
 };
 
+exports.getQuantityByID = (id) =>{
+	return new Promise((resolve, reject) => {
+		const queryString = "SELECT product_quantity FROM product_color WHERE product_id = '" + id +"';"
+
+		db.query(queryString, (err, rows) =>{
+			if (err){
+				return reject(500);
+			}
+			if (!rows.length){
+				return reject(404);
+			}
+			return resolve(rows);
+		});
+	});
+};
+

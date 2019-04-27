@@ -7,6 +7,19 @@ const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
 
+router.get('/product_colors/quantity/:id', async (req, res) => {
+  try {
+    const products = await controller.getQuantityByID(req.params.id);
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched product quantity per color',
+      data: products
+    });
+  } catch (status) {
+    res.status(status).json({ status });
+  }
+});
+
 router.get('/product_colors', async (req, res) => {
   try {
     const products = await controller.getAll();
@@ -33,6 +46,8 @@ router.get('/products/colors/:id', async (req, res) => {
     res.status(status).json({ status });
   }
 });
+
+
 
 
 
