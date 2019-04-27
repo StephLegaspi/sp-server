@@ -1027,7 +1027,7 @@ BEGIN
     SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
     SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
 
-    UPDATE inventory SET total_quantity=(total_quantity3+prev_remaining), remaining=(total_quantity3+prev_remaining), renewal_timestamp=NOW() WHERE id=id3;
+    UPDATE inventory SET total_quantity=(total_quantity3+prev_remaining), remaining=(total_quantity3+prev_remaining), renewal_timestamp=NOW() WHERE product_id=id3;
 
 END;
 GO
@@ -1038,12 +1038,14 @@ BEGIN
     DECLARE prev_total INT;
     DECLARE prev_remaining INT;
     DECLARE deduction INT;
+    DECLARE new_total INT;
 
     SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
     SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
     SET deduction = prev_total - prev_remaining;
+    SET new_total = prev_total + total_quantity3;
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
+    UPDATE inventory SET total_quantity=new_total, remaining=(new_total-deduction), renewal_timestamp=NOW() WHERE product_id=id3;
 
 END;
 GO
@@ -1240,7 +1242,7 @@ BEGIN
 END;
 GO
 
-/*EDIT ORDER_INFO*/
+/*EDIT PRODUCT COLOR QUANTITY FOR PURCHASE*/
 CREATE PROCEDURE updateProductColorQuantity(product_id2 INT,
                         product_quantity2 INT,
                         product_color2 VARCHAR(64))
@@ -1252,6 +1254,21 @@ BEGIN
     UPDATE product_color SET product_quantity=product_quantity2+prev_total_color WHERE product_id=product_id2 AND product_color=product_color2;
 
     CALL editInventory(product_id2, product_quantity2);
+END;
+GO
+
+/*EDIT PRODUCT COLOR QUANTITY FOR RENTAL*/
+CREATE PROCEDURE updateProductColorQuantityRental(product_id2 INT,
+                        product_quantity2 INT,
+                        product_color2 VARCHAR(64))
+BEGIN
+    DECLARE prev_total_color INT;
+
+    SET prev_total_color = (SELECT product_quantity FROM product_color WHERE product_id=product_id2 AND product_color=product_color2);
+
+    UPDATE product_color SET product_quantity=product_quantity2+prev_total_color WHERE product_id=product_id2 AND product_color=product_color2;
+
+    CALL editInventoryRental(product_id2, product_quantity2);
 END;
 GO
 

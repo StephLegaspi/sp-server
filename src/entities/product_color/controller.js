@@ -75,3 +75,31 @@ exports.edit = (product_id, product_quantity, product_color, user_id) => {
 
     });
 };
+
+exports.editRental = (product_id, product_quantity, product_color, user_id) => {
+	return new Promise((resolve, reject) => {
+
+      const queryString = "CALL updateProductColorQuantityRental('"+product_id+"', '"+product_quantity+"', '"+product_color+"')";
+      const queryString2= "CALL insertLog(concat('Edited Product Quantity: ', '"+product_id+"'), 'Administrator', '"+user_id+"');";
+
+      db.query(queryString, (err, results) => {
+        if (err) {
+          console.log(err);
+          return reject(500);
+        }
+
+        if (!results.affectedRows) {
+          return reject(404);
+        }
+
+        db.query(queryString2, (err2, results2) => {
+          if (err) {
+            console.log(err);
+            return reject(500);
+          }
+        });
+        return resolve(results);
+      });
+
+    });
+};
