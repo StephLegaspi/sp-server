@@ -552,6 +552,7 @@ BEGIN
     DECLARE id_prod INT;
     DECLARE quantity_prod INT;
     DECLARE is_for_purchase BOOLEAN;
+    DECLARE color_prod VARCHAR(64);
 
     SET counter = 0;
     SET count_cart_prod = (SELECT count(*) FROM shopping_cart_products);
@@ -563,8 +564,13 @@ BEGIN
         WHILE counter < count_cart_prod DO
 
             SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
+
+            SET color_prod = (SELECT product_color_name FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter, 1);
+
             SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
             UPDATE inventory SET remaining = remaining + quantity_prod WHERE product_id = id_prod;
+
+            UPDATE product_color SET product_quantity=product_quantity+quantity_prod WHERE product_color=color_prod AND product_id=id_prod;
 
             SET counter = counter + 1;
         END WHILE;
