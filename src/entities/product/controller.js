@@ -2,7 +2,7 @@ const db = require('../../database');
 
 exports.getAllPurchaseTable = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=1;";
+	    const queryString = "SELECT *, total_quantity FROM product, inventory WHERE product.id=inventory.product_id AND for_purchase=1;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -16,7 +16,7 @@ exports.getAllPurchaseTable = () => {
 
 exports.getAllRentalTable = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=0;";
+	    const queryString = "SELECT *, total_quantity FROM product, inventory WHERE product.id=inventory.product_id AND for_purchase=0;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -58,7 +58,7 @@ exports.getAllRental = () => {
 
 exports.searchNamePurchaseTable = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1;"
+    const queryString = "select *, total_quantity from product, inventory where product.id=inventory.product_id AND LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1;"
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -72,7 +72,7 @@ exports.searchNamePurchaseTable = (name) =>{
 
 exports.searchNameRentalTable = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0;"
+    const queryString = "select *, total_quantity from product, inventory where product.id=inventory.product_id AND from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0;"
 
     db.query(queryString, (err, rows) => {
         if (err) {
