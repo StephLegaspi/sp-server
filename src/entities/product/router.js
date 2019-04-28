@@ -203,7 +203,7 @@ router.get('/products-rental/search/:name', async (req, res) => {
 });
 
 
-router.put('/products/:id', async (req, res) => {
+router.put('/products/:id', upload.single('image'), async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
   const description = req.body.description;
@@ -212,9 +212,15 @@ router.put('/products/:id', async (req, res) => {
   const product_color = req.body.product_color;
   const user_id = req.body.session_id;
   const total_quantity = req.body.total_quantity;
+  const image_changed = req.body.image_changed;
+  var image = '';
+
+  if(image_changed === 'true'){
+    image = req.file.path;
+  }
 
     try {
-      const product = await controller.edit(user_id, id, name, description, price, display_product, product_color, total_quantity);
+      const product = await controller.edit(user_id, id, name, description, price, display_product, product_color, total_quantity, image);
       res.status(200).json({
         status: 200,
         message: 'Successfully edited product',

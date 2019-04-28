@@ -456,10 +456,15 @@ CREATE PROCEDURE updateProduct(id2 INT,
                             price2 FLOAT,
                             display_product2 BOOLEAN,
                             product_color2 VARCHAR(256),
-                            total_quantity2 INT)
+                            total_quantity2 INT,
+                            image2 VARCHAR(256))
 BEGIN
 
     UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
+    IF image2 != '' THEN
+        UPDATE product SET image=image2 WHERE id=id2;
+    END IF;
+    
     CALL deleteProductColor(id2);
     CALL insertProductColor(product_color2, id2);
 

@@ -144,10 +144,10 @@ exports.create = (user_id, name, description, price, for_purchase, display_produ
     });
 };
 
-exports.edit = (user_id, id, name, description, price, display_product, product_color, total_quantity) => {
+exports.edit = (user_id, id, name, description, price, display_product, product_color, total_quantity, image) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL updateProduct('"+id+"', '"+name+"', '"+description+"', '"+price+"', '"+display_product+"', '"+product_color+"', '"+total_quantity+"')";
+      const queryString = "CALL updateProduct('"+id+"', '"+name+"', '"+description+"', '"+price+"', '"+display_product+"', '"+product_color+"', '"+total_quantity+"', '"+image+"')";
       const queryString2= "CALL insertLog(concat('Edited Product: ', '"+id+"'), 'Administrator', '"+user_id+"');";
 
       db.query(queryString, (err, results) => {
