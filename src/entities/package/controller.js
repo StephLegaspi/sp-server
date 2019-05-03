@@ -17,7 +17,7 @@ exports.create = (session_id, name, inclusion, price) => {
 
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM package;"
+    const queryString = "SELECT * FROM package order by name asc;"
 
      db.query(queryString, (err, rows) => {
         if (err) {

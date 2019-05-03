@@ -17,7 +17,7 @@ exports.create = (session_id, name, main_course, appetizer, dessert, soup, bever
 
 exports.getAll = () =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM food_menu;"
+    const queryString = "SELECT * FROM food_menu order by name asc;"
 
       db.query(queryString, (err, rows) => {
         if (err) {
@@ -171,7 +171,7 @@ exports.getOneOthers = (id) =>{
 
 exports.searchName = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from food_menu where LOWER(name) REGEXP LOWER('.*" + name +".*');"
+    const queryString = "select * from food_menu where LOWER(name) REGEXP LOWER('.*" + name +".*') order by name asc;"
 
     db.query(queryString, (err, rows) => {
         if (err) {

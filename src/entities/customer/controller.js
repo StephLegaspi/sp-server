@@ -17,7 +17,7 @@ exports.createSocial = (full_name, email_address, user_type, image) => {
 			if(i===(name_len-1)){
 				last_name = name[i];
 			}else{
-				first_name = first_name+name[i];
+				first_name = first_name+ ' ' +name[i];
 			}
 		}
 		
