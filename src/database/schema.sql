@@ -151,10 +151,10 @@ CREATE TABLE product (
 
 CREATE TABLE inventory (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    total_quantity INT NOT NULL,
-    remaining INT NOT NULL,
+    total_quantity INT,
+    remaining INT,
     renewal_timestamp TIMESTAMP NULL,
-    product_id INT NOT NULL,
+    product_id INT,
     FOREIGN KEY(product_id) REFERENCES product(id),
     admin_id INT,
     FOREIGN KEY(admin_id) REFERENCES administrator(id)
@@ -163,6 +163,7 @@ CREATE TABLE inventory (
 CREATE TABLE product_color (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     product_color VARCHAR(64) NOT NULL,
+    product_quantity INT,
     product_id INT NOT NULL,
     FOREIGN KEY(product_id) REFERENCES product(id)
 );
@@ -454,12 +455,20 @@ CREATE PROCEDURE updateProduct(id2 INT,
                             description2 VARCHAR(128), 
                             price2 FLOAT,
                             display_product2 BOOLEAN,
-                            product_color2 VARCHAR(256))
+                            product_color2 VARCHAR(256),
+                            total_quantity2 INT,
+                            image2 VARCHAR(256))
 BEGIN
 
     UPDATE product SET name = name2, description = description2, price = price2, display_product = display_product2 WHERE id = id2;
+    IF image2 != '' THEN
+        UPDATE product SET image=image2 WHERE id=id2;
+    END IF;
+    
     CALL deleteProductColor(id2);
     CALL insertProductColor(product_color2, id2);
+
+    UPDATE inventory SET total_quantity=total_quantity2, remaining=total_quantity2 WHERE product_id=id2;
 
 END;
 GO
@@ -472,14 +481,20 @@ BEGIN
     DECLARE iterator INT DEFAULT 0;
     DECLARE id_prod INT;
     DECLARE quantity_prod INT;
+    DECLARE color_prod VARCHAR(64);
 
     SET iterator = 0;
 
     WHILE iterator < cart_prod_count DO
 
         SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator,1);
+
+        SET color_prod = (SELECT product_color_name FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator, 1);
+
         SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=cart_id LIMIT iterator,1);
         UPDATE inventory SET remaining = remaining - quantity_prod WHERE product_id = id_prod;
+
+        UPDATE product_color SET product_quantity=product_quantity - quantity_prod WHERE product_color=color_prod AND product_id=id_prod;
 
         SET iterator = iterator + 1;
     END WHILE;
@@ -545,6 +560,7 @@ BEGIN
     DECLARE id_prod INT;
     DECLARE quantity_prod INT;
     DECLARE is_for_purchase BOOLEAN;
+    DECLARE color_prod VARCHAR(64);
 
     SET counter = 0;
     SET count_cart_prod = (SELECT count(*) FROM shopping_cart_products);
@@ -556,8 +572,13 @@ BEGIN
         WHILE counter < count_cart_prod DO
 
             SET id_prod = (SELECT product_id FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
+
+            SET color_prod = (SELECT product_color_name FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter, 1);
+
             SET quantity_prod = (SELECT product_quantity FROM shopping_cart_products WHERE shopping_cart_id=id_cart LIMIT counter,1);
             UPDATE inventory SET remaining = remaining + quantity_prod WHERE product_id = id_prod;
+
+            UPDATE product_color SET product_quantity=product_quantity+quantity_prod WHERE product_color=color_prod AND product_id=id_prod;
 
             SET counter = counter + 1;
         END WHILE;
@@ -1014,7 +1035,7 @@ BEGIN
     SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
     SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
 
-    UPDATE inventory SET total_quantity=(total_quantity3+prev_remaining), remaining=(total_quantity3+prev_remaining), renewal_timestamp=NOW() WHERE id=id3;
+    UPDATE inventory SET total_quantity=(total_quantity3+prev_remaining), remaining=(total_quantity3+prev_remaining), renewal_timestamp=NOW() WHERE product_id=id3;
 
 END;
 GO
@@ -1025,12 +1046,14 @@ BEGIN
     DECLARE prev_total INT;
     DECLARE prev_remaining INT;
     DECLARE deduction INT;
+    DECLARE new_total INT;
 
     SET prev_total = (SELECT total_quantity FROM inventory WHERE id=id3);
     SET prev_remaining = (SELECT remaining FROM inventory WHERE id=id3);
     SET deduction = prev_total - prev_remaining;
+    SET new_total = prev_total + total_quantity3;
 
-    UPDATE inventory SET total_quantity=total_quantity3, remaining=(total_quantity3-deduction), renewal_timestamp=NOW() WHERE id=id3;
+    UPDATE inventory SET total_quantity=new_total, remaining=(new_total-deduction), renewal_timestamp=NOW() WHERE product_id=id3;
 
 END;
 GO
@@ -1110,18 +1133,47 @@ BEGIN
     DECLARE listcopy varchar(255);
     DECLARE string varchar(255);
     DECLARE i INT;
+
+    DECLARE init_string varchar(255);
+    DECLARE quantity_index INT;
+    DECLARE quantity_string varchar(64);
+    DECLARE quantity_length INT;
+    DECLARE int_quantity INT;
+
+    DECLARE color_string varchar(255);
+
     SET listcopy = color_list;
     SET i = INSTR(listcopy, ',');
     SET string = '';
 
     WHILE i != 0 DO
         SET string = SUBSTRING(listcopy, 1, i - 1);
-        INSERT INTO product_color(product_color, product_id) VALUES(TRIM(string), product_id2);
+
+        SET quantity_index = INSTR(string, '-');
+        SET color_string = SUBSTRING(string, 1, quantity_index-1);
+        /*product quantity*/
+        SET init_string = string;
+        SET quantity_length = LENGTH(init_string);
+        SET quantity_string = TRIM(SUBSTRING(init_string, quantity_index+1, quantity_length - quantity_index));
+        SET int_quantity = CAST(quantity_string AS UNSIGNED);
+        /*product quantity*/
+
+        INSERT INTO product_color(product_color, product_quantity, product_id) VALUES(TRIM(color_string), int_quantity, product_id2);
+
         SET string = CONCAT(string, ',');
         SET listcopy = TRIM(LEADING string FROM listcopy);
         SET i = INSTR(listcopy, ',');
     END WHILE;
-    INSERT INTO product_color(product_color, product_id) VALUES(TRIM(listcopy), product_id2);
+
+    SET quantity_index = INSTR(listcopy, '-');
+    SET color_string = SUBSTRING(listcopy, 1, quantity_index-1);
+    /*product quantity*/
+    SET init_string = listcopy;
+    SET quantity_length = LENGTH(init_string);
+    SET quantity_string = TRIM(SUBSTRING(init_string, quantity_index+1, quantity_length - quantity_index));
+    SET int_quantity = CAST(quantity_string AS UNSIGNED);
+    /*product quantity*/
+    INSERT INTO product_color(product_color, product_quantity, product_id) VALUES(TRIM(color_string), int_quantity, product_id2);
     
 END;
 GO
@@ -1195,6 +1247,36 @@ CREATE PROCEDURE getInventoryOutOfStockPurchase()
 BEGIN
 
     select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining=0;
+END;
+GO
+
+/*EDIT PRODUCT COLOR QUANTITY FOR PURCHASE*/
+CREATE PROCEDURE updateProductColorQuantity(product_id2 INT,
+                        product_quantity2 INT,
+                        product_color2 VARCHAR(64))
+BEGIN
+    DECLARE prev_total_color INT;
+
+    SET prev_total_color = (SELECT product_quantity FROM product_color WHERE product_id=product_id2 AND product_color=product_color2);
+
+    UPDATE product_color SET product_quantity=product_quantity2+prev_total_color WHERE product_id=product_id2 AND product_color=product_color2;
+
+    CALL editInventory(product_id2, product_quantity2);
+END;
+GO
+
+/*EDIT PRODUCT COLOR QUANTITY FOR RENTAL*/
+CREATE PROCEDURE updateProductColorQuantityRental(product_id2 INT,
+                        product_quantity2 INT,
+                        product_color2 VARCHAR(64))
+BEGIN
+    DECLARE prev_total_color INT;
+
+    SET prev_total_color = (SELECT product_quantity FROM product_color WHERE product_id=product_id2 AND product_color=product_color2);
+
+    UPDATE product_color SET product_quantity=product_quantity2+prev_total_color WHERE product_id=product_id2 AND product_color=product_color2;
+
+    CALL editInventoryRental(product_id2, product_quantity2);
 END;
 GO
 

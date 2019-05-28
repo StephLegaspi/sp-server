@@ -16,7 +16,7 @@ exports.getAll = () => {
 
 exports.searchNamePurchase = (name) => {
 	return new Promise((resolve, reject) => {
-	   const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=1;"
+	   const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=1 order by name asc;"
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -30,7 +30,7 @@ exports.searchNamePurchase = (name) => {
 
 exports.searchNameRental = (name) => {
 	return new Promise((resolve, reject) => {
-	   const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=0;"
+	   const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND LOWER(product.name) REGEXP LOWER('.*" + name +".*') AND product.for_purchase=0 order by name asc;"
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -44,7 +44,7 @@ exports.searchNameRental = (name) => {
 
 exports.getAllPurchase = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=1;"
+		const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=1 order by name asc;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -60,7 +60,7 @@ exports.getAllPurchase = () =>{
 
 exports.getAllRental = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=0;"
+		const queryString = "select *, CONCAT(DATE_FORMAT(renewal_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(renewal_timestamp, '%H:%i:%s')) as date_time FROM inventory, product WHERE inventory.product_id = product.id AND product.for_purchase=0 order by name asc;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -124,7 +124,7 @@ exports.getByProdNameRental = (name) =>{
 
 exports.getOutOfStockPurchaseCount = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=0 AND product.for_purchase=1;"
+		const queryString = "select count(*) as count from inventory, product WHERE inventory.product_id=product.id AND inventory.remaining<=(0.30*inventory.total_quantity) AND product.for_purchase=1;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -156,7 +156,7 @@ exports.getOutOfStockRentalCount = () =>{
 
 exports.getOutOfStockPurchase = () =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining<=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity, inventory.remaining from inventory, product where inventory.product_id=product.id AND product.for_purchase=1 AND inventory.remaining<=(0.30*inventory.total_quantity);";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -172,7 +172,7 @@ exports.getOutOfStockPurchase = () =>{
 
 exports.getOutOfStockRental = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "select product.name, product.id, inventory.total_quantity from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining<=0;";
+		const queryString = "select product.name, product.id, inventory.total_quantity, inventory.remaining from inventory, product where inventory.product_id=product.id AND product.for_purchase=0 AND inventory.remaining<=0;";
 
 		db.query(queryString, (err, rows) =>{
 			if (err){

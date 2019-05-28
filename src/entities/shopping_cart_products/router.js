@@ -49,9 +49,10 @@ router.post('/shopping_cart/products/rental', async (req, res) => {
 
 router.post('/shopping_cart_products/:id', async (req, res) => {
   const cart_id = req.body.cart_id;
+  const product_color_id = req.body.product_color_id;
 
   try {
-    const shopping_cart_product = await controller.getOneByProdID(req.params.id, cart_id);
+    const shopping_cart_product = await controller.getOneByProdID(req.params.id, cart_id, product_color_id);
     res.status(200).json({
       status: 200,
       message: 'Successfully fetched shopping_cart_products',

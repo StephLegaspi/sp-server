@@ -2,7 +2,7 @@ const db = require('../../database');
 
 exports.getAllPurchaseTable = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=1;";
+	    const queryString = "SELECT *, total_quantity FROM product, inventory WHERE product.id=inventory.product_id AND for_purchase=1 order by name asc;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -16,7 +16,7 @@ exports.getAllPurchaseTable = () => {
 
 exports.getAllRentalTable = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=0;";
+	    const queryString = "SELECT *, total_quantity FROM product, inventory WHERE product.id=inventory.product_id AND for_purchase=0 order by name asc;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -30,7 +30,7 @@ exports.getAllRentalTable = () => {
 
 exports.getAllPurchase = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=1 AND display_product=1;";
+	    const queryString = "SELECT * FROM product WHERE for_purchase=1 AND display_product=1 order by name asc;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -44,7 +44,7 @@ exports.getAllPurchase = () => {
 
 exports.getAllRental = () => {
 	return new Promise((resolve, reject) => {
-	    const queryString = "SELECT * FROM product WHERE for_purchase=0 AND display_product=1;";
+	    const queryString = "SELECT * FROM product WHERE for_purchase=0 AND display_product=1 order by name asc;";
 
 	    db.query(queryString, (err, rows) => {
 	      if (err) {
@@ -58,7 +58,7 @@ exports.getAllRental = () => {
 
 exports.searchNamePurchaseTable = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1;"
+    const queryString = "select *, total_quantity from product, inventory where product.id=inventory.product_id AND LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1 order by name asc;"
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -72,7 +72,7 @@ exports.searchNamePurchaseTable = (name) =>{
 
 exports.searchNameRentalTable = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0;"
+    const queryString = "select *, total_quantity from product, inventory where product.id=inventory.product_id AND from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0 order by name asc;"
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -86,7 +86,7 @@ exports.searchNameRentalTable = (name) =>{
 
 exports.searchNamePurchase = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1 AND display_product=1;"
+    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=1 AND display_product=1 order by name asc;"
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -100,7 +100,7 @@ exports.searchNamePurchase = (name) =>{
 
 exports.searchNameRental = (name) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0 AND display_product=1;"
+    const queryString = "select * from product where LOWER(name) REGEXP LOWER('.*" + name +".*') AND for_purchase=0 AND display_product=1 order by name asc;"
 
     db.query(queryString, (err, rows) => {
         if (err) {
@@ -114,7 +114,7 @@ exports.searchNameRental = (name) =>{
 
 exports.getOne = (id) =>{
 	return new Promise((resolve, reject) => {
-		const queryString = "SELECT product.id, product.name, product.price, product.description, product.image, inventory.remaining FROM product, inventory WHERE product.id=inventory.product_id AND product.id = '" + id +"';"
+		const queryString = "SELECT product.id, product.name, product.price, product.description, product.image, inventory.remaining FROM product, inventory WHERE product.id=inventory.product_id AND product.id = '" + id +"' order by name asc;"
 
 		db.query(queryString, (err, rows) =>{
 			if (err){
@@ -144,10 +144,10 @@ exports.create = (user_id, name, description, price, for_purchase, display_produ
     });
 };
 
-exports.edit = (user_id, id, name, description, price, display_product, product_color) => {
+exports.edit = (user_id, id, name, description, price, display_product, product_color, total_quantity, image) => {
 	return new Promise((resolve, reject) => {
 
-      const queryString = "CALL updateProduct('"+id+"', '"+name+"', '"+description+"', '"+price+"', '"+display_product+"', '"+product_color+"')";
+      const queryString = "CALL updateProduct('"+id+"', '"+name+"', '"+description+"', '"+price+"', '"+display_product+"', '"+product_color+"', '"+total_quantity+"', '"+image+"')";
       const queryString2= "CALL insertLog(concat('Edited Product: ', '"+id+"'), 'Administrator', '"+user_id+"');";
 
       db.query(queryString, (err, results) => {

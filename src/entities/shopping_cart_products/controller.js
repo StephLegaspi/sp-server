@@ -36,9 +36,9 @@ exports.getAll = () =>{
   });
 };
 
-exports.getOneByProdID = (id, cart_id) =>{
+exports.getOneByProdID = (id, cart_id, product_color_id) =>{
   return new Promise((resolve, reject) => {
-    const queryString = "SELECT * FROM shopping_cart_products WHERE product_id='" + id +"' AND shopping_cart_id='" + cart_id +"';"
+    const queryString = "SELECT * FROM shopping_cart_products WHERE product_id='" + id +"' AND shopping_cart_id='" + cart_id +"' AND product_color_name = (SELECT product_color FROM product_color WHERE id = '" + product_color_id +"');"
 
       db.query(queryString, (err, rows) =>{
         if (err){

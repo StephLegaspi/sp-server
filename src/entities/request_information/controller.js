@@ -99,8 +99,8 @@ exports.getByStatus = (status) =>{
 
     var queryString;
 
-    if(status==='All'){
-      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%H:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information;"
+    if(status==='Successful'){
+      queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information WHERE status = '" + status +"' ORDER BY request_timestamp DESC;"
     }else{
       queryString = "SELECT *, CONCAT(DATE_FORMAT(event_date, '%e %b, %Y'),' ', TIME_FORMAT(event_time, '%h:%i:%s')) as date_time, CONCAT(DATE_FORMAT(request_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(request_timestamp, '%H:%i:%s')) as request_timestamp2, CONCAT(DATE_FORMAT(update_timestamp, '%e %b, %Y'),' ', TIME_FORMAT(update_timestamp, '%H:%i:%s')) as update_timestamp2 FROM request_information WHERE status = '" + status +"';"
     }
