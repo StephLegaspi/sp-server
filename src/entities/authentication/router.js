@@ -7,7 +7,7 @@ const generator = require('generate-password');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//administrator login
 router.post('/auth/login/admin', async (req, res) => {
   const email_address = req.body.email_address;
   const password = req.body.password;
@@ -26,6 +26,7 @@ router.post('/auth/login/admin', async (req, res) => {
  
 });
 
+//customer login
 router.post('/auth/login/customer', async (req, res) => {
   const email_address = req.body.email_address;
   const password = req.body.password;
@@ -33,7 +34,6 @@ router.post('/auth/login/customer', async (req, res) => {
     try {
       const user = await controller.loginCustomer(email_address, password);
 
-      //req.session.user = user;
       res.status(200).json({
           status: 200,
           message: 'Successfully logged in',
@@ -55,6 +55,7 @@ router.post('/auth/login/customer', async (req, res) => {
  
 });
 
+//resets password
 router.get('/auth/reset-password/:email_address', async (req, res) => {
   const new_password = generator.generate({
     length: 10,
@@ -87,6 +88,7 @@ router.get('/auth/reset-password/:email_address', async (req, res) => {
  
 });
 
+//sends verification code on customer's email address
 router.get('/auth/send-verification/:email_address', async (req, res) => {
   const verification_code = generator.generate({
     length: 10,
@@ -108,6 +110,7 @@ router.get('/auth/send-verification/:email_address', async (req, res) => {
  
 });
 
+//verifies customer account
 router.post('/auth/verify-account/:email_address', async (req, res) => {
   const verification_code = req.body.verification_code;
  
@@ -136,6 +139,7 @@ router.post('/auth/verify-account/:email_address', async (req, res) => {
  
 });
 
+//logout
 router.post('/auth/logout', async (req, res) => {
   try {
     req.session.destroy();

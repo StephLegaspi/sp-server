@@ -4,7 +4,9 @@ const router = express.Router();
 const controller = require('./controller');
 const authController = require('../authentication/controller');
 
+//package for image upload
 const multer = require('multer');
+//declare image destination when upload
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, './uploads/administrators');
@@ -13,6 +15,7 @@ const storage = multer.diskStorage({
     cb(null, new Date().toISOString() + file.originalname);
   }
 })
+//image filter
 const imageFilter = (req, file, cb) => {
   if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
     cb(null, true);
@@ -28,7 +31,7 @@ const upload = multer({
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//creates administrator
 router.post('/administrators', upload.single('image'), async (req, res) => {
   const session_id = req.body.session_id;
   const first_name = req.body.first_name;
@@ -69,6 +72,7 @@ router.post('/administrators', upload.single('image'), async (req, res) => {
  
 });
 
+//gets all administrators
 router.get('/administrators', async (req, res) => {
   try {
     const administrators = await controller.getAll();
@@ -83,6 +87,7 @@ router.get('/administrators', async (req, res) => {
   }
 });
 
+//gets administrator by name
 router.get('/administrators/search/:name', async (req, res) => {
   try {
     const administrator = await controller.getOneByName(req.params.name);
@@ -96,6 +101,7 @@ router.get('/administrators/search/:name', async (req, res) => {
   }
 });
 
+//gets administrator information for profile by ID
 router.get('/administrators/profile/:id', async (req, res) => {
   const user_id = req.params.id;
 
@@ -111,6 +117,7 @@ router.get('/administrators/profile/:id', async (req, res) => {
   }
 });
 
+//gets administrator by ID
 router.get('/administrators/:id', async (req, res) => {
   try {
     const administrator = await controller.getOne(req.params.id);
@@ -140,6 +147,7 @@ router.delete('/administrators/:id', async (req, res) => {
   }
 });
 
+//edits administrator
 router.put('/administrators/:id', upload.single('image'), async (req, res) => {
   const id = req.params.id;
   const session_id = req.body.session_id;

@@ -3,7 +3,9 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
 
+//package for image upload
 const multer = require('multer');
+//declares image destination
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, './uploads/products');
@@ -12,6 +14,7 @@ const storage = multer.diskStorage({
     cb(null, new Date().toISOString() + file.originalname);
   }
 })
+//filters image
 const imageFilter = (req, file, cb) => {
   if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
     cb(null, true);
@@ -27,8 +30,8 @@ const upload = multer({
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+//gets all products for purchase
 router.get('/products/purchase/table', async (req, res) => {
-
   try {
     const products = await controller.getAllPurchaseTable();
     res.status(200).json({
@@ -42,6 +45,7 @@ router.get('/products/purchase/table', async (req, res) => {
   }
 });
 
+//gets all products for rental
 router.get('/products/rental/table', async (req, res) => {
   try {
     const products = await controller.getAllRentalTable();
@@ -56,6 +60,7 @@ router.get('/products/rental/table', async (req, res) => {
   }
 });
 
+//gets all products for purchase
 router.get('/products/purchase', async (req, res) => {
 
   try {
@@ -71,6 +76,7 @@ router.get('/products/purchase', async (req, res) => {
   }
 });
 
+//gets all products for rental
 router.get('/products/rental', async (req, res) => {
   try {
     const products = await controller.getAllRental();
@@ -85,7 +91,7 @@ router.get('/products/rental', async (req, res) => {
   }
 });
 
-
+//gets product by ID
 router.get('/products/:id', async (req, res) => {
   try {
     const product = await controller.getOne(req.params.id);
@@ -99,8 +105,7 @@ router.get('/products/:id', async (req, res) => {
   }
 });
 
-
-
+//creates product for purchase
 router.post('/products/purchase', upload.single('image'), async (req, res) => {
 
   const name = req.body.name;
@@ -126,6 +131,7 @@ router.post('/products/purchase', upload.single('image'), async (req, res) => {
  
 });
 
+//creates product for rental
 router.post('/products/rental', upload.single('image'), async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
@@ -150,6 +156,7 @@ router.post('/products/rental', upload.single('image'), async (req, res) => {
  
 });
 
+//gets products for purchase by name
 router.get('/products-purchase/search/table/:name', async (req, res) => {
   try {
     const product = await controller.searchNamePurchaseTable(req.params.name);
@@ -163,6 +170,7 @@ router.get('/products-purchase/search/table/:name', async (req, res) => {
   }
 });
 
+//gets products for rental by name
 router.get('/products-rental/search/table/:name', async (req, res) => {
   try {
     const product = await controller.searchNameRentalTable(req.params.name);
@@ -176,6 +184,7 @@ router.get('/products-rental/search/table/:name', async (req, res) => {
   }
 });
 
+//gets products for purchase by name
 router.get('/products-purchase/search/:name', async (req, res) => {
   try {
     const product = await controller.searchNamePurchase(req.params.name);
@@ -189,6 +198,7 @@ router.get('/products-purchase/search/:name', async (req, res) => {
   }
 });
 
+//gets products for rental by name
 router.get('/products-rental/search/:name', async (req, res) => {
   try {
     const product = await controller.searchNameRental(req.params.name);
@@ -202,7 +212,7 @@ router.get('/products-rental/search/:name', async (req, res) => {
   }
 });
 
-
+//edits product
 router.put('/products/:id', upload.single('image'), async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;
@@ -232,7 +242,7 @@ router.put('/products/:id', upload.single('image'), async (req, res) => {
  
 });
 
-
+//deletes product
 router.delete('/products/:id', async (req, res) => {
   const user_id = req.body.session_id;
 

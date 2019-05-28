@@ -6,7 +6,7 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//creates FAQs
 router.post('/FAQs', async (req, res) => {
   const question = req.body.question;
   const answer = req.body.answer;
@@ -25,6 +25,7 @@ router.post('/FAQs', async (req, res) => {
  
 });
 
+//gets all FAQs
 router.get('/FAQs', async (req, res) => {
   try {
     const faq = await controller.getAll();
@@ -39,6 +40,7 @@ router.get('/FAQs', async (req, res) => {
   }
 });
 
+//gets all FAQs by question
 router.get('/FAQs/:question', async (req, res) => {
   try {
     const FAQ = await controller.getOne(req.params.question);
@@ -52,7 +54,7 @@ router.get('/FAQs/:question', async (req, res) => {
   }
 });
 
-
+//deletes FAQs
 router.delete('/FAQs/:id', async (req, res) => {
   const session_id = req.body.session_id;
   try {
@@ -76,6 +78,7 @@ router.delete('/FAQs/:id', async (req, res) => {
   }
 });
 
+//edits FAQs
 router.put('/FAQs/:id', async (req, res) => {
   const id = req.params.id;
   const question = req.body.question;

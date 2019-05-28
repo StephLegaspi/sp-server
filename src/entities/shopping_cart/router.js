@@ -6,7 +6,7 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//creates shopping cart for purchase
 router.post('/shopping_carts/purchase', async (req, res) => {
   const session_id = req.body.session_id;
   const for_purchase = 1;
@@ -24,6 +24,7 @@ router.post('/shopping_carts/purchase', async (req, res) => {
  
 });
 
+//creates shopping cart for rental
 router.post('/shopping_carts/rental', async (req, res) => {
   const session_id = req.body.session_id;
   const for_purchase = 0;
@@ -41,6 +42,7 @@ router.post('/shopping_carts/rental', async (req, res) => {
  
 });
 
+//gets all shopping carts
 router.get('/shopping_carts', async (req, res) => {
   try {
     const shopping_carts = await controller.getAll();
@@ -55,7 +57,7 @@ router.get('/shopping_carts', async (req, res) => {
   }
 });
 
-
+//gets shopping cart for purchase by ID
 router.get('/shopping_carts/purchase/:id', async (req, res) => {
   try {
     const shopping_cart = await controller.getOnePurchase(req.params.id);
@@ -69,6 +71,7 @@ router.get('/shopping_carts/purchase/:id', async (req, res) => {
   }
 });
 
+//gets shopping cart for rental by ID
 router.get('/shopping_carts/rental/:id', async (req, res) => {
   try {
     const shopping_cart = await controller.getOneRental(req.params.id);
@@ -82,6 +85,7 @@ router.get('/shopping_carts/rental/:id', async (req, res) => {
   }
 });
 
+//edits order rental duration
 router.put('/shopping_carts/rental-duration/:id', async (req, res) => {
   const id = req.params.id;
   const rental_duration = req.body.rental_duration;
@@ -98,6 +102,7 @@ router.put('/shopping_carts/rental-duration/:id', async (req, res) => {
  
 });
 
+//gets shopping cart by ID
 router.get('/shopping_carts/:id', async (req, res) => {
   try {
     const shopping_cart = await controller.getOne(req.params.id);
@@ -111,6 +116,7 @@ router.get('/shopping_carts/:id', async (req, res) => {
   }
 });
 
+//deletes shopping cart
 router.delete('/shopping_carts/:id', async (req, res) => {
 
   try {

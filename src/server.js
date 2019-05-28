@@ -1,17 +1,14 @@
+//import packages
 const express = require("express");
 const bodyParser = require('body-parser');
 const logger = require('morgan')
-//const session = require('express-session');
-//const store = require('express-mysql-session');
 
+//import database configuration
 const db = require('./database/index');
 const routes = require('./router');
 
+//middleware between frontend and backend
 const app = express();
-
-//const MySQLStore = store(session);
-//const sessionStore = new MySQLStore({}, db);
-
 
 app.use(function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -28,22 +25,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(logger('dev'));
 
-/*app.use(
-  session({
-    key: 'transactionserver',
-    secret: 'transactionserver',
-    resave: true,
-    saveUninitialized: true,
-    cookie: { secure: false },
-    store: sessionStore,
-    createDatabaseTable: true,
-    checkExpirationInterval: 900000,
-    expiration: 86400000
-  })
-);*/
-
+//declare port where the server will run
 var port =  3001;
 
+//get the routes
 app.use('/v1', routes)
 app.listen(port, function() {
   console.log('Server running in '+ port);

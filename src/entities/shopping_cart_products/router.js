@@ -6,7 +6,7 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//adds product for purchase to the shopping cart
 router.post('/shopping_cart/products/purchase', async (req, res) => {
   const product_quantity = req.body.product_quantity;
   const product_color_id = req.body.product_color_id;
@@ -27,6 +27,7 @@ router.post('/shopping_cart/products/purchase', async (req, res) => {
  
 });
 
+//adds product for rental to the shopping cart
 router.post('/shopping_cart/products/rental', async (req, res) => {
   const product_quantity = req.body.product_quantity;
   const product_color_id = req.body.product_color_id;
@@ -47,6 +48,7 @@ router.post('/shopping_cart/products/rental', async (req, res) => {
  
 });
 
+//gets shopping cart products
 router.post('/shopping_cart_products/:id', async (req, res) => {
   const cart_id = req.body.cart_id;
   const product_color_id = req.body.product_color_id;
@@ -63,6 +65,7 @@ router.post('/shopping_cart_products/:id', async (req, res) => {
   }
 });
 
+//gets shopping cart products by ID
 router.get('/shopping_cart/products/:id', async (req, res) => {
   try {
     const shopping_cart_product = await controller.getOne(req.params.id);
@@ -76,6 +79,7 @@ router.get('/shopping_cart/products/:id', async (req, res) => {
   }
 });
 
+//gets all products on shopping cart
 router.get('/shopping_cart/products', async (req, res) => {
   try {
     const shopping_cart_products = await controller.getAll();
@@ -90,6 +94,7 @@ router.get('/shopping_cart/products', async (req, res) => {
   }
 });
 
+//deletes shopping cart products
 router.delete('/shopping_cart/products/:id', async (req, res) => {
   try {
     const shopping_cart_product = await controller.remove(req.params.id);
@@ -103,6 +108,7 @@ router.delete('/shopping_cart/products/:id', async (req, res) => {
   }
 });
 
+//edits shopping cart product
 router.put('/shopping_cart/products/:id', async (req, res) => {
   const id = req.params.id;
   const product_quantity = req.body.product_quantity;

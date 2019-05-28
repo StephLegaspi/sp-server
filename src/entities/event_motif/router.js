@@ -3,7 +3,9 @@ const express = require('express');
 const router = express.Router();
 const controller = require('./controller');
 
+//package for image upload
 const multer = require('multer');
+//declares image destination
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, './uploads/motifs');
@@ -12,6 +14,7 @@ const storage = multer.diskStorage({
     cb(null, new Date().toISOString() + file.originalname);
   }
 })
+//filters image
 const imageFilter = (req, file, cb) => {
   if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
     cb(null, true);
@@ -27,7 +30,7 @@ const upload = multer({
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//creates event motif
 router.post('/event_motifs', upload.array('images', 5), async (req, res) => {
   const name = req.body.name;
   const description = req.body.description;
@@ -56,6 +59,7 @@ router.post('/event_motifs', upload.array('images', 5), async (req, res) => {
  
 });
 
+//gets event motif by name
 router.get('/event_motifs/search/:name', async (req, res) => {
   try {
     const event_motif = await controller.searchName(req.params.name);
@@ -69,7 +73,7 @@ router.get('/event_motifs/search/:name', async (req, res) => {
   }
 });
 
-
+//gets the first four event motifs
 router.get('/event_motifs/four', async (req, res) => {
   try {
     const event_motifs = await controller.getAllFour();
@@ -84,6 +88,7 @@ router.get('/event_motifs/four', async (req, res) => {
   }
 });
 
+//gets all event motifs
 router.get('/event_motifs', async (req, res) => {
   try {
     const event_motifs = await controller.getAll();
@@ -98,6 +103,7 @@ router.get('/event_motifs', async (req, res) => {
   }
 });
 
+//gets all motif names
 router.get('/event_motifs/names', async (req, res) => {
   try {
     const event_motifs = await controller.getAllNames();
@@ -112,6 +118,7 @@ router.get('/event_motifs/names', async (req, res) => {
   }
 });
 
+//gets motif by ID
 router.get('/event_motifs/:id', async (req, res) => {
   try {
     const event_motif = await controller.getOne(req.params.id);
@@ -125,6 +132,7 @@ router.get('/event_motifs/:id', async (req, res) => {
   }
 });
 
+//deletes motif
 router.delete('/event_motifs/:id', async (req, res) => {
   const session_id = req.body.session_id;
   try {
@@ -139,6 +147,7 @@ router.delete('/event_motifs/:id', async (req, res) => {
   }
 });
 
+//edits motif
 router.put('/event_motifs/:id', async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;

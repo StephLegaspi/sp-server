@@ -7,7 +7,7 @@ const authController = require('../authentication/controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//creates a request
 router.post('/requests-one/:id', async (req, res) => {
   const status = req.body.status;
 
@@ -23,6 +23,7 @@ router.post('/requests-one/:id', async (req, res) => {
   }
 });
 
+//gets count of pending requests
 router.get('/requests/pending-count', async (req, res) => {
   try {
     const request_info = await controller.getPendingCount();
@@ -37,8 +38,8 @@ router.get('/requests/pending-count', async (req, res) => {
   }
 });
 
+//gets request by ID
 router.get('/requests/:id', async (req, res) => {
-
   try {
     const request_info = await controller.getOneSimple(req.params.id);
     res.status(200).json({
@@ -51,6 +52,7 @@ router.get('/requests/:id', async (req, res) => {
   }
 });
 
+//creates request
 router.post('/requests', async (req, res) => {
   const customer_first_name = req.body.customer_first_name;
   const customer_middle_name = req.body.customer_middle_name;
@@ -95,6 +97,7 @@ router.post('/requests', async (req, res) => {
  
 });
 
+//gets request inclusions
 router.get('/requests/inclusion/:id', async (req, res) => {
   try {
     const request_info = await controller.getInclusion(req.params.id);
@@ -109,7 +112,7 @@ router.get('/requests/inclusion/:id', async (req, res) => {
   }
 });
 
-
+//gets requests
 router.get('/requests', async (req, res) => {
   try {
     const request_info = await controller.getAll();
@@ -124,7 +127,7 @@ router.get('/requests', async (req, res) => {
   }
 });
 
-
+//gets requests by status
 router.get('/requests/status/:status', async (req, res) => {
   try {
     const request_info = await controller.getByStatus(req.params.status);
@@ -139,8 +142,7 @@ router.get('/requests/status/:status', async (req, res) => {
   }
 });
 
-
-
+//deletes request
 router.delete('/requests/:id', async (req, res) => {
   const session_id = req.body.session_id;
 
@@ -165,6 +167,7 @@ router.delete('/requests/:id', async (req, res) => {
   }
 });
 
+//edits request
 router.put('/requests/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;

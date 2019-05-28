@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const dbase = require('../config.json');
 
+//initialize connection for mysql 
 const db = mysql.createConnection({
   host: dbase.db.host,
   user: dbase.db.user,

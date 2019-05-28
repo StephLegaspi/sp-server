@@ -6,7 +6,7 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//gets product quantity per color
 router.get('/product_colors/quantity/:id', async (req, res) => {
   try {
     const products = await controller.getQuantityByID(req.params.id);
@@ -20,6 +20,7 @@ router.get('/product_colors/quantity/:id', async (req, res) => {
   }
 });
 
+//gets product colors
 router.get('/product_colors', async (req, res) => {
   try {
     const products = await controller.getAll();
@@ -34,6 +35,7 @@ router.get('/product_colors', async (req, res) => {
   }
 });
 
+//gets product color by ID
 router.get('/products/colors/:id', async (req, res) => {
   try {
     const products = await controller.getOne(req.params.id);
@@ -47,7 +49,7 @@ router.get('/products/colors/:id', async (req, res) => {
   }
 });
 
-
+//edits product quantity of products for purchase
 router.put('/product_colors/quantity/purchase/:id', async (req, res) => {
   const product_id = req.params.id;
   const product_quantity = req.body.product_quantity;
@@ -67,7 +69,7 @@ router.put('/product_colors/quantity/purchase/:id', async (req, res) => {
  
 });
 
-
+//edits product quantity of products for rental
 router.put('/product_colors/quantity/rental/:id', async (req, res) => {
   const product_id = req.params.id;
   const product_quantity = req.body.product_quantity;

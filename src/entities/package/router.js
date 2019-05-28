@@ -6,7 +6,7 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//creates package
 router.post('/packages', async (req, res) => {
   const name = req.body.name;
   const inclusion = req.body.inclusion;
@@ -26,6 +26,7 @@ router.post('/packages', async (req, res) => {
  
 });
 
+//gets all packages
 router.get('/packages', async (req, res) => {
   try {
     const catering_packages = await controller.getAll();
@@ -40,6 +41,7 @@ router.get('/packages', async (req, res) => {
   }
 });
 
+//gets the first three packages
 router.get('/packages/three', async (req, res) => {
   try {
     const catering_packages = await controller.getThree();
@@ -54,6 +56,7 @@ router.get('/packages/three', async (req, res) => {
   }
 });
 
+//gets all packages by name
 router.get('/packages/names', async (req, res) => {
   try {
     const catering_packages = await controller.getAllNames();
@@ -68,6 +71,7 @@ router.get('/packages/names', async (req, res) => {
   }
 });
 
+//gets package inclusions by package ID
 router.get('/packages/inclusions/:id', async (req, res) => {
   try {
     const catering_package = await controller.getOneInclusion(req.params.id);
@@ -81,6 +85,7 @@ router.get('/packages/inclusions/:id', async (req, res) => {
   }
 });
 
+//gets package by name
 router.get('/packages/search/:name', async (req, res) => {
   try {
     const catering_package = await controller.searchName(req.params.name);
@@ -94,6 +99,7 @@ router.get('/packages/search/:name', async (req, res) => {
   }
 });
 
+//gets package by ID
 router.get('/packages/:id', async (req, res) => {
   try {
     const catering_package = await controller.getOne(req.params.id);
@@ -107,7 +113,7 @@ router.get('/packages/:id', async (req, res) => {
   }
 });
 
-
+//deletes package
 router.delete('/packages/:id', async (req, res) => {
   const session_id = req.body.session_id;
 
@@ -123,6 +129,7 @@ router.delete('/packages/:id', async (req, res) => {
   }
 });
 
+//edits package
 router.put('/packages/:id', async (req, res) => {
   const id = req.params.id;
   const name = req.body.name;

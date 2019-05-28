@@ -6,7 +6,7 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//gets logs of administrators
 router.get('/logs/admin', async (req, res) => {
   try {
     const logs = await controller.getAllAdmin();
@@ -21,6 +21,7 @@ router.get('/logs/admin', async (req, res) => {
   }
 });
 
+//gets logs of customers
 router.get('/logs/customer', async (req, res) => {
   try {
     const logs = await controller.getAllCustomer();
@@ -35,6 +36,7 @@ router.get('/logs/customer', async (req, res) => {
   }
 });
 
+//gets logs of administrator
 router.get('/logs/admin/:id', async (req, res) => {
   try {
     const log = await controller.getOneAdmin(req.params.id);
@@ -48,6 +50,7 @@ router.get('/logs/admin/:id', async (req, res) => {
   }
 });
 
+//gets logs of customers by ID
 router.get('/logs/customer/:id', async (req, res) => {
   try {
     const log = await controller.getOneCustomer(req.params.id);
@@ -61,6 +64,7 @@ router.get('/logs/customer/:id', async (req, res) => {
   }
 });
 
+//deletes logs
 router.delete('/logs/:id', async (req, res) => {
   const session_id = req.body.session_id;
   try {

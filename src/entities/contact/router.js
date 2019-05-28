@@ -7,6 +7,7 @@ const authController = require('../authentication/controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+//sends inquiry to business' general email address
 router.post('/inquiry', async (req, res) => {
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
@@ -32,6 +33,7 @@ router.post('/inquiry', async (req, res) => {
 
 });
 
+//gets business' contact details
 router.get('/contact_details', async (req, res) => {
   try {
     const contact_details = await controller.getAll();
@@ -46,6 +48,7 @@ router.get('/contact_details', async (req, res) => {
   }
 });
 
+//edits contact details
 router.put('/contact_details', async (req, res) => {
   const id = req.params.id;
   const telephone_number = req.body.telephone_number;

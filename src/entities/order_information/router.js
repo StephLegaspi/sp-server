@@ -7,7 +7,7 @@ const authController = require('../authentication/controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//creates order for purchase
 router.post('/orders/purchase', async (req, res) => {
   const consignee_first_name = req.body.consignee_first_name;
   const consignee_middle_name = req.body.consignee_middle_name;
@@ -36,6 +36,7 @@ router.post('/orders/purchase', async (req, res) => {
  
 });
 
+//creates order for rental
 router.post('/orders/rental', async (req, res) => {
   const consignee_first_name = req.body.consignee_first_name;
   const consignee_middle_name = req.body.consignee_middle_name;
@@ -74,6 +75,7 @@ router.post('/orders/rental', async (req, res) => {
  
 });
 
+//gets all orders
 router.get('/orders', async (req, res) => {
   try {
     const order_info = await controller.getAll();
@@ -88,6 +90,7 @@ router.get('/orders', async (req, res) => {
   }
 });
 
+//gets all orders for purchase
 router.get('/orders/purchase', async (req, res) => {
   try {
     const order_info = await controller.getAllPurchase();
@@ -102,6 +105,7 @@ router.get('/orders/purchase', async (req, res) => {
   }
 });
 
+//gets all orders for rental
 router.get('/orders/rental', async (req, res) => {
   try {
     const order_info = await controller.getAllRental();
@@ -116,7 +120,7 @@ router.get('/orders/rental', async (req, res) => {
   }
 });
 
-
+//gets count of pending orders for purchase
 router.get('/orders/purchase/pending-count', async (req, res) => {
   try {
     const order_info = await controller.getAllPendingPurchase();
@@ -131,6 +135,7 @@ router.get('/orders/purchase/pending-count', async (req, res) => {
   }
 });
 
+//gets count of pending orders for rental
 router.get('/orders/rental/pending-count', async (req, res) => {
   try {
     const order_info = await controller.getAllPendingRental();
@@ -145,8 +150,7 @@ router.get('/orders/rental/pending-count', async (req, res) => {
   }
 });
 
-
-
+//gets order for purchase by delivery status
 router.get('/orders/purchase-status/:delivery_status', async (req, res) => {
   try {
     const order_info = await controller.getByStatPurchase(req.params.delivery_status);
@@ -160,6 +164,7 @@ router.get('/orders/purchase-status/:delivery_status', async (req, res) => {
   }
 });
 
+//gets order for rental by delivery status
 router.get('/orders/rental-status/:rental_status', async (req, res) => {
   try {
     const order_info = await controller.getByRentalStatus(req.params.rental_status);
@@ -173,6 +178,7 @@ router.get('/orders/rental-status/:rental_status', async (req, res) => {
   }
 });
 
+//gets order for purchase by ID
 router.post('/orders/purchase/:id', async (req, res) => {
   const status = req.body.status;
 
@@ -188,6 +194,7 @@ router.post('/orders/purchase/:id', async (req, res) => {
   }
 });
 
+//gets order for rental by ID
 router.post('/orders/rental/:id', async (req, res) => {
   const status = req.body.status;
 
@@ -203,7 +210,7 @@ router.post('/orders/rental/:id', async (req, res) => {
   }
 });
 
-
+//deletes order for purchase
 router.delete('/orders/purchase/:id', async (req, res) => {
   const session_id = req.body.session_id;;
 
@@ -219,6 +226,7 @@ router.delete('/orders/purchase/:id', async (req, res) => {
   }
 });
 
+//deletes order for rental
 router.delete('/orders/rental/:id', async (req, res) => {
   const session_id = req.body.session_id;;
 
@@ -234,6 +242,7 @@ router.delete('/orders/rental/:id', async (req, res) => {
   }
 });
 
+//edits order for purchase
 router.put('/orders/purchase/:id', async (req, res) => {
   const id = req.params.id;
   const status = req.body.status;

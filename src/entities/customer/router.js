@@ -7,7 +7,9 @@ const authController = require('../authentication/controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+//package for image upload
 const multer = require('multer');
+//declares image destination
 const storage = multer.diskStorage({
   destination: function(req, file, cb){
     cb(null, './uploads/customers');
@@ -16,6 +18,7 @@ const storage = multer.diskStorage({
     cb(null, new Date().toISOString() + file.originalname);
   }
 })
+//filters image
 const imageFilter = (req, file, cb) => {
   if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
     cb(null, true);
@@ -28,6 +31,7 @@ const upload = multer({
   fileFilter: imageFilter
 })
 
+//creates customer who logged in with facebook
 router.post('/customers/social', async (req, res) => {
   const first_name = req.body.first_name;
   const email_address = req.body.email_address;
@@ -62,6 +66,7 @@ router.post('/customers/social', async (req, res) => {
  
 });
 
+//creates customer who signed up
 router.post('/customers', async (req, res) => {
   const first_name = req.body.first_name;
   const middle_name = req.body.middle_name;
@@ -102,6 +107,7 @@ router.post('/customers', async (req, res) => {
  
 });
 
+//gets customer by name
 router.get('/customers/search/:name', async (req, res) => {
   try {
     const customer = await controller.getOneByName(req.params.name);
@@ -115,6 +121,7 @@ router.get('/customers/search/:name', async (req, res) => {
   }
 });
 
+//gets customer by email address
 router.get('/customers/email/:email_address', async (req, res) => {
   try {
     const customer = await controller.getByEmail(req.params.email_address);
@@ -128,6 +135,7 @@ router.get('/customers/email/:email_address', async (req, res) => {
   }
 });
 
+//gets customer information for profile by ID
 router.get('/customers/profile/:id', async (req, res) => {
   const user_id = req.params.id;
 
@@ -143,6 +151,7 @@ router.get('/customers/profile/:id', async (req, res) => {
   }
 });
 
+//gets all customers
 router.get('/customers', async (req, res) => {
 
   try {
@@ -158,6 +167,7 @@ router.get('/customers', async (req, res) => {
   }
 });
 
+//gets customer by its user ID
 router.get('/customers/users/:id', async (req, res) => {
   try {
     const customer = await controller.getByUserID(req.params.id);
@@ -171,6 +181,7 @@ router.get('/customers/users/:id', async (req, res) => {
   }
 });
 
+//gets customer by ID
 router.get('/customers/:id', async (req, res) => {
   try {
     const customer = await controller.getOne(req.params.id);
@@ -184,6 +195,7 @@ router.get('/customers/:id', async (req, res) => {
   }
 });
 
+//edits customer
 router.put('/customers/:id', upload.single('image'), async (req, res) => {
   const id = req.params.id;
   const address = req.body.address;

@@ -7,7 +7,7 @@ const authController = require('../authentication/controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
-
+//gets all users
 router.get('/users', async (req, res) => {
   try {
     const users = await controller.getAll();
@@ -22,6 +22,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
+//gets user by ID
 router.get('/users/:id', async (req, res) => {
   try {
     const user = await controller.getOne(req.params.id);
@@ -35,6 +36,7 @@ router.get('/users/:id', async (req, res) => {
   }
 });
 
+//edits user
 router.put('/users/:id', async (req, res) => {
   const id = req.params.id;
   const first_name = req.body.first_name;
@@ -57,6 +59,7 @@ router.put('/users/:id', async (req, res) => {
  
 });
 
+//edits user password
 router.put('/users/change_password/:id', async (req, res) => {
   const id = req.params.id;
   const email_address = req.body.email_address;

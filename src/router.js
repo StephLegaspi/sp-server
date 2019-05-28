@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+//import routers
 const productRouter = require('./entities/product/router');
 const userRouter = require('./entities/user/router');
 const customerRouter = require('./entities/customer/router');
@@ -21,11 +22,9 @@ const FAQsRouter = require('./entities/FAQs/router');
 const logRouter = require('./entities/log/router');
 const sessionRouter = require('./entities/session/router');
 
+//use routers
 router.use(authenticationRouter);
 router.use(administratorRouter);
-
-
-
 router.use(contactRouter);
 router.use(FAQsRouter);
 router.use(productRouter);

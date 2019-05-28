@@ -6,6 +6,7 @@ const controller = require('./controller');
 const async = require('asyncawait/async');
 const await = require('asyncawait/await');
 
+//gets rental information of all orders for rental
 router.get('/order_rentals', async (req, res) => {
   try {
     const order_rentals = await controller.getAll();
@@ -20,6 +21,7 @@ router.get('/order_rentals', async (req, res) => {
   }
 });
 
+//gets count of rentals that are already due
 router.get('/order_rentals/due-count', async (req, res) => {
   try {
     const order_rentals = await controller.getRentalDueCount();
@@ -34,7 +36,7 @@ router.get('/order_rentals/due-count', async (req, res) => {
   }
 });
 
-
+//gets rental information of orders for rental by ID
 router.get('/order_rentals/:id', async (req, res) => {
   try {
     const order_rental = await controller.getOne(req.params.id);
@@ -48,6 +50,7 @@ router.get('/order_rentals/:id', async (req, res) => {
   }
 });
 
+//edits rental orders
 router.put('/orders/rental/:id', async (req, res) => {
   const session_id = req.body.session_id;
   const id = req.params.id;
@@ -66,7 +69,7 @@ router.put('/orders/rental/:id', async (req, res) => {
  
 });
 
-
+//deletes rental order
 router.delete('/order_rentals/:id', async (req, res) => {
   try {
     const order_rental = await controller.remove(req.params.id);
